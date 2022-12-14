@@ -21,91 +21,254 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Background}
 
-\subsection{A Brief History of Filters}\label{sec:prelim}
-
-%Filter data structures can be broadly classified into \emph{static} and \emph{dynamic}. 
-%
-%Static filters approximately represent a set of items that must be known before building the filter. Examples of these filters include XOR filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}. Static filters have recently seen more advancement due their use in storage applications, such as LSM-trees.
-%
-
-%citation was BenderFaJo12a
-In this paper, we consider dynamic filters as they have wide-spread applications in data analytics.
-Dynamic filters approximately represent a set of items that does not need to be known before the construction. Dynamic filters have seen much more advancement in the last few decades as applications often do not know the set of items in advance. Examples of dynamic filters are Bloom filters~\cite{Bloom70}, quotient filters~\cite{BenderFaJo12, PandeyBJP17b,DillingerMa09,PaghPaRa05,EinzigerFr16}, and cuckoo filters~\cite{FanAnKa14,BreslowJ18}.
-
-\textbf{Bloom filters} consume $\log(e)\, \opt$ space, which is roughly $\log(e)\approx 1.44$ times more than the lower bound of $\opt + \Omega(n)$ bits~\cite{CarterFG78}. In contrast, for a set $S$ taken from a universe $U$, where $|U|=u$, an error-free dictionary requires $\Omega(\log {u\choose n}) \approx \Omega(n \log u)$ bits. Bloom filters also incur $\errbits$ cache-line misses on inserts and positive queries, giving them poor insertion and query performance. 
-
-
-
-\textbf{Blocked Bloom filters}~\cite{putze2007cache} overcome the poor cache locality of Bloom filters by constructing a series of smaller Bloom filters each of which is small enough to fit inside a small number of cache lines. The first hash function is used to select a block and rest of the hash functions are used to set/test bits inside the block. However, the cache efficiency comes at the cost of higher false-positive rate. Blocked Bloom filters have theoretically and empirically higher (up to $5\times$) false positive rates compared to Bloom filters. See \Cref{tab:merged_fp_space} for the empirical calculations of FP rate.
-
-\textbf{Quotient filters}~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21} represent a set approximately by compactly storing small fingerprints of the items in the set via Robin Hood hashing~\cite{CelisLaMu85}. The quotient filter uses $1.053 (2.125 + \log_21/\epsilon)$ bits per element, which is less than the Bloom filter whenever $\epsilon \leq 1/64$, which is the case in almost all applications. It supports insertion, deletion, lookups, resizing, and merging. The counting quotient filter (CQF)~\cite{PandeyBJP17}, improves upon the performance of the quotient filter and adds variable-sized counters to count items using asymptotically optimal space, even in large and skewed datasets. In the counting quotient filter, we can also associate small values with items either by re-purposing the variable-sized counters~\cite{PandeyABFJP18Cell} to store values or by explicitly storing small values with the remainders in the table~\cite{PandeySMB20}.
-
-\textbf{Cuckoo filters}~\cite{FanAnKa14,BreslowJ18} also store small fingerprints compactly in a table. However, unlike the quotient filter that uses Robin Hood hashing, the cuckoo filter uses cuckoo hashing to resolve collisions among fingerprints. Cuckoo hashing uses kicking (or cuckooing) to find an empty slot for the new item when all the slots in a bucket are occupied. This results in a cascading sequence of kicks until the filter converges on a new stable state. Inserts become slower as the structure becomes full, and in fact inserts may fail if the number of kicks during a single insert exceeds a specified threshold (500 in the author's reference implementation). 
-
-\textbf{Two-Choice filters}~\cite{pandeySigmod21} organize fingerprints compactly in blocks similar to the cuckoo filter. However, unlike the cuckoo filter, there is no kicking. The blocks in the two-choice filter are larger in size ($\approx \log{n}$, where $n$ is the number of items which is usually the size of the cache line on most machines) than the cuckoo filter and power-of-two-choice hashing is used to reduce the variance across the blocks and achieve a high load factor. During insertions if both blocks corresponding to a fingerprint are full then the data structure is declared full. The power-of-two-choice hashing enables the filter to probe exactly two cache lines during inserts and queries and write to a single cache line during inserts. Given the larger block sizes the vector quotient filter~\cite{pandeySigmod21} uses quotienting (similar to the quotient filter) to organize fingerprints inside blocks. It divides the fingerprints into a quotient and remainder part and only stores the remainder in the slot given by the quotient. It uses two additional metadata bits to resolve collisions among quotients.
-
-
 \subsection{GPU design principles}
-There are four major design principles to consider when implementing data structures on GPUs:
+There are four major design principles to consider when implementing data
+structures on GPUs:
 
 \begin{enumerate}[noitemsep, leftmargin=*]
-    \item \textbf{Low thread divergence:} threads inside a warp should execute the same instruction. This enables writing simple kernels that can exploit massive parallelism in the GPU.
-    \item \textbf{High memory coherence:} threads inside a warp should access the same  memory from a local region. Random memory accesses are expensive and cause threads to stall.
-    \item \textbf{High degree of parallelism:} a high number of threads saturate memory bandwidth and hide memory latency. 
-    \item \textbf{Atomic operations:} atomic operations help efficient thread scheduling inside a warp. Non-atomic writes and data movements cause slow downs and require locking large memory regions. Locking results in high overheads and affects the overall throughput.
+    \item \textbf{Low thread divergence:} threads inside a warp should execute
+      the same instruction. This enables writing simple kernels that can exploit
+      massive parallelism in the GPU.
+    \item \textbf{High memory coherence:} threads inside a warp should access
+      the same  memory from a local region. Random memory accesses are expensive
+      and cause threads to stall.
+    \item \textbf{High degree of parallelism:} a high number of threads saturate
+      memory bandwidth and hide memory latency. 
+    \item \textbf{Atomic operations:} atomic operations help efficient thread
+      scheduling inside a warp. Non-atomic writes and data movements cause slow
+      downs and require locking large memory regions. Locking results in high
+      overheads and affects the overall throughput.
 \end{enumerate}
+
+\subsection{A Brief History of Filters}\label{sec:prelim}
+
+Filter data structures can be broadly classified into \emph{static} and
+\emph{dynamic}.  Static filters approximately represent a set of items that must
+be known before building the filter. Examples of these filters include XOR
+filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}. Static
+filters have recently seen more advancement due their use in storage
+applications, such as LSM-trees.
+
+
+In this paper, we consider dynamic filters as they have wide-spread applications
+in data analytics.  Dynamic filters approximately represent a set of items that
+does not need to be known before the construction. Dynamic filters have seen
+much more advancement in the last few decades as applications often do not know
+the set of items in advance. Examples of dynamic filters are Bloom
+filters~\cite{Bloom70}, quotient filters~\cite{BenderFaJo12,
+PandeyBJP17b,DillingerMa09,PaghPaRa05,EinzigerFr16}, and cuckoo
+filters~\cite{FanAnKa14,BreslowJ18}.
+
+\textbf{Bloom filters} consume $\log(e)\, \opt$ space, which is roughly
+$\log(e)\approx 1.44$ times more than the lower bound of $\opt + \Omega(n)$
+bits~\cite{CarterFG78}. In contrast, for a set $S$ taken from a universe $U$,
+where $|U|=u$, an error-free dictionary requires $\Omega(\log {u\choose n})
+\approx \Omega(n \log u)$ bits. Bloom filters also incur $\errbits$ cache-line
+misses on inserts and positive queries, giving them poor insertion and query
+performance. 
+
+\textbf{Blocked Bloom filters}~\cite{putze2007cache} overcome the poor cache
+locality of Bloom filters by constructing a series of smaller Bloom filters each
+of which is small enough to fit inside a small number of cache lines. The first
+hash function is used to select a block and rest of the hash functions are used
+to set/test bits inside the block. However, the cache efficiency comes at the
+cost of higher false-positive rate. Blocked Bloom filters have theoretically and
+empirically higher (up to $5\times$) false positive rates compared to Bloom
+filters. See \Cref{tab:merged_fp_space} for the empirical calculations of FP
+rate.
+
+\textbf{Quotient
+filters}~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21}
+represent a set approximately by compactly storing small fingerprints of the
+items in the set via Robin Hood hashing~\cite{CelisLaMu85}. The quotient filter
+uses $1.053 (2.125 + \log_21/\epsilon)$ bits per element, which is less than the
+Bloom filter whenever $\epsilon \leq 1/64$, which is the case in almost all
+applications. It supports insertion, deletion, lookups, resizing, and merging.
+The counting quotient filter (CQF)~\cite{PandeyBJP17}, improves upon the
+performance of the quotient filter and adds variable-sized counters to count
+items using asymptotically optimal space, even in large and skewed datasets. In
+the counting quotient filter, we can also associate small values with items
+either by re-purposing the variable-sized counters~\cite{PandeyABFJP18Cell} to
+store values or by explicitly storing small values with the remainders in the
+table~\cite{PandeySMB20}.
+
+\textbf{Cuckoo filters}~\cite{FanAnKa14,BreslowJ18} also store small
+fingerprints compactly in a table. However, unlike the quotient filter that uses
+Robin Hood hashing, the cuckoo filter uses cuckoo hashing to resolve collisions
+among fingerprints. Cuckoo hashing uses kicking (or cuckooing) to find an empty
+slot for the new item when all the slots in a bucket are occupied. This results
+in a cascading sequence of kicks until the filter converges on a new stable
+state. Inserts become slower as the structure becomes full, and in fact inserts
+may fail if the number of kicks during a single insert exceeds a specified
+threshold (500 in the author's reference implementation). 
+
+\textbf{Two-Choice filters}~\cite{pandeySigmod21} organize fingerprints
+compactly in blocks similar to the cuckoo filter. However, unlike the cuckoo
+filter, there is no kicking. The blocks in the two-choice filter are larger in
+size ($\approx \log{n}$, where $n$ is the number of items which is usually the
+size of the cache line on most machines) than the cuckoo filter and
+power-of-two-choice hashing is used to reduce the variance across the blocks and
+achieve a high load factor. During insertions if both blocks corresponding to a
+fingerprint are full then the data structure is declared full. The
+power-of-two-choice hashing enables the filter to probe exactly two cache lines
+during inserts and queries and write to a single cache line during inserts.
+Given the larger block sizes the vector quotient filter~\cite{pandeySigmod21}
+uses quotienting (similar to the quotient filter) to organize fingerprints
+inside blocks. It divides the fingerprints into a quotient and remainder part
+and only stores the remainder in the slot given by the quotient. It uses two
+additional metadata bits to resolve collisions among quotients.
+
 
 \subsection{Analysis of filter designs}
 
-We now look at the dynamic filters discussed in~\Cref{sec:prelim} and evaluate them based on the GPU design principles. 
-% Our goal is to identify the filters that offer necessary features such as deletions, counting, and value associations and at the same time satisfy most of the design principles. 
-%We will further discuss the challenges of implementing these filter on the GPUs to achieve high speed operations.
+We now look at the dynamic filters discussed in~\Cref{sec:prelim} and evaluate
+them based on the GPU design principles.  Our goal is to identify the filters
+that offer necessary features such as deletions, counting, and value
+associations and at the same time satisfy most of the design principles.  We
+will further discuss the challenges of implementing these filter on the GPUs to
+achieve high speed operations.
 
-Bloom filters are easy to implement on the GPU as they only require test and set operations. These operations can be implemented using atomic operations and achieve low thread divergence. However, each operation results in multiple cache misses and therefore Bloom filters have low memory coherence. They also have sub-optimal space usage. Moreover, Bloom filters do not support deletions, counting\footnote{The counting Bloom filter~\cite{FanCaAl00}, a variant of the Bloom filter, supports counting but it comes at a high space-overhead which makes it highly inefficient in practice.}, and associating small values with items.
+Bloom filters are easy to implement on the GPU as they only require test and set
+operations. These operations can be implemented using atomic operations and
+achieve low thread divergence. However, each operation results in multiple cache
+misses and therefore Bloom filters have low memory coherence. They also have
+sub-optimal space usage. Moreover, Bloom filters do not support deletions,
+counting\footnote{The counting Bloom filter~\cite{FanCaAl00}, a variant of the
+Bloom filter, supports counting but it comes at a high space-overhead which
+makes it highly inefficient in practice.}, and associating small values with
+items.
 % that many data analytics applications require.
 
-Blocked Bloom filters are better suited to GPUs.
-Each operation requires probing inside a single block. They achieve low thread divergence, high memory coherence, a high degree of parallelism, and atomic operations. Thus, blocked Bloom filters can satisfy all the GPU design principles. However, blocked Bloom filters have a high false-positive rate compared to Bloom filters and also do not support necessary features like deletions and counting.
+Blocked Bloom filters are better suited to GPUs.  Each operation requires
+probing inside a single block. They achieve low thread divergence, high memory
+coherence, a high degree of parallelism, and atomic operations. Thus, blocked
+Bloom filters can satisfy all the GPU design principles. However, blocked Bloom
+filters have a high false-positive rate compared to Bloom filters and also do
+not support necessary features like deletions and counting.
 
-Operations in the quotient filter have high cache locality which makes it an appropriate choice to achieve high memory coherence. However, insert operations in the quotient filter requires shifting fingerprints which makes it harder to use atomic operations and also results in high thread divergence. However, the quotient filter can support all the necessary features like deletions, counting, and associating small values with items which makes the quotient filter a highly usable data structure that multiple applications can benefit from. 
+Operations in the quotient filter have high cache locality which makes it an
+appropriate choice to achieve high memory coherence. However, insert operations
+in the quotient filter requires shifting fingerprints which makes it harder to
+use atomic operations and also results in high thread divergence. However, the
+quotient filter can support all the necessary features like deletions, counting,
+and associating small values with items which makes the quotient filter a highly
+usable data structure that multiple applications can benefit from. 
 
-It is quite challenging to achieve high speed operations while maintaining all of the features in a GPU implementation of the quotient filter. Geil et al~\cite{GeilFO18} implemented a preliminary version of the GPU quotient filter. However, that implementation was adapted from Bender et al.'s quotient filter~\cite{BenderFaJo12a}, which did not have all the features, like counting and value association, and also had higher space overhead. Furthermore, Geil et al's GPU-based quotient filter has implementation-specific limitations (e.g., it supports a fixed false-positive rate and can only be sized to store less than $2^{26}$ items) resulting in poor performance and limited scalability.
+It is quite challenging to achieve high speed operations while maintaining all
+of the features in a GPU implementation of the quotient filter. Geil et
+al~\cite{GeilFO18} implemented a preliminary version of the GPU quotient filter.
+However, that implementation was adapted from Bender et al.'s quotient
+filter~\cite{BenderFaJo12a}, which did not have all the features, like counting
+and value association, and also had higher space overhead. Furthermore, Geil et
+al's GPU-based quotient filter has implementation-specific limitations (e.g., it
+supports a fixed false-positive rate and can only be sized to store less than
+$2^{26}$ items) resulting in poor performance and limited scalability.
 
-The cuckoo filter stores fingerprints in fixed size blocks. This design is amenable to high memory coherence and low thread divergence. Atomic operations can also be used to read and write fingerprints. However, the cascading sequence of reads and writes to random memory locations makes the cuckoo filter hard to implement efficiently on the GPU. In particular, at high load factors when the number of kicked items becomes high, each insertion will result in very low memory coherence. Moreover, each kicking operation results in multiple cache-line writes. This makes it challenging to achieve high speed operations in a GPU cuckoo filter. Moreover, cuckoo filters do not support counting and associating small values with items.
+The cuckoo filter stores fingerprints in fixed size blocks. This design is
+amenable to high memory coherence and low thread divergence. Atomic operations
+can also be used to read and write fingerprints. However, the cascading sequence
+of reads and writes to random memory locations makes the cuckoo filter hard to
+implement efficiently on the GPU. In particular, at high load factors when the
+number of kicked items becomes high, each insertion will result in very low
+memory coherence. Moreover, each kicking operation results in multiple
+cache-line writes. This makes it challenging to achieve high speed operations in
+a GPU cuckoo filter. Moreover, cuckoo filters do not support counting and
+associating small values with items.
 
-The two-choice filter has the advantages of the cuckoo filter design. It has fixed size blocks. Each operation requires probing into exactly two blocks, and inserts and deletes only write into a single block. This results in low thread divergence, high memory coherence, and a high degree of parallelism. However, due to large block sizes a more sophisticated structure is required to maintain fingerprints inside each block. Therefore, it is not straightforward to use atomic operations to read or write fingerprints inside blocks. It is a challenging task to implement a two choice filter on the GPU using atomic operations to achieve high throughput.
+The two-choice filter has the advantages of the cuckoo filter design. It has
+fixed size blocks. Each operation requires probing into exactly two blocks, and
+inserts and deletes only write into a single block. This results in low thread
+divergence, high memory coherence, and a high degree of parallelism. However,
+due to large block sizes a more sophisticated structure is required to maintain
+fingerprints inside each block. Therefore, it is not straightforward to use
+atomic operations to read or write fingerprints inside blocks. It is a
+challenging task to implement a two choice filter on the GPU using atomic
+operations to achieve high throughput.
+
+
+
 
 \section{Applications}
 
 \subsection{MetaHipMer}
 
-Metagenome assembly involves reconstructing long contiguous sequences ({\it contigs}) of genetic material from short input {\it reads}. These reads are strings of bases (the DNA alphabet A,C,G,T) of length 150 to 250 that are produced by gene sequencing machines. 
-For metagenomes, these reads are extracted from environmental samples (e.g. gut bacteria, or a soil sample) that contain the genes of potentially thousands of microbes, existing at varying abundances. 
-The reads are error prone (typically about 0.24\% error per base) and sequencing is done multiple times to ensure every region of genetic material is covered with some error free sequences.
+Metagenome assembly involves reconstructing long contiguous sequences ({\it
+contigs}) of genetic material from short input {\it reads}. These reads are
+strings of bases (the DNA alphabet A,C,G,T) of length 150 to 250 that are
+produced by gene sequencing machines.  For metagenomes, these reads are
+extracted from environmental samples (e.g. gut bacteria, or a soil sample) that
+contain the genes of potentially thousands of microbes, existing at varying
+abundances.  The reads are error prone (typically about 0.24\% error per base)
+and sequencing is done multiple times to ensure every region of genetic material
+is covered with some error free sequences.
 
-In the approach used by MetaHipMer, the reads are first divided into overlapping substrings of fixed length {\it k}, called {\it $k$-mers}, which are then used to form a de Bruijn graph~\cite{CompeauPeTe11}. In a de Bruijn graph, the vertices are $k$-mers and edges connect any two $k$-mers that have an overlap of $k-1$ bases. These vertices are stored in a hash table that is distributed across all the compute processes.
-The size of the hash table is dependent on the number of unique $k$-mers. 
-Traversal of the de Bruijn graph enables the construction of the contigs (longer sequences). 
-This approach is more efficient than an all-to-all alignment of the reads, which would be prohibitive for the size of typical metagenome datasets (up to billions of reads).
+In the approach used by MetaHipMer, the reads are first divided into overlapping
+substrings of fixed length {\it k}, called {\it $k$-mers}, which are then used
+to form a de Bruijn graph~\cite{CompeauPeTe11}. In a de Bruijn graph, the
+vertices are $k$-mers and edges connect any two $k$-mers that have an overlap of
+$k-1$ bases. These vertices are stored in a hash table that is distributed
+across all the compute processes.  The size of the hash table is dependent on
+the number of unique $k$-mers.  Traversal of the de Bruijn graph enables the
+construction of the contigs (longer sequences).  This approach is more efficient
+than an all-to-all alignment of the reads, which would be prohibitive for the
+size of typical metagenome datasets (up to billions of reads).
 
-Forward and backward extensions of the $k$-mer and the counts of those extensions are also maintained in the hash table along with the $k$-mer. Information regarding the extensions and their counts is critical to identifying correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on  $k$) to store each $k$-mer. 
+Forward and backward extensions of the $k$-mer and the counts of those
+extensions are also maintained in the hash table along with the $k$-mer.
+Information regarding the extensions and their counts is critical to identifying
+correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on
+$k$) to store each $k$-mer. 
 
-To ensure accurate contigs, the $k$-mers that occur only once (singletons) are treated as errors and dropped. In a typical set of metagenome reads, 70 to 80\% of unique $k$-mers are singletons, but they still need to be stored and counted in the distributed hash table. In the default MetaHipMer implementation, storing the unique $k$-mers is the most memory intensive part of the computation and can be roughly an order of magnitude larger than the input data. 
-The space required to store the $k$-mers can be much larger than the size of the original raw dataset (up to $10\times$ larger) as $k$-mers contain a lot of redundant information due to their overlaps.
+To ensure accurate contigs, the $k$-mers that occur only once (singletons) are
+treated as errors and dropped. In a typical set of metagenome reads, 70 to 80\%
+of unique $k$-mers are singletons, but they still need to be stored and counted
+in the distributed hash table. In the default MetaHipMer implementation, storing
+the unique $k$-mers is the most memory intensive part of the computation and can
+be roughly an order of magnitude larger than the input data.  The space required
+to store the $k$-mers can be much larger than the size of the original raw
+dataset (up to $10\times$ larger) as $k$-mers contain a lot of redundant
+information due to their overlaps.
 
-The distributed hash table in MetaHipMer is implemented as a collection of local hash tables, one per process, with communication happening via UPC++ remote procedure calls (RPCs). In the hash table insertion phase, the $k$-mers are aggregated, dispatched over the network, and inserted in bulk into the local hash tables, which are running on GPUs. Using GPUs boosts performance, but further constrains memory (e.g. the Summit supercomputer~\cite{VazhkudaiDBG18} has an aggregate of 96GB GPU memory and 512GB CPU memory per node).
+The distributed hash table in MetaHipMer is implemented as a collection of local
+hash tables, one per process, with communication happening via UPC++ remote
+procedure calls (RPCs). In the hash table insertion phase, the $k$-mers are
+aggregated, dispatched over the network, and inserted in bulk into the local
+hash tables, which are running on GPUs. Using GPUs boosts performance, but
+further constrains memory (e.g. the Summit supercomputer~\cite{VazhkudaiDBG18}
+has an aggregate of 96GB GPU memory and 512GB CPU memory per node).
 
-MetaHipMer runs on distributed systems with multiple nodes, and each node could have multiple GPUs, e.g. Summit has 6 GPUs per node. To utilize all the GPUs on a node, MetaHipMer maps the UPC++ processes to the GPUs in a round robin fashion, so multiple processes will share each GPU using the Nvidia Multi-Process Service (MPS). On a Summit node there will be 42 processes (one per core) and hence there will be 7 processes per GPU. Using the MPS has the benefits of simplicity, because there is no inter-GPU communication required, and it improves performance by increasing the utilization of the GPUs. 
+MetaHipMer runs on distributed systems with multiple nodes, and each node could
+have multiple GPUs, e.g. Summit has 6 GPUs per node. To utilize all the GPUs on
+a node, MetaHipMer maps the UPC++ processes to the GPUs in a round robin
+fashion, so multiple processes will share each GPU using the Nvidia
+Multi-Process Service (MPS). On a Summit node there will be 42 processes (one
+per core) and hence there will be 7 processes per GPU. Using the MPS has the
+benefits of simplicity, because there is no inter-GPU communication required,
+and it improves performance by increasing the utilization of the GPUs. 
 
-\Cref{fig:mhm-kmer} shows different parts of the $k$-mer analysis phase in MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table and then a separate phase is required to purge all the singleton $k$-mers. 
+\Cref{fig:mhm-kmer} shows different parts of the $k$-mer analysis phase in
+MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table
+and then a separate phase is required to purge all the singleton $k$-mers. 
 
 \subsection{$k$-mer distribution}
 
-\Cref{tab:kmer-dist} shows the distribution of singleton $k$-mers in three different metagenomic datasets. Singleton $k$-mers form a majority fraction of the total number of distinct $k$-mers. The distribution often depends on the sequencing depth and the size of $k$. The larger value $k$ results in larger fraction of singleton $k$-mers. This is due to the higher probability of seeing an erroneous base in the $k$-mer given the higher value of $k$. The erroneous bases result in singleton $k$-mers. 
+\Cref{tab:kmer-dist} shows the distribution of singleton $k$-mers in three
+different metagenomic datasets. Singleton $k$-mers form a majority fraction of
+the total number of distinct $k$-mers. The distribution often depends on the
+sequencing depth and the size of $k$. The larger value $k$ results in larger
+fraction of singleton $k$-mers. This is due to the higher probability of seeing
+an erroneous base in the $k$-mer given the higher value of $k$. The erroneous
+bases result in singleton $k$-mers. 
 
-Weeding out singleton $k$-mers before inserting them in the hash table to count is critical in any $k$-mer analysis phase to reduce the memory usage of the counting phase. These singleton $k$-mers can also be pruned from the hash table after the counting phase. However, that results in the high peak memory usage and much slower running time.
+Weeding out singleton $k$-mers before inserting them in the hash table to count
+is critical in any $k$-mer analysis phase to reduce the memory usage of the
+counting phase. These singleton $k$-mers can also be pruned from the hash table
+after the counting phase. However, that results in the high peak memory usage
+and much slower running time.
 
-Using a space-efficient filter to weed out singleton $k$-mers helps to reduce the memory pressure on the counting hash table thereby reducing the peak memory usage and increased run time. See~\cref{fig:mhm-kmer}.
+Using a space-efficient filter to weed out singleton $k$-mers helps to reduce
+the memory pressure on the counting hash table thereby reducing the peak memory
+usage and increased run time. See~\cref{fig:mhm-kmer}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,22 +279,8 @@ Using a space-efficient filter to weed out singleton $k$-mers helps to reduce th
 
 \subsection{A component of your plan}
 
-\setlength\intextsep{0pt}
-\begin{wrapfigure}[20]{R}{2.4in}
-\vspace{-5pt}
-\centering
-\includegraphics[width=2.4in]{figures/sample1}
-\caption{A sample figure that is wrapped by text.}
-\label{fig1}
-\end{wrapfigure}
+\input{figures/qf}
 
-Lorem Khaled Ipsum is a major key to success. To be successful you've got to work hard, to make history, simple, you've got to make it. The first of the month is coming, we have to get money, we have no choice. It cost money to eat and they don't want you to eat. Fan luv. 
-
-Surround yourself with angels, positive energy, beautiful people, beautiful souls, clean heart, angel. You smart, you loyal, you a genius. Give thanks to the most high. We the best. I told you all this before, when you have a swimming pool, do not use chlorine, use salt water, the healing, salt water is the healing.
-
-In life there will be road blocks but we will over come it. The other day the grass was brown, now it's green because I ain't give up. Never surrender. You do know, you do know that they don't want you to have lunch. I'm keeping it real with you, so what you going do is have lunch. Don't ever play yourself. 
-
-We don't see them, we will never see them. I'm up to something. Surround yourself with angels, positive energy, beautiful people, beautiful souls, clean heart.
 
 \begin{wraptable}[15]{r}[0.01in]{4.5in}
 \label{table1}
@@ -157,7 +306,6 @@ Unstable & $\cfrac{4}{3}\left[\left(\cfrac{1-x^3}{1-x_{\Delta}^{4}}\right) -  \l
 \end{wraptable}
 
 
-Egg whites, turkey sausage, wheat toast, water. Of course they don't want us to eat our breakfast, so we are going to enjoy our breakfast. They don't want us to win. Major key, don't fall for the trap, stay focused.  It's the ones closest to you that want to see you fail. Always remember in the jungle there's a lot of they in there, after you overcome they, you will make it to paradise. The key to more success is to get a massage once a week, very important, major key, cloth talk.
 
 % I found it useful to include a summary of the proposed work
 % given in each subsection to help out reviewers.
@@ -217,7 +365,6 @@ Present findings at scientific meetings and publish results in peer-reviewed jou
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scientific Merit}
 
-You wanna know how I got these scars? My father was\ldots a drinker, and a fiend. And one night, he goes off crazier than usual. Mommy gets the kitchen knife to defend herself. He doesn't like that, not one bit. So, me watching he takes the knife to her, laughing while he does it. He turns to me and he says: ``Why so serious?''. He comes at me with the knife ``Why so serious?''. He sticks the blade in my mouth. ``Let's put a smile on that face.'' and\ldots Why so serious?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 6: Impact/Outreach %
@@ -248,6 +395,15 @@ This project will have direct impacts on research and education through access t
 
 \noindent \emph{\underline{Person One}}: No NSF support in the past five years \newline
 
-\noindent The most relevant prior NSF award to the proposed project for \underline{Person Two} (Co-PI) is: (a) NSF PDM \#\#\#\#\#\#\#, \$000,000, MM/DD/YY to MM/DD/YY; (b) Title: Super Cool Project That Got Funded; (c) Accomplishments related to the {\bf intellectual merit} of this research project include something something. The {\bf broader impacts} include outreach at many levels. Something Something. To date, the grant has funded one post-doc and 1000 graduate students. The project has also involved 500 undergraduate students. (d) To date this project has resulted in 100 conference presentations, one million journal publications (cite them) with one under review (cite it) and two in preparation with well-developed drafts.
+\noindent The most relevant prior NSF award to the proposed project for
+\underline{Person Two} (Co-PI) is: (a) NSF PDM \#\#\#\#\#\#\#, \$000,000,
+MM/DD/YY to MM/DD/YY; (b) Title: Super Cool Project That Got Funded; (c)
+Accomplishments related to the {\bf intellectual merit} of this research project
+include something something. The {\bf broader impacts} include outreach at many
+levels. Something Something. To date, the grant has funded one post-doc and 1000
+graduate students. The project has also involved 500 undergraduate students. (d)
+To date this project has resulted in 100 conference presentations, one million
+journal publications (cite them) with one under review (cite it) and two in
+preparation with well-developed drafts.
 
 \nocite*
