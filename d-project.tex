@@ -33,12 +33,14 @@ structures on GPUs:
       the same  memory from a local region. Random memory accesses are expensive
       and cause threads to stall.
     \item \textbf{High degree of parallelism:} a high number of threads saturate
-      memory bandwidth and hide memory latency. 
+      memory bandwidth and hide memory latency.
     \item \textbf{Atomic operations:} atomic operations help efficient thread
       scheduling inside a warp. Non-atomic writes and data movements cause slow
       downs and require locking large memory regions. Locking results in high
       overheads and affects the overall throughput.
-\end{enumerate}
+    \end{enumerate}
+
+\jdo{Contention! Avoiding contention given the number of concurrent threads is huge.}
 
 \subsection{A Brief History of Filters}\label{sec:prelim}
 
@@ -65,7 +67,7 @@ bits~\cite{CarterFG78}. In contrast, for a set $S$ taken from a universe $U$,
 where $|U|=u$, an error-free dictionary requires $\Omega(\log {u\choose n})
 \approx \Omega(n \log u)$ bits. Bloom filters also incur $\errbits$ cache-line
 misses on inserts and positive queries, giving them poor insertion and query
-performance. 
+performance.
 
 \textbf{Blocked Bloom filters}~\cite{putze2007cache} overcome the poor cache
 locality of Bloom filters by constructing a series of smaller Bloom filters each
@@ -100,7 +102,7 @@ slot for the new item when all the slots in a bucket are occupied. This results
 in a cascading sequence of kicks until the filter converges on a new stable
 state. Inserts become slower as the structure becomes full, and in fact inserts
 may fail if the number of kicks during a single insert exceeds a specified
-threshold (500 in the author's reference implementation). 
+threshold (500 in the author's reference implementation).
 
 \textbf{Two-Choice filters}~\cite{pandeySigmod21} organize fingerprints
 compactly in blocks similar to the cuckoo filter. However, unlike the cuckoo
@@ -152,7 +154,7 @@ in the quotient filter requires shifting fingerprints which makes it harder to
 use atomic operations and also results in high thread divergence. However, the
 quotient filter can support all the necessary features like deletions, counting,
 and associating small values with items which makes the quotient filter a highly
-usable data structure that multiple applications can benefit from. 
+usable data structure that multiple applications can benefit from.
 
 It is quite challenging to achieve high speed operations while maintaining all
 of the features in a GPU implementation of the quotient filter. Geil et
@@ -217,7 +219,7 @@ Forward and backward extensions of the $k$-mer and the counts of those
 extensions are also maintained in the hash table along with the $k$-mer.
 Information regarding the extensions and their counts is critical to identifying
 correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on
-$k$) to store each $k$-mer. 
+$k$) to store each $k$-mer.
 
 To ensure accurate contigs, the $k$-mers that occur only once (singletons) are
 treated as errors and dropped. In a typical set of metagenome reads, 70 to 80\%
@@ -244,11 +246,11 @@ fashion, so multiple processes will share each GPU using the Nvidia
 Multi-Process Service (MPS). On a Summit node there will be 42 processes (one
 per core) and hence there will be 7 processes per GPU. Using the MPS has the
 benefits of simplicity, because there is no inter-GPU communication required,
-and it improves performance by increasing the utilization of the GPUs. 
+and it improves performance by increasing the utilization of the GPUs.
 
 \Cref{fig:mhm-kmer} shows different parts of the $k$-mer analysis phase in
 MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table
-and then a separate phase is required to purge all the singleton $k$-mers. 
+and then a separate phase is required to purge all the singleton $k$-mers.
 
 \subsection{$k$-mer distribution}
 
@@ -258,7 +260,7 @@ the total number of distinct $k$-mers. The distribution often depends on the
 sequencing depth and the size of $k$. The larger value $k$ results in larger
 fraction of singleton $k$-mers. This is due to the higher probability of seeing
 an erroneous base in the $k$-mer given the higher value of $k$. The erroneous
-bases result in singleton $k$-mers. 
+bases result in singleton $k$-mers.
 
 Weeding out singleton $k$-mers before inserting them in the hash table to count
 is critical in any $k$-mer analysis phase to reduce the memory usage of the
@@ -291,7 +293,7 @@ usage and increased run time. See~\cref{fig:mhm-kmer}.
 \begin{tabular}{  c  c  c  }
 \hline
 \hline
-Stability & $M_u$ & $M_{\tau}$ \\ 
+Stability & $M_u$ & $M_{\tau}$ \\
 \hline\hline\\
 Neutral & $\cfrac{z}{z_\Delta} - \cfrac{\ln(z/z_o)}{\ln(z_\Delta/z_o)}$ & $\cfrac{z}{z_\Delta} - \cfrac{1}{\ln(z_\Delta/z_o)}$\\\\
 \hline \\
@@ -374,7 +376,7 @@ Present findings at scientific meetings and publish results in peer-reviewed jou
 \label{broadimpacts}
 \vspace*{-8pt}
 
-This project will have direct impacts on research and education through access to simulation data products, student training, and K-12 outreach.  
+This project will have direct impacts on research and education through access to simulation data products, student training, and K-12 outreach.
 
 \vspace{4pt}
 \noindent \underline{\textit{Data Access}}: Maybe write about you will make data available.
