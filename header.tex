@@ -44,11 +44,6 @@
 \usepackage{comment}
 \usepackage{ifthen}
 
-\newcommand{\final}{0}
-\newcommand{\todo}[1]{\footnotesize\color{red}[TODO\@: #1]}
-\newcommand{\jdo}[1]{{\footnotesize\color{blue}[John: #1]}}
-\ifthenelse{\equal{\final}{1}}{\renewcommand{\todo}[1]{}\renewcommand{\jdo}[1]{}
-
 \newcolumntype{Y}{ >{\RaggedRight\arraybackslash}X}
 \newcommand\T{\rule{0pt}{2.6ex}}
 \newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
