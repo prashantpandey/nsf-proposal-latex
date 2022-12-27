@@ -28,7 +28,7 @@ structures on GPUs:
 \begin{enumerate}[noitemsep, leftmargin=*]
     \item \textbf{Low thread divergence:} threads inside a warp should execute
       the same instruction. This enables writing simple kernels that can exploit
-      massive parallelism in the GPU.
+      massive parallelism in the GPU\@.
     \item \textbf{High memory coherence:} threads inside a warp should access
       the same  memory from a local region. Random memory accesses are expensive
       and cause threads to stall.
@@ -158,11 +158,11 @@ usable data structure that multiple applications can benefit from.
 
 It is quite challenging to achieve high speed operations while maintaining all
 of the features in a GPU implementation of the quotient filter. Geil et
-al~\cite{GeilFO18} implemented a preliminary version of the GPU quotient filter.
+al~\cite{Geil:2018:QFA} implemented a preliminary version of the GPU quotient filter.
 However, that implementation was adapted from Bender et al.'s quotient
 filter~\cite{BenderFaJo12a}, which did not have all the features, like counting
 and value association, and also had higher space overhead. Furthermore, Geil et
-al's GPU-based quotient filter has implementation-specific limitations (e.g., it
+al.'s GPU-based quotient filter has implementation-specific limitations (e.g., it
 supports a fixed false-positive rate and can only be sized to store less than
 $2^{26}$ items) resulting in poor performance and limited scalability.
 
@@ -170,7 +170,7 @@ The cuckoo filter stores fingerprints in fixed size blocks. This design is
 amenable to high memory coherence and low thread divergence. Atomic operations
 can also be used to read and write fingerprints. However, the cascading sequence
 of reads and writes to random memory locations makes the cuckoo filter hard to
-implement efficiently on the GPU. In particular, at high load factors when the
+implement efficiently on the GPU\@. In particular, at high load factors when the
 number of kicked items becomes high, each insertion will result in very low
 memory coherence. Moreover, each kicking operation results in multiple
 cache-line writes. This makes it challenging to achieve high speed operations in
@@ -244,7 +244,7 @@ have multiple GPUs, e.g. Summit has 6 GPUs per node. To utilize all the GPUs on
 a node, MetaHipMer maps the UPC++ processes to the GPUs in a round robin
 fashion, so multiple processes will share each GPU using the Nvidia
 Multi-Process Service (MPS). On a Summit node there will be 42 processes (one
-per core) and hence there will be 7 processes per GPU. Using the MPS has the
+per core) and hence there will be 7 processes per GPU\@. Using the MPS has the
 benefits of simplicity, because there is no inter-GPU communication required,
 and it improves performance by increasing the utilization of the GPUs.
 
@@ -343,7 +343,7 @@ Unstable & $\cfrac{4}{3}\left[\left(\cfrac{1-x^3}{1-x_{\Delta}^{4}}\right) -  \l
 \begin{table}[H]
 \label{table1}
 \renewcommand{\arraystretch}{0}
-\caption{Project schedule.  PIs are Person One (P1), Person Two (P2), graduate student is GS, and the undergraduate student is US.\ Time frame gives the year each activity will occur.}
+\caption{Project schedule.  PIs are Person One (P1), Person Two (P2), graduate student is GS, and the undergraduate student is US\@. Time frame gives the year each activity will occur.}
 \scriptsize
 \begin{tabularx}{\textwidth}{Y c c }
 \hline
