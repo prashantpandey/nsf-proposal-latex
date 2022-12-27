@@ -8,10 +8,10 @@
 %
 % This version maintained/modified by: Jeremy A. Gibbs, Univ. of Utah
 %
-% This template is free source code. It comes without any warranty, to 
-% the extent permitted by applicable law. You can redistribute it and/or 
-% modify it under the terms of the Do What The Fuck You Want To Public 
-% License, Version 2, as published by Sam Hocevar. See 
+% This template is free source code. It comes without any warranty, to
+% the extent permitted by applicable law. You can redistribute it and/or
+% modify it under the terms of the Do What The Fuck You Want To Public
+% License, Version 2, as published by Sam Hocevar. See
 % http://www.wtfpl.net for more details.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[T1]{fontenc}
@@ -27,7 +27,7 @@
 \usepackage{fancyhdr}
 \usepackage[pdftex]{graphicx}
 \usepackage[pdftex,
-	    colorlinks, 	
+	    colorlinks,
 	    pdfstartview=FitH,
 	    linkcolor=black,
 	    citecolor=black,
@@ -40,10 +40,17 @@
 \usepackage{enumitem}
 \usepackage{tabularx}
 \usepackage{ragged2e}
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
+\usepackage{comment}
+\usepackage{ifthen}
+
+\newcommand{\final}{0}
+\newcommand{\todo}[1]{\footnotesize\color{red}[TODO\@: #1]}
+\newcommand{\jdo}[1]{{\footnotesize\color{blue}[John: #1]}}
+\ifthenelse{\equal{\final}{1}}{\renewcommand{\todo}[1]{}\renewcommand{\jdo}[1]{}
 
 \newcolumntype{Y}{ >{\RaggedRight\arraybackslash}X}
-\newcommand\T{\rule{0pt}{2.6ex}}      
+\newcommand\T{\rule{0pt}{2.6ex}}
 \newcommand\B{\rule[-1.2ex]{0pt}{0pt}}
 
 \renewcommand{\refname}{References Cited}
