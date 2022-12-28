@@ -42,7 +42,9 @@ structures on GPUs:
 
 \john{Contention! Avoiding contention given the number of concurrent threads is huge.}
 
-\subsection{A Brief History of Filters}\label{sec:prelim}
+\section{Data Structures}
+
+\subsection{Filters}\label{sec:prelim}
 
 Filter data structures can be broadly classified into \emph{static} and
 \emph{dynamic}.  Static filters approximately represent a set of items that must
@@ -187,8 +189,81 @@ atomic operations to read or write fingerprints inside blocks. It is a
 challenging task to implement a two choice filter on the GPU using atomic
 operations to achieve high throughput.
 
+\subsection{Hash tables}
+
+Hash tables are a core data structure in many applications, including key-value
+stores, databases, and big-data-analysis engines, and are included in most
+standard libraries.  Hash-table performance can be a substantial bottleneck for
+many applications~\cite{NealZu21,FanAn13,MetreveliZe12}.
 
 
+We argue that two stricter criteria, \emph{referential stability} and \emph{low
+associativity} should be optimized to yield high performance on PMEM.  As we
+will see, these two goals seem to be at odds with each other, and part of the
+innovation  of our hash table design is that it simultaneously achieves both.
+Naturally, the third design goal for a high-performance hash table is
+\emph{compactness}, but compactness also seems at odds with referential
+stability and low associativity.
+
+A hash table is said to be \defn{stable} if the position where an element is
+stored is guaranteed not to change until either the element is deleted or the
+table is resized~\cite{sandersstability,originalstability,KnuthVol3}.
+Stability offers a number of desirable properties.  For example, stability
+enables simpler concurrency-control mechanisms and thus reduces the performance
+impact of locking.  Moreover, since elements are not moved, writing is
+minimized, which improves PMEM performance.
+expensive than reads~\cite{pmem-measurements}.
+
+The \defn{associativity} of a hash table is the number of locations where an
+element is allowed to be stored.\footnote{Associativity is often associated with
+caches that restrict the locations an item may be stored in.  Here we refer to
+\emph{data structural associativity}, which is a restriction on how many
+locations a data structure may choose from to put an item in, even on fully
+associative hardware.} The best known low-associative (DRAM) hash table is the
+cuckoo hash table~\cite{Pagh:CuckooHash,PaghRo01}.  In the original design, each
+element has exactly two locations in the table where it is allowed to be stored,
+meaning that the associativity is two.  Low associativity yields a different set
+of desirable properties---most importantly, it helps search costs. For example,
+searching for an element in a cuckoo hash table is fast because there are only
+two locations in the table to check.  In addition, low associativity can enable
+us to further improve query performance by keeping a small amount of metadata;
+see \Cref{sec:iceberght}.
+
+
+In combination, stability can be used to achieve high insertion throughput in
+PMEM, where writes are expensive, and low associativity can be use to achieve
+high query  performance.  Furthermore, we also show how stability enables
+locking and concurrency-control mechanisms to be simplified, leading to better
+multithreaded scaling and simpler designs for crash consistency.
+
+Unfortunately, there is a tension between stability and low associativity.  If a
+hash table has associativity $\alpha$, and elements cannot move once they are
+inserted, then an unlucky choice of $\alpha$ locations for $\alpha$ elements can
+block a $(\alpha+1)$st element from being inserted.  As $\alpha$ decreases, the
+probability of such an unlucky event increases.  Cuckoo hashing reduces the
+probability of these bad events by giving up stability via \defn{kickout
+chains}, which are chains of elements that displace each other from one location
+to another. Practical implementations~\cite{LiAn14} generally increase the
+number of elements that can be stored in a given location---and thus the
+associativity---to reduce the kickout-chain length and increase the
+maximum-allowed \defn{load factor}, i.e, the ratio of the total number of keys
+in the table to the overall capacity of the table.
+
+
+Similarly, there is a three-way tension between space efficiency, associativity,
+and stability.  For example, cuckoo hash tables can be made stable if they are
+overprovisioned so much that the kickout-chain length reaches 0.  Such
+overprovisioning directly decreases space efficiency, but it also increases
+associativity.  Linear probing hash tables are stable (assuming they use
+tombstones to implement delete) but, as the load factor approaches 1, the
+average probe length for queries goes up, increasing associativity.  Other
+open-addressing hash tables have a similar space/associativity trade-off.
+Chaining hash tables are stable, but they have large associativity and
+significant space overheads.  CLHT~\cite{david2015asynchronized} improves query
+performance despite high associativity by storing multiple items in each node,
+but this further reduces space efficiency.
+
+\subsection{B-trees}
 
 \section{Applications}
 
