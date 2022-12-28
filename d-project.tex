@@ -388,6 +388,8 @@ usage and increased run time. See~\cref{fig:mhm-kmer}.
 
 \subsection{Spanning the entire hardware/software/network stack.}
 
+\john{I don't think we want to say ``hardware'' here anywhere because we don't address it anywhere. ``Software stack'' makes more sense to me.}
+
 \paragraph{Coverage areas.} Data structures are ubiquitous throughout the
 hardware/software stack, as a way to connect heterogeneous components within a
 system and to scale-out in data-center-scale applications.  AT has become a
@@ -396,35 +398,35 @@ labor among system components---requiring a closely knit team and an approach
 that weighs the costs and benefits holistically.
 Our team has the needed expertise:
 
-\begin{itemize}[noitemsep,nolistsep]
-  \item {\bf Theory and Algorithms (PIs Bender and Farach-Colton:}
+% \begin{itemize}[noitemsep,nolistsep]
+\begin{description}
+  \item[Theory and Algorithms (PIs Bender and Farach-Colton)]
     Bender and Farach-Colton have written numerous
     top-tier theory
     publications~\cite{DBLP:conf/stoc/BenderFK19,DBLP:conf/focs/BenderFGJM018,DBLP:conf/soda/BenderCCFJT19,DBLP:conf/soda/AfshaniBFFGT17,DBLP:conf/pods/BenderFJMMPX17,DBLP:conf/stoc/BenderKPY16,DBLP:conf/soda/BenderFGKM17,DBLP:conf/pods/BenderBJKMPSSZ16}
     and have, along with collaborator Conway, made significant contributions in
     the theory of hashing and its
-    applications~\cite{BenderFaGo18,BenderFaJo12,BenderFaJo11,PandeyBeJo17,PandeyAlBe18,PandeyBeJo18,PandeyBeJo17c,DBLP:conf/icalp/ConwayFS18}. 
+    applications~\cite{BenderFaGo18,BenderFaJo12,BenderFaJo11,PandeyBeJo17,PandeyAlBe18,PandeyBeJo18,PandeyBeJo17c,DBLP:conf/icalp/ConwayFS18}.
 
-    
-    \item {\bf Systems (PIs Owens and Pandey:} 
-    
-    \item {\bf High-Performance Computing (PIs Bender, Farach-Colton, Owens, and
-        Pandey:} Bender, Farach-Colton, Owens, and Pandey have
-      written a number of top-tier papers in
-      HPC~\cite{pandey2020timely,bender2017two,eckstein2015pebbl,agrawal1989four,bender2008communication,greenberg1999enabling},
+
+    \item[GPU Systems (PIs Owens and Pandey)] Owens's research program in GPU computing~\cite{Owens:2007:ASO,Owens:2008:GC} spans nearly 20 years and includes representative research advances in fundamental algorithms~\cite{Sengupta:2007:SPF}, data structures~\cite{Lefohn:2006:GGE,Alcantara:2009:RPH}, performance engineering~\cite{Zhang:2011:AQP}, programming models~\cite{Gupta:2012:ASO, Tzeng:2010:TMF}, and applications~\cite{Wang:2017:GGG}.
+
+    \item[High-Performance Computing (PIs Bender, Farach-Colton, Owens, and
+        Pandey)] Bender, Farach-Colton, Owens, and Pandey have
+      written a number of top-tier papers in HPC~\cite{pandey2020timely,bender2017two,eckstein2015pebbl,agrawal1989four,bender2008communication,greenberg1999enabling},
       and had considerable impact on HPC practice.  PI Bender's and Phillips
       work in HPC has focused on scheduling and  won a joint R\&D 100 Award for
       processor scheduling and allocation algorithms, which were licensed by
       Cray and incorporated into SLURM.  PIs Bender and Farach-Colton's company
       Tokutek deployed software to manage metadata in a large cloud storage
-      service.
+      service. Owens led the first implementation of MPI on GPUs~\cite{Stuart:2009:MPO:withouturl,Stuart:2011:EMT}, the first multi-GPU MapReduce~\cite{Stuart:2011:MMO}, and more recent work on scalable graph analytics on HPC machines~\cite{Pan:2018:SBS,Pan:2017:MGA,Chen:2022:SIP}.
 
-    \item {\bf Large-scale genomis (PIs Bender, Farach-Colton, and Pandey):}
+    \item[Large-scale genomics (PIs Bender, Farach-Colton, and Pandey)]
 
-\end{itemize}
+\end{description}
 
 
-\paragraph{Target distributed applications and systems, and the heterogeneous platforms on which they run.} 
+\paragraph{Target distributed applications and systems, and the heterogeneous platforms on which they run.}
 
 Accelerating data analyses will benefit all big-data application domains.  In
 this proposal, we will primarily focus on \textbf{genomics} applications. We will
@@ -582,8 +584,8 @@ This project will have direct impacts on research and education through access t
 \noindent The most relevant prior NSF award to the proposed project for
 \underline{Person Two} (Co-PI) is: (a) NSF PDM \#\#\#\#\#\#\#, \$000,000,
 MM/DD/YY to MM/DD/YY; (b) Title: Super Cool Project That Got Funded; (c)
-Accomplishments related to the {\bf intellectual merit} of this research project
-include something something. The {\bf broader impacts} include outreach at many
+Accomplishments related to the \textbf{intellectual merit} of this research project
+include something something. The \textbf{broader impacts} include outreach at many
 levels. Something Something. To date, the grant has funded one post-doc and 1000
 graduate students. The project has also involved 500 undergraduate students. (d)
 To date this project has resulted in 100 conference presentations, one million
