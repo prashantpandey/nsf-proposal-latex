@@ -265,6 +265,34 @@ but this further reduces space efficiency.
 
 \subsection{B-trees}
 
+The \btree(or B$^+$-tree\footnote{A \bplustree is a scan-optimized variant of
+\btrees that stores all data records in the leaves and only pivot keys in the
+internal nodes. The \bplustree is the widely implemented variant of the \btree
+in real-world applications as it supports faster range
+scans~\cite{mongodb,couchdb,scylladb,conway2020splinterdb,postgresql}. In this
+paper, we refer to \bplustree as the \btree.})~\cite{BayerMc72} has been the
+fundamental access path structure in databases and storage systems for over five
+decades~\cite{Comer79,graefe2010survey}. \btrees are an extension of
+self-balancing binary search trees to arbitrary fanouts (with more than two
+children per node). They store elements in each node in a sorted array.  Given a
+cache-line size $Z$~\cite{AggarwalVi88}, a \btree with $N$ elements and node
+size $B = \Theta(Z)$ supports the point operations \proc{insert} and \proc{find}
+in $O(\log_B(N))$ cache-line transfers in the I/O model~\cite{AggarwalVi88}.
+\btrees are one of the top choices for in-memory indexing~\cite{ZhangChOo15} due
+to their cache efficiency though they were initially introduced for indexing
+data stored on disk~\cite{BayerMc72}. In this paper, we study and improve the
+performance of in-memory \btrees.
+
+\btrees are especially popular in databases and file systems because they
+support logarithmic point operations (inserts and finds) and efficient range
+operations (range queries and scans) that read blocks of
+data~\cite{Knuth98,rodeh2013btrfs}.  They are also extensively used as the
+in-memory index in many popular databases such as MongoDB~\cite{mongodb},
+CouchDB~\cite{couchdb}, ScyllaDB~\cite{scylladb}, PostgreSQL~\cite{postgresql},
+and SplinterDB~\cite{conway2020splinterdb}.
+
+
+
 \section{Applications}
 
 \subsection{MetaHipMer}
