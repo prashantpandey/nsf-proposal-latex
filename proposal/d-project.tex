@@ -14,7 +14,157 @@
 \section{Introduction}
 \label{intro}
 
+\subsection{Problem}
 
+Raw sequencing data in computational biology is increasing much faster than ever
+due to high-throughput sequencing technology (HTS), already producing
+petabyte-scale datasets. Numerous applications in computational biology (\kmer
+analysis, raw sequence search, taxonomic classification, and pangenomics)
+require processing raw sequencing data at petabyte scale. This project aims to
+build high-performance and scalable data analysis pipelines for computational
+biology applications. The key technology in these pipelines is high-performance
+and scalable GPU data structures.
+
+{\bf \Kmer analysis} refers to counting length-$k$ subsequences (called \kmers)
+in raw sequencing data and associating auxiliary information (e.g.,
+prefix-suffix extension, read id, etc) with each \kmer. \Kmer analysis is the
+very first step in numerous computational biology pipelines, e.g., error
+correction, de Bruijn graph construction, raw sequence search, digital
+normalization, comparative genomics, genomics assembly, transcript
+quantification, taxonomic classification of metagenomic reads, etc. Existing
+tools for \kmer analysis~\cite{cite-something} use a filter to weed out
+singleton \kmers and a hash table to count and map \kmers occurring twice or
+more.
+
+{\bf Taxonomic classification} refers to Identifying the microbial taxon or taxa
+present in large-scale  metagenomic datasets coming from complex biological and
+environmental samples. Assigning taxonomic labels to sequencing reads is an
+important part of many computational genomics pipelines for metagenomics
+projects. Numerous methods~\cite{cite-something} for taxonomic classification of
+metagenomic data have been developed that often use hash tables to index the
+\kmer content of samples and quickly compare samples to prune down the search
+space. They further employ compact string indexes such as FM-index and
+compressed suffix array (CSA) to perform sequence comparison to determine exact
+matches.
+
+{\bf Pangenomics} refers to storing the genome of a species as a sequence graph
+consisting of genomes of multiple individuals instead of a single linear
+reference. A primary goal of pan-genomic variation analysis is to avoid biases
+that arise when treating a single genome as the reference when identifying or
+comparing variants across samples. Existing tools for  constructing a pangenomic
+graph use a combination of succinct data structures (compressed bit vectors) and
+space-efficient and dynamic hash tables and string data structures.
+
+Computational biology applications described above (and numerous others) all use
+a set of common data structures to perform data analysis tasks. For example,
+\kmer analysis tools use dynamic filters and hash tables, taxonomic
+classification tools use dynamic hash tables and string data structures, and
+pangenomics tools use succinct data structures and dynamic hash tables.
+
+The performance and scalability of the computational biology applications
+depends on the space-efficiency, speed, dynamism, and scalability of the
+underlying data structures they use. These data structures are also the building
+blocks in many other domains, like databases, machine learning, software
+systems, security applications, etc., and having a library of high-performance
+data structures will have a broader impact on applications in these domains.
+
+\subsection{State of the art}
+
+Most existing applications in computational biology use CPUs to perform data
+analysis. However, the growth of the CPU speed and capacity is slowing and at
+the same time data is growing faster than ever. CPU growth will not keep up with
+application demands.
+
+As a consequence, a few recent tools~\cite{cite-something} have tried to scale
+up using accelerators like GPUs to speed up computations. However, these tools
+use only primitive data structures and as a result achieve suboptimal
+performance. Some applications [cite] have also tried to scale out using
+distributed memory.  However, these applications are still limited by the CPU
+speed and capacity and leave performance on the table due to suboptimal
+scalability of data structures.
+
+GPUs offer a discontinuous amount of compute power and low cost compared to
+CPUs. GPUs are fast and efficient when computations are simple and
+straightforward and data fits in device RAM, e.g., dense matrix-matrix
+multiplications.
+However, GPUs have a few limitations:
+\begin{enumerate}[noitemsep, leftmargin=*]
+  \item GPU device RAM is much smaller than CPU RAM; this is especially
+    challenging given the data sizes in computational biology.
+  \item GPUs have high contention due to thousands of threads and are
+    inefficient when computations are irregular.
+\end{enumerate}
+
+Anything that involves sophisticated data structures and when memory is
+constrained GPUs are not currently useful.  GPUs are not currently used for the
+computational biology applications because efficient GPU data structures do not
+exist. Recent data structure advances~\cite{cite-something} show that
+implementations that go beyond primitive data structures are possible on GPUs
+but this work has not had much practical impact to date. A pure GPU solution is
+desirable because transfer costs are high, and this is the direction being taken
+in other application domains (machine learning, data science).
+
+\prashant{Assigned to Martin/Michael: Need to add theory/algorithmic challenges
+to develop GPU data structures. Why is it hard to just port existing CPU data
+structures to GPUs.}
+
+
+\begin{enumerate}[noitemsep, leftmargin=*]
+  \item Filters
+  \item Hash table
+  \item String data structures (suffix array, FM index, BWT)
+  \item Succinct data structures (Dynamic rank-select indexes)
+  \item Trees and Tries
+\end{enumerate}
+
+\subsection{Our solution}
+
+We believe the answer to these challenges is a standalone library of
+memory-efficient, high-performance, dynamic, and scalable GPU data structures
+that can be directly used by computational biology applications that addresses
+the needs of emerging applications, allowing them to solve the problems
+described above.
+
+The project’s novelties are: a vertical-stack approach spanning theory and
+algorithms: highly-concurrent, dynamic, and distributed data structures,
+systems: scale up using GPU acceleration, high-performance computing: scale out
+using distributed data structures, and applications: computational biology
+applications; new parallel and distributed data structures and algorithms to
+exploit the massive compute on GPUs applicable to other application domains; an
+API for developers to quickly and seamlessly integrate high-performance and
+scalable data structures in applications.
+
+Our team includes a highly interdisciplinary team of researchers across four
+focus areas: applications (computational biology), theory and algorithms,
+systems, and high-performance computing. The team is taking a holistic
+theory/systems/hpc/applications co-design approach to explore four tightly
+interconnected research modules.
+These research modules are structured from bottom-up across the computing stack.
+
+\begin{itemize}[noitemsep, leftmargin=*]
+  \item {\bf Module 1 [theory/algorithms]:} Develop single-node GPU data structures.
+    Specifically, filters, hash tables, succinct/string data structures, and
+    trees. Challenges: high concurrency; being able to scale 100K threads;
+    branching statements have a high cost; data movement and Irregular data
+    accesses are expensive. We will develop new theoretical data structures and
+    algorithms that can efficiently exploit massive GPU parallelism while being
+    compact and dynamic.
+
+  \item {\bf Module 2 [Systems]:} Develop GPU data structures that can scale out of
+      GPU device RAM to CPU host RAM. We will develop a memory allocator to
+      seamlessly manage the GPU and CPU ram and efficiently move data across GPU
+      and CPU RAMs.
+
+    \item {\bf Module 3 [HPC]:} Develop data structures that can scale out to
+      multiple-GPU nodes in a distributed computing environment. We will develop
+      communication-efficient distributed versions of the above data structure
+      to efficiently scale out hundreds of nodes in a HPC environment.
+
+    \item {\bf Module 4 [Applications]:} Building high-performance and scalable
+      computational biology applications by integrating GPU data structures in
+      k-mer analysis, taxonomic classification, pangenomics tools.
+
+\end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 2: Overview        %
