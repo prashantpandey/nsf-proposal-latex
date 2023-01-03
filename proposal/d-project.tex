@@ -1,3 +1,5 @@
+%!TEX root =  main.tex 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These are the general sections to include.  %
 %                                             %
@@ -14,18 +16,28 @@
 \section{Introduction}
 \label{intro}
 
-\subsection{Problem}
+
+% \subsection{Problem}
+
+\mab{proposal format has too much white space between paragraphs...}
+
+% MAB: the problem
 
 Raw sequencing data in computational biology is increasing much faster than ever
-due to high-throughput sequencing technology (HTS), already producing
-petabyte-scale datasets. Numerous applications in computational biology (\kmer
-analysis, raw sequence search, taxonomic classification, and pangenomics)
-require processing raw sequencing data at petabyte scale. This project aims to
+due to high-throughput sequencing technology (HTS)~\cite{cite-sequencing-technology}, already producing
+petabyte-scale datasets~\cite{cite-petabyte-scale}. Numerous applications in computational biology (\kmer
+analysis~\cite{cite-kmer-analysis}, raw sequence search~\cite{cite-raw-sequence}, taxonomic classification~\cite{cite-taxonomic-classification}, and pangenomics~\cite{cite-pangenomics})
+require processing raw sequencing data at petabyte scales~\cite{cite-something-or-refer-to-figure-later-in-paper}. This project aims to
 build high-performance and scalable data analysis pipelines for computational
-biology applications. The key technology in these pipelines is high-performance
+biology applications. \mab{As we explain in this proposal (see \S{xxx} and \S{xxx})}
+The key technology in these pipelines is high-performance
 and scalable GPU data structures.
 
-{\bf \Kmer analysis} refers to counting length-$k$ subsequences (called \kmers)
+\mab{bad transition. need to discuss }
+
+{\bf \Kmer analysis} refers 
+\mab{wrong topic sentence. need to discuss}
+to counting length-$k$ subsequences (called \kmers)
 in raw sequencing data and associating auxiliary information (e.g.,
 prefix-suffix extension, read id, etc) with each \kmer. \Kmer analysis is the
 very first step in numerous computational biology pipelines, e.g., error
@@ -36,7 +48,7 @@ tools for \kmer analysis~\cite{cite-something} use a filter to weed out
 singleton \kmers and a hash table to count and map \kmers occurring twice or
 more.
 
-{\bf Taxonomic classification} refers to Identifying the microbial taxon or taxa
+{\bf Taxonomic classification} refers \mab{wrong topic sentence. need to discuss} to Identifying the microbial taxon or taxa
 present in large-scale  metagenomic datasets coming from complex biological and
 environmental samples. Assigning taxonomic labels to sequencing reads is an
 important part of many computational genomics pipelines for metagenomics
@@ -47,7 +59,7 @@ space. They further employ compact string indexes such as FM-index and
 compressed suffix array (CSA) to perform sequence comparison to determine exact
 matches.
 
-{\bf Pangenomics} refers to storing the genome of a species as a sequence graph
+{\bf Pangenomics} refers \mab{wrong topic sentence. need to discuss} to storing the genome of a species as a sequence graph
 consisting of genomes of multiple individuals instead of a single linear
 reference. A primary goal of pan-genomic variation analysis is to avoid biases
 that arise when treating a single genome as the reference when identifying or
