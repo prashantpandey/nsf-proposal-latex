@@ -30,24 +30,17 @@ analysis~\cite{cite-kmer-analysis}, raw sequence search~\cite{cite-raw-sequence}
 require processing raw sequencing data at petabyte scales~\cite{cite-something-or-refer-to-figure-later-in-paper}. This project aims to
 build high-performance and scalable data analysis-pipelines for computational-biology applications. 
 
-As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines is high-performance, compact, dynamic, and scalable structures. For example: 
+As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines is high-performance, compact, dynamic, and scalable data structures. For example: 
 
 \begin{itemize}[leftmargin=*]
 %[noitemsep, leftmargin=*]
     
-    \item {\bf \Kmer analysis} refers 
-to counting length-$k$ subsequences (called \kmers)
-in raw sequencing data and associating auxiliary information (e.g.,
-prefix-suffix extension, read id, etc) with each \kmer. \Kmer analysis is the
-very first step in numerous computational biology pipelines, e.g., error
-correction, de Bruijn graph construction, raw sequence search, digital
-normalization, comparative genomics, genomics assembly, transcript
-quantification, taxonomic classification of metagenomic reads, etc. Existing
-tools for \kmer analysis~\cite{cite-something} use a filter to weed out
-singleton \kmers and a hash table to count and map \kmers occurring twice or
-more.
+\item {\bf \Kmer analysis.}  
+\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets to answer questions about the genomic diversity, abundance variance, taxonomic information, etc.
+\Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
 
-\prashant{k-mer data sets are skewed. A major fraction of the k-mers are singletons which are erroneous. Tools use filters to identify singleton k-mers. They only store non-singleton k-mers in the hash table which have a high space cost. k-mer analysis is a way represent a raw sequencing data in form of its k-mer content. Applications perform downstream analysis on sequencing datasets by comparing their k-mer contents.}
+Existing tools use both lossy and lossless data structures (e.g., filters vs.\ compact hash tables) to construct and store \kmer indexes~\cite{xxxx}. 
+For example, in raw sequencing data, singleton \kmers are erroneous and form a major fraction of the data~\cite{xxxx}. \kmer analysis tools such as  XXX use a compact filter to identify singleton \kmers and use a hash table to keep maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxxx}.
 
     \item {\bf Taxonomic classification} refers  to Identifying the microbial taxon or taxa
 present in large-scale  metagenomic datasets coming from complex biological and
