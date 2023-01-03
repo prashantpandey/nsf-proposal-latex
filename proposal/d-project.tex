@@ -28,15 +28,14 @@ due to high-throughput sequencing technology (HTS)~\cite{cite-sequencing-technol
 petabyte-scale datasets~\cite{cite-petabyte-scale}. Numerous applications in computational biology (\kmer
 analysis~\cite{cite-kmer-analysis}, raw sequence search~\cite{cite-raw-sequence}, taxonomic classification~\cite{cite-taxonomic-classification}, and pangenomics~\cite{cite-pangenomics})
 require processing raw sequencing data at petabyte scales~\cite{cite-something-or-refer-to-figure-later-in-paper}. This project aims to
-build high-performance and scalable data analysis pipelines for computational
-biology applications. \mab{As we explain in this proposal (see \S{xxx} and \S{xxx})}
-The key technology in these pipelines is high-performance
-and scalable GPU data structures.
+build high-performance and scalable data analysis-pipelines for computational-biology applications. 
 
-\mab{bad transition. need to discuss }
+As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines is high-performance, compact, dynamic, and scalable structures. For example: 
 
-{\bf \Kmer analysis} refers 
-\mab{wrong topic sentence. need to discuss}
+\begin{itemize}[leftmargin=*]
+%[noitemsep, leftmargin=*]
+    
+    \item {\bf \Kmer analysis} refers 
 to counting length-$k$ subsequences (called \kmers)
 in raw sequencing data and associating auxiliary information (e.g.,
 prefix-suffix extension, read id, etc) with each \kmer. \Kmer analysis is the
@@ -48,7 +47,9 @@ tools for \kmer analysis~\cite{cite-something} use a filter to weed out
 singleton \kmers and a hash table to count and map \kmers occurring twice or
 more.
 
-{\bf Taxonomic classification} refers \mab{wrong topic sentence. need to discuss} to Identifying the microbial taxon or taxa
+\prashant{k-mer data sets are skewed. A major fraction of the k-mers are singletons which are erroneous. Tools use filters to identify singleton k-mers. They only store non-singleton k-mers in the hash table which have a high space cost. k-mer analysis is a way represent a raw sequencing data in form of its k-mer content. Applications perform downstream analysis on sequencing datasets by comparing their k-mer contents.}
+
+    \item {\bf Taxonomic classification} refers  to Identifying the microbial taxon or taxa
 present in large-scale  metagenomic datasets coming from complex biological and
 environmental samples. Assigning taxonomic labels to sequencing reads is an
 important part of many computational genomics pipelines for metagenomics
@@ -59,13 +60,16 @@ space. They further employ compact string indexes such as FM-index and
 compressed suffix array (CSA) to perform sequence comparison to determine exact
 matches.
 
-{\bf Pangenomics} refers \mab{wrong topic sentence. need to discuss} to storing the genome of a species as a sequence graph
+    \item {\bf Pangenomics} refers to storing the genome of a species as a sequence graph
 consisting of genomes of multiple individuals instead of a single linear
 reference. A primary goal of pan-genomic variation analysis is to avoid biases
 that arise when treating a single genome as the reference when identifying or
 comparing variants across samples. Existing tools for  constructing a pangenomic
 graph use a combination of succinct data structures (compressed bit vectors) and
 space-efficient and dynamic hash tables and string data structures.
+
+\end{itemize}
+
 
 Computational biology applications described above (and numerous others) all use
 a set of common data structures to perform data analysis tasks. For example,
@@ -157,7 +161,7 @@ These research modules are structured from bottom-up across the computing stack.
   \item {\bf Module 1 [theory/algorithms]:} Develop single-node GPU data structures.
     Specifically, filters, hash tables, succinct/string data structures, and
     trees. Challenges: high concurrency; being able to scale 100K threads;
-    branching statements have a high cost; data movement and Irregular data
+    branching statements have a high cost; data movement and irregular data
     accesses are expensive. We will develop new theoretical data structures and
     algorithms that can efficiently exploit massive GPU parallelism while being
     compact and dynamic.
@@ -178,10 +182,16 @@ These research modules are structured from bottom-up across the computing stack.
 
 \end{itemize}
 
+\prashant{Section 2: State of the art, data structures (theory/systems), applications. What are the deficiencies.}\\
+\prashant{Section 3: Here's what we will do. Need a concrete plan with what we are going to. Sub-problems, milestones, schedule. How the four pillars interact.}\\
+\prashant{Conclusion, Broader impact, previous NSF support}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 2: Overview        %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Background}
+
 
 \subsection{GPU design principles}
 There are four major design principles to consider when implementing data
