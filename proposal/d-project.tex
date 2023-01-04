@@ -36,30 +36,28 @@ As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines i
 %[noitemsep, leftmargin=*]
     
 \item {\bf \Kmer analysis.}  
-\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets to answer questions about the genomic diversity, abundance variance, taxonomic information, etc.
+\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc.
 \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
 
 Existing tools use both lossy and lossless data structures (e.g., filters vs.\ compact hash tables) to construct and store \kmer indexes~\cite{xxxx}. 
 For example, in raw sequencing data, singleton \kmers are erroneous and form a major fraction of the data~\cite{xxxx}. \kmer analysis tools such as  XXX use a compact filter to identify singleton \kmers and use a hash table to keep maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxxx}.
+% \mab{Is there something interesting to say about parallelizing/distributing?}
 
-    \item {\bf Taxonomic classification} refers  to Identifying the microbial taxon or taxa
-present in large-scale  metagenomic datasets coming from complex biological and
-environmental samples. Assigning taxonomic labels to sequencing reads is an
-important part of many computational genomics pipelines for metagenomics
-projects. Numerous methods~\cite{cite-something} for taxonomic classification of
-metagenomic data have been developed that often use hash tables to index the
-\kmer content of samples and quickly compare samples to prune down the search
-space. They further employ compact string indexes such as FM-index and
-compressed suffix array (CSA) to perform sequence comparison to determine exact
-matches.
+\item {\bf Taxonomic classification.} Taxonomic classification~\cite{something} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics
+projects. 
 
-    \item {\bf Pangenomics} refers to storing the genome of a species as a sequence graph
-consisting of genomes of multiple individuals instead of a single linear
-reference. A primary goal of pan-genomic variation analysis is to avoid biases
-that arise when treating a single genome as the reference when identifying or
-comparing variants across samples. Existing tools for  constructing a pangenomic
-graph use a combination of succinct data structures (compressed bit vectors) and
-space-efficient and dynamic hash tables and string data structures.
+Methods~\cite{cite-something} for taxonomic classification of metagenomic data often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
+Furthermore, to save space many solutions~\cite{cite-something} also employ lossy sketches (e.g., locality sensitive hashing (LSH)~\cite{cite-something}) to represent metagenomic data and perform similarity computations over sketches.
+They further employ compact string indexes such as FM-index~\cite{fm-index} and compressed suffix array (CSA)~\cite{csa} to perform sequence comparison to determine exact matches among the pruned-down samples.
+
+%\mab{sketches: Jaccard index computation: }
+
+
+
+\item {\bf Pangenomics.} 
+Pangenomics involves storing the genome of a species as a sequence graph consisting of genomes of multiple individuals instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
+
+Existing tools for  constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{xxx}), space-efficient, dynamic hash tables, and string data structures such as xxxxx~\cite{xxx}.
 
 \end{itemize}
 
