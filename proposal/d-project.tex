@@ -56,13 +56,10 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-The computational-biology applications described above (and numerous others) all use a set of common data structures to perform data-analysis tasks.
-Some of these data structures are compact but lossless and some are lossy.
-Among compact lossless data structures,  compact hash tables~\cite{xxx} are used in all three applications. 
-String indexes~\cite{xxxx} are used in taxonomic and pangenomics.
-Among compact and lossy data structures, filters are used in \kmer analysis~\cite{xxx} and large-scale sequence search~\cite{xxx}.
-\mab{This feels repetitive. Not sure how to fix.}
-
+The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks. 
+% Some of these data structures are compact but lossless and some are lossy.
+Compact lossless data structures include: hash tables and succinct data structures, compact string indexes, trees.
+Sketches and lossy data structures include: filters, cardinality estimators,  min-hash based sketches, other locality-sensitive hash data structures. 
 
 % Some of these data structures are compact but lossless. For example, compact hash tables are used in \kmer analysis, taxonomic classification, and pangenomics and succinct string indexes are used in taxonomic classification and pangenomics.
 
@@ -71,17 +68,34 @@ Among compact and lossy data structures, filters are used in \kmer analysis~\cit
 
 % For example, \kmer analysis tools use dynamic filters and hash tables, taxonomic classification tools use dynamic hash tables and string data structures, and pangenomics tools use succinct data structures and dynamic hash tables.
 
-% and maybe that's the right thing to do I can't tell\mab{}
-
 The performance and scalability of the computational biology applications
 depends on the space-efficiency, speed, dynamism, and scalability of the
 underlying data structures they use. These data structures are also the building
 blocks in many other domains, like databases, machine learning, software
-systems, security applications, etc., and having a library of high-performance
-data structures will have a broader impact on applications in these domains.
+systems, security applications, etc.
+
+% and having a library of high-performance data structures will have a broader impact on applications in these domains.
 
 
 \paragraph{CPU speed and storage capacity doesn't keep up with data growth.}
+\prashant{Need to verify/cite these numbers.}
+Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:xxxx}.
+
+\setlength\intextsep{0pt}
+\begin{wrapfigure}[20]{R}{2.4in}
+\vspace{-5pt}
+\centering
+\includegraphics[width=2.4in]{images/canonical_slots}
+\caption{Quotient filter block diagram.}
+\label{fig1}
+\end{wrapfigure}
+
+
+\mab{Thus, even standing still is going backward.}
+
+Thus, we need scale-up (via better algorithms and accelerators) and scale-out to solve 
+
+
 The rate of growth data is much higher than the growth of the CPU speeds and single-node storage capacities.
 CPU growth will not keep up with application demands.
 
