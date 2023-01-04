@@ -41,34 +41,35 @@ As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines i
 
 Existing tools use both lossy and lossless data structures (e.g., filters vs.\ compact hash tables) to construct and store \kmer indexes~\cite{xxxx}.
 For example, in raw sequencing data, singleton \kmers are erroneous and form a major fraction of the data~\cite{xxxx}. \kmer analysis tools such as  XXX use a compact filter to identify singleton \kmers and use a hash table to keep maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxxx}.
-% \mab{Is there something interesting to say about parallelizing/distributing?}
 
 \item {\bf Taxonomic classification.} Taxonomic classification~\cite{something} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics
 projects.
 
 Methods~\cite{cite-something} for taxonomic classification of metagenomic data often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
 Furthermore, to save space many solutions~\cite{cite-something} also employ lossy sketches (e.g., locality sensitive hashing (LSH)~\cite{cite-something}) to represent metagenomic data and perform similarity computations over sketches.
-They further employ compact string indexes such as FM-index~\cite{fm-index} and compressed suffix array (CSA)~\cite{csa} to perform sequence comparison to determine exact matches among the pruned-down samples.
-
-%\mab{sketches: Jaccard index computation: }
-
-
+They further employ compact string indexes such as FM-index~\cite{fmindex} and compressed suffix array (CSA)~\cite{csa} to perform sequence comparison to determine exact matches among the pruned-down samples.
 
 \item {\bf Pangenomics.}
 Pangenomics involves storing the genome of a species as a sequence graph consisting of genomes of multiple individuals instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
 
-Existing tools for  constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{xxx}), space-efficient, dynamic hash tables, and string data structures such as xxxxx~\cite{xxx}.
+Existing tools for constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{xxx}), space-efficient, dynamic hash tables, and string data structures such as xxxxx~\cite{xxx}.
 
 \end{itemize}
 
+The computational-biology applications described above (and numerous others) all use a set of common data structures to perform data-analysis tasks.
+Some of these data structures are compact but lossless and some are lossy.
+Among compact lossless data structures,  compact hash tables~\cite{xxx} are used in all three applications. 
+String indexes~\cite{xxxx} are used in taxonomic and pangenomics.
+Among compact and lossy data structures, filters are used in \kmer analysis~\cite{xxx} and large-scale sequence search~\cite{xxx}.
+\mab{This feels repetitive. Not sure how to fix.}
 
-The computational biology applications described above (and numerous others) all use a set of common data structures to perform data-analysis tasks.
 
-\mab{Some of these data structures are compact and lossless. SUch as.... }
+% Some of these data structures are compact but lossless. For example, compact hash tables are used in \kmer analysis, taxonomic classification, and pangenomics and succinct string indexes are used in taxonomic classification and pangenomics.
 
-\mab{Some of these data structures are sketches or lossy representations of sets, such as ... }
+% Some of these data structures are sketches or lossy representations of sets.
+% For example, filters and sketches are used in taxonomic classification and large-scale raw sequence search.
 
-For example, \kmer analysis tools use dynamic filters and hash tables, taxonomic classification tools use dynamic hash tables and string data structures, and pangenomics tools use succinct data structures and dynamic hash tables.
+% For example, \kmer analysis tools use dynamic filters and hash tables, taxonomic classification tools use dynamic hash tables and string data structures, and pangenomics tools use succinct data structures and dynamic hash tables.
 
 % and maybe that's the right thing to do I can't tell\mab{}
 
@@ -571,6 +572,48 @@ usage and increased run time. See~\cref{fig:mhm-kmer}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Research Methodology}
 
+
+\subsection{Filters}
+Applications require this:
+\begin{itemize}
+    \item Filters needs to associate small values with each item
+    \item filter need to scale to large datasize and being able to saturate the GPU parallelism
+    \item Support deletion of items to save space
+    \item Being able to dynamically resize the filter
+\end{itemize}
+
+\subsection{Hash tables}
+\begin{itemize}
+    \item More locality and in turn performance
+    \item variable-length keys and values support
+    \item Being able to dynamically resize the filter
+\end{itemize}
+
+\subsection{Succinct/string string data structures}
+SDSL library is heavily used across comp biology. 
+
+\begin{itemize}
+    \item We need to build succinct data structures that are GPU-architecture aware.
+    \item Making succinct data structures dynamic is hard. There is a trade off between space-efficiency and dynamism.
+    \item We need to prove some lower-bounds to support dynamic operations while being succinct.
+    \item We need to understand the empirical overheads to achieve dynamic operations. 
+\end{itemize}
+
+\subsection{Trees}
+\begin{itemize}
+    \item Tree are relatively easier to distribute
+    \item Tree have a fair amount if locality
+    \item 
+\end{itemize}
+
+\subsection{Distributed data structures}
+
+\begin{itemize}
+    \item more locality
+    \item communication efficiency --- trade off between latency and bandwidth
+    \item communication pattern -- all-to-all 
+    \item global coherence 
+\end{itemize}
 
 \subsection{Spanning the entire hardware/software/network stack.}
 
