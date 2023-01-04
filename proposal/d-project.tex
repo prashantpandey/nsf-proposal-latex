@@ -534,29 +534,45 @@ and it improves performance by increasing the utilization of the GPUs.
 MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table
 and then a separate phase is required to purge all the singleton $k$-mers.
 
-\subsection{$k$-mer distribution}
+\subsection{\Kmer distribution}
 
-\Cref{tab:kmer-dist} shows the distribution of singleton $k$-mers in three
-different metagenomic datasets. Singleton $k$-mers form a majority fraction of
-the total number of distinct $k$-mers. The distribution often depends on the
+\begin{wraptable}[15]{r}[0.01in]{4.5in}
+\centering
+%\resizebox{\columnwidth}{!}{%
+    \begin{tabular}{c | c | c | c | c | c}
+    \toprule
+    {\bf Dataset} & \multicolumn{5}{c}{\bf Percentage singleton $k$-mers} \\
+    \midrule
+    & $K=21$ & $k=33$ & $k=55$ & $k=77$ & $k=99$ \\
+    \midrule
+    WA &  66 & 73 & 76 & 78 & 78  \\ 
+    Rhizo &  67 & 75 & 80 & 83 & 85  \\
+    Tymeflies & 63 & 62 & 67 & 69 & 71 \\ 
+    \bottomrule
+    \end{tabular}
+ %   }
+    \caption{Distribution of singleton $k$-mers in metagenomic datasets with different values of $k$.}
+    \label{tab:kmer-dist}
+\end{wraptable}
+
+\Cref{tab:kmer-dist} shows the distribution of singleton \kmers in three
+different metagenomic datasets. Singleton \kmers form a majority fraction of
+the total number of distinct \kmers. The distribution often depends on the
 sequencing depth and the size of $k$. The larger value $k$ results in larger
-fraction of singleton $k$-mers. This is due to the higher probability of seeing
-an erroneous base in the $k$-mer given the higher value of $k$. The erroneous
-bases result in singleton $k$-mers.
+fraction of singleton \kmers. This is due to the higher probability of seeing
+an erroneous base in the \kmer given the higher value of $k$. The erroneous
+bases result in singleton \kmers.
 
-Weeding out singleton $k$-mers before inserting them in the hash table to count
-is critical in any $k$-mer analysis phase to reduce the memory usage of the
+Weeding out singleton \kmers before inserting them in the hash table to count
+is critical in any \kmer analysis phase to reduce the memory usage of the
 counting phase. These singleton $k$-mers can also be pruned from the hash table
 after the counting phase. However, that results in the high peak memory usage
 and much slower running time.
 
-Using a space-efficient filter to weed out singleton $k$-mers helps to reduce
+Using a space-efficient filter to weed out singleton \kmers helps to reduce
 the memory pressure on the counting hash table thereby reducing the peak memory
 usage and increased run time. See~\cref{fig:mhm-kmer}.
 
-\subsection{Databases}
-
-\subsection{Machine learning}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 3: Research Plan   %
