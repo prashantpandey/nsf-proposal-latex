@@ -1,4 +1,4 @@
-%!TEX root =  main.tex 
+%!TEX root =  main.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % These are the general sections to include.  %
@@ -28,23 +28,23 @@ due to high-throughput sequencing technology (HTS)~\cite{cite-sequencing-technol
 petabyte-scale datasets~\cite{cite-petabyte-scale}. Numerous applications in computational biology (\kmer
 analysis~\cite{cite-kmer-analysis}, raw sequence search~\cite{cite-raw-sequence}, taxonomic classification~\cite{cite-taxonomic-classification}, and pangenomics~\cite{cite-pangenomics})
 require processing raw sequencing data at petabyte scales~\cite{cite-something-or-refer-to-figure-later-in-paper}. This project aims to
-build high-performance and scalable data analysis-pipelines for computational-biology applications. 
+build high-performance and scalable data analysis-pipelines for computational-biology applications.
 
-As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines is high-performance, compact, dynamic, and scalable data structures. For example: 
+As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines is high-performance, compact, dynamic, and scalable data structures. For example:
 
 \begin{itemize}[leftmargin=*]
 %[noitemsep, leftmargin=*]
-    
-\item {\bf \Kmer analysis.}  
+
+\item {\bf \Kmer analysis.}
 \Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc.
 \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
 
-Existing tools use both lossy and lossless data structures (e.g., filters vs.\ compact hash tables) to construct and store \kmer indexes~\cite{xxxx}. 
+Existing tools use both lossy and lossless data structures (e.g., filters vs.\ compact hash tables) to construct and store \kmer indexes~\cite{xxxx}.
 For example, in raw sequencing data, singleton \kmers are erroneous and form a major fraction of the data~\cite{xxxx}. \kmer analysis tools such as  XXX use a compact filter to identify singleton \kmers and use a hash table to keep maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxxx}.
 % \mab{Is there something interesting to say about parallelizing/distributing?}
 
 \item {\bf Taxonomic classification.} Taxonomic classification~\cite{something} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics
-projects. 
+projects.
 
 Methods~\cite{cite-something} for taxonomic classification of metagenomic data often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
 Furthermore, to save space many solutions~\cite{cite-something} also employ lossy sketches (e.g., locality sensitive hashing (LSH)~\cite{cite-something}) to represent metagenomic data and perform similarity computations over sketches.
@@ -54,7 +54,7 @@ They further employ compact string indexes such as FM-index~\cite{fm-index} and 
 
 
 
-\item {\bf Pangenomics.} 
+\item {\bf Pangenomics.}
 Pangenomics involves storing the genome of a species as a sequence graph consisting of genomes of multiple individuals instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
 
 Existing tools for  constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{xxx}), space-efficient, dynamic hash tables, and string data structures such as xxxxx~\cite{xxx}.
@@ -62,7 +62,7 @@ Existing tools for  constructing a pangenomic graph use a combination of succinc
 \end{itemize}
 
 
-The computational biology applications described above (and numerous others) all use a set of common data structures to perform data-analysis tasks. 
+The computational biology applications described above (and numerous others) all use a set of common data structures to perform data-analysis tasks.
 
 \mab{Some of these data structures are compact and lossless. SUch as.... }
 
@@ -193,32 +193,24 @@ These research modules are structured from bottom-up across the computing stack.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{GPU stuff}
 
--- intro to GPU
+PPoSS targets large-scale systems and we believe that GPUs will form the backbone of future large-scale, compute-intensive systems. Why?
+
+With power constraints continuing to be the main bottleneck in increased computing performance, the superior power-performance of GPUs~\cite{Dally:2010:GCT} will make them increasingly attractive at all scales, from mobile devices to laptop and desktop computation to the largest supercomputers. The recent and extremely rapid rise of training deep neural networks for deep-learning applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data centers in nearly every large Internet company and NVIDIA GPUs in each of the three major cloud computing providers. As well, GPUs have made enormous inroads into the largest-scale computations. GPU-centered machines dominate the top of the biannual TOP500 list~\cite{top500:nov2022}, including 7 of the top 10 (\#1 and \#3 have AMD GPUs; 157 total of the 168 GPU-centered machines have NVIDIA GPUs). In systems that have high compute requirements, GPU hardware is now ubiquitous.
+
+The most successful GPU applications have historically been focused on highly parallel, regular workloads (e.g., training deep neural networks). What has been more challenging, and the focus of significant research effort over the past decade, has been \emph{irregular} and/or \emph{sparse} workloads that are harder to parallelize effectively. These workloads include the powerful data structures that are the focus of this proposal. While these workloads may exhibit ample parallelism and thus are potentially a good fit for the GPU, they are challenging to implement efficiently because they do not naturally map well to key GPU software design guidelines:
+
+\begin{description}
+  \item[Thread divergence] GPUs run most efficiently when neighboring threads take the same path through the code.
+  \item[Memory coherence] GPU memory systems are most efficient when neighboring threads access neighboring locations in memory.
+  \item[Low contention] Because GPUs have hundreds of thousands of active threads at any time, avoiding memory contention and serialization is critical to allowing GPU threads to progress and thus enabling the GPU to run at maximum efficiency.
+\end{description}
+
 
 -- past experience with GPU data structures
 
 
 
-\subsection{GPU design principles}
-There are four major design principles to consider when implementing data
-structures on GPUs:
 
-\begin{enumerate}[noitemsep, leftmargin=*]
-    \item \textbf{Low thread divergence:} threads inside a warp should execute
-      the same instruction. This enables writing simple kernels that can exploit
-      massive parallelism in the GPU\@.
-    \item \textbf{High memory coherence:} threads inside a warp should access
-      the same  memory from a local region. Random memory accesses are expensive
-      and cause threads to stall.
-    \item \textbf{High degree of parallelism:} a high number of threads saturate
-      memory bandwidth and hide memory latency.
-    \item \textbf{Atomic operations:} atomic operations help efficient thread
-      scheduling inside a warp. Non-atomic writes and data movements cause slow
-      downs and require locking large memory regions. Locking results in high
-      overheads and affects the overall throughput.
-    \end{enumerate}
-
-\john{Contention! Avoiding contention given the number of concurrent threads is huge.}
 
 \section{Data Structures}
 
@@ -545,9 +537,9 @@ and then a separate phase is required to purge all the singleton $k$-mers.
     \midrule
     & $K=21$ & $k=33$ & $k=55$ & $k=77$ & $k=99$ \\
     \midrule
-    WA &  66 & 73 & 76 & 78 & 78  \\ 
+    WA &  66 & 73 & 76 & 78 & 78  \\
     Rhizo &  67 & 75 & 80 & 83 & 85  \\
-    Tymeflies & 63 & 62 & 67 & 69 & 71 \\ 
+    Tymeflies & 63 & 62 & 67 & 69 & 71 \\
     \bottomrule
     \end{tabular}
  %   }
