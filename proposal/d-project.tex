@@ -535,7 +535,32 @@ and SplinterDB~\cite{conway2020splinterdb}.
 
 \section{Theory Notes}
 
-\mab{this is still just for private consumption. I'm writing down notes for the issues and I'm also going to be writing some research problems.}
+\mab{this is still just for private consumption. I'm writing down notes for the issues and I'm also going to be writing some research problems.
+My next step is to define a research problem macro and write down some specific research problems.}
+
+%\begin{rproblem}
+%Testing
+%\end{rproblem}
+
+About algorithmic models for the GPU:
+The situation is not great. They are currently strange beasts that seem to defy efforts to model them elegantly. 
+That said, often there are particular bottlenecks for a given problem, and for a single bottleneck one can model reasonably. 
+Thus,  part of our task, for each problem that we develop, is to determined what is the central computational bottleneck, and use and algorithmic model that captures that bottleneck.
+
+- PRAM. Alas, these algorithms are often quite good, despite being far from the GPU architecture. Syncs and global memory are the bottlenecks, but if the PRAM somehow behaves locally it can often work well enough.
+
+-Parallel external memory model (PEMM), or some variant: seems elegant-ish, and the idea of having increasing number of processors sharing increasing caches which have increasing cache lines is undoubtedly the right big picture. But not much has been done, and I feel these won't give you immediately super-good GPU algorithms
+
+But one needs to worry about the other issues:
+
+-Bank conflicts. There are some papers on these. These are sort of an anti-locality and seem orthogonal to how we normally make algorithms
+
+-Memory vs parallelism. Each SM has a fairly small amount of shared memory. Normally GPUs are very good at, when a memory access need some cycles to return, brining in another warp of threads. Then one often has a bunch of warps running round-robin waiting in turn for their memory accesses to return. But, the more warps you assign to a thread, the less memory each gets. Finding the sweet spot here is very important in practice.
+
+-Communication between threads in a warp. The 32 threads in a warp can communicate directly, and quickly, without going through shared memory. This leads to interesting algorithmic problems. For example, imagine an operation where thread $i$ gives row $i$ of a 32x32 matrix and receives column $i$ (one bit from each thread), what are the upper and lower bounds to sort? These questions are algorithmically beautiful but will likely lead to AKS-type results which will have no impact on practice. But, ignoring these operations ignores possible speedups.
+
+-Synchronization. When we learn PRAM, there is a global sync after each step. If you code like this in a GPU you are in for a disaster. Global syncs are very expensive. Is there some elegant way to model this other than the obvious 1 sync = 1000 operations or something similar?
+
 
 
 \section{Applications}
