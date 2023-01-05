@@ -68,6 +68,7 @@ Sketches and lossy data structures include: filters, cardinality estimators,  mi
 
 % For example, \kmer analysis tools use dynamic filters and hash tables, taxonomic classification tools use dynamic hash tables and string data structures, and pangenomics tools use succinct data structures and dynamic hash tables.
 
+
 The performance and scalability of the computational biology applications
 depends on the space-efficiency, speed, dynamism, and scalability of the
 underlying data structures they use. These data structures are also the building
@@ -76,33 +77,96 @@ systems, security applications, etc.
 
 % and having a library of high-performance data structures will have a broader impact on applications in these domains.
 
-
-\paragraph{CPU speed and storage capacity doesn't keep up with data growth.}
+%\paragraph{CPU speed and storage capacity doesn't keep up with data growth.}
+\paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
+Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in these and other applications. 
 \prashant{Need to verify/cite these numbers.}
-Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:xxxx}.
+Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:sra_data}.
+Thus, today's techniques won't work with tomorrow's data. 
+Need a sentence that connects to data structures.
 
-\setlength\intextsep{0pt}
-\begin{wrapfigure}[20]{R}{2.4in}
-\vspace{-5pt}
-\centering
-\includegraphics[width=2.4in]{images/canonical_slots}
-\caption{Quotient filter block diagram.}
-\label{fig1}
-\end{wrapfigure}
+% Other scaling issues: speed, data growth, what else? critical in these and other applications. 
+
+\paragraph{GPUs and other accelerators in HPC.} 
+GPUs are increasingly used in high-performance computing (HPC) because they offer a discontinuous amount of compute power and low cost compared to CPUs. 
+GPUs are fast and efficient when computations are simple and straightforward and data fits in device RAM (e.g., many examples).
+\prashant{add more examples.}
+
+GPUs are used in some computational biology  applications to speed up data processing~\cite{xxx}, sequence alignment~\cite{xxx}, read-to-contig mapping~\cite{xxx}.
+Give examples.
+
+Not used in most comp bio pipelines because of GPU limitations:
+%However, GPUs have a few limitations:
+\begin{enumerate}[noitemsep,nolistsep]
+  \item GPU device RAM is much smaller than CPU RAM; this is especially
+    challenging given the data sizes in computational biology.
+  \item GPUs have high contention due to thousands of threads and are
+    inefficient when computations are irregular.
+\end{enumerate}
+
+These limitations affect how data structure design: 
+
+Not used in other applications, such as ....
+
+%Anything that involves sophisticated data structures and when memory is constrained GPUs are not currently useful.  
+
+GPUs are not currently used for many
+computational biology applications because efficient GPU data structures do not
+exist.
+Recent data structure advances~\cite{cite-something} show that
+implementations that go beyond primitive data structures are possible on GPUs
+but this work has not had much practical impact to date. A pure GPU solution is
+desirable because transfer costs are high, and this is the direction being taken
+in other application domains (machine learning, data science).
 
 
-\mab{Thus, even standing still is going backward.}
+-- GPUs increase used in HPC, esp for easy/regular computations. Offer discontinuous growth in computational power.
 
-Thus, we need scale-up (via better algorithms and accelerators) and scale-out to solve 
+-- increasingly used for data structures. E.g., in comp bio.
+
+-- of course, most comp bio still uses CPUs.
 
 
-The rate of growth data is much higher than the growth of the CPU speeds and single-node storage capacities.
-CPU growth will not keep up with application demands.
 
-Most existing applications in computational biology use CPUs to perform data
-analysis. However, the growth of the CPU speed and capacity is slowing and at
-the same time data is growing faster than ever. CPU growth will not keep up with
-application demands.
+\paragraph{This project.} 
+In this project, we develop a  collection of
+memory-efficient, high-performance, dynamic, and scalable GPU data structures.
+We will show how to use these data structures for our target applications in comp bio, as well as some others. 
+Because many of these applications require the same set of data structures, we will incorporate these data structures into a standalone library to enable easy reuse in other applications.
+
+
+Solving the data growth issue via: 
+
+-- scaling up  (via algorithms and GPUs)
+
+-- scaling out (via distributed data structures and high-performance computing)
+
+Four target areas
+
+-- Theory and algorithms
+
+-- Systems
+
+-- High-performance computing
+
+-- Applications
+
+
+
+
+
+
+
+
+
+\paragraph{GPUs and other accelerators.}
+
+In this project we envision solving these problems with a combination of  scale-up (via better algorithms and accelerators) and scale-out (distributing data and compute across multiple nodes of large high-performance computing systems).
+
+% The rate of growth data is much higher than the growth of the CPU speeds and single-node storage capacities. CPU growth will not keep up with application demands.
+
+Most existing applications in computational biology use CPUs to perform data  analysis. 
+However, the growth of the CPU speed and capacity is slowing and at the same time data is growing faster than ever. CPU growth will not keep up with application demands.
 
 As a consequence, a few recent tools~\cite{cite-something} have tried to scale
 up using accelerators like GPUs to speed up computations. However, these tools
@@ -113,28 +177,6 @@ speed and capacity and leave performance on the table due to suboptimal
 scalability of data structures.
 
 
-\paragraph{Scale up via accelerators/scale out by distribured memory.}
-
-GPUs offer a discontinuous amount of compute power and low cost compared to
-CPUs. GPUs are fast and efficient when computations are simple and
-straightforward and data fits in device RAM, e.g., dense matrix-matrix
-multiplications.
-However, GPUs have a few limitations:
-\begin{enumerate}[noitemsep, leftmargin=*]
-  \item GPU device RAM is much smaller than CPU RAM; this is especially
-    challenging given the data sizes in computational biology.
-  \item GPUs have high contention due to thousands of threads and are
-    inefficient when computations are irregular.
-\end{enumerate}
-
-Anything that involves sophisticated data structures and when memory is
-constrained GPUs are not currently useful.  GPUs are not currently used for the
-computational biology applications because efficient GPU data structures do not
-exist. Recent data structure advances~\cite{cite-something} show that
-implementations that go beyond primitive data structures are possible on GPUs
-but this work has not had much practical impact to date. A pure GPU solution is
-desirable because transfer costs are high, and this is the direction being taken
-in other application domains (machine learning, data science).
 
 \prashant{Assigned to Martin/Michael: Need to add theory/algorithmic challenges
 to develop GPU data structures. Why is it hard to just port existing CPU data
