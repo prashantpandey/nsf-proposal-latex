@@ -649,19 +649,22 @@ My next step is to define a research problem macro and write down some specific 
 
 We begin with the stretch goal, which is coming up with an algorithmic model of the GPU.
 
-\begin{rproblem}[\bf asymptotic performance models for GPU computations]
-We envision of world in which there will be a single performance model for GPU computation.  With today's GPUs, a more realistic goal is a small set of algorithmic models to capture the different bottlenecks that GPUs face.
+\begin{rproblem}[\bf asymptotic GPU models]
+We envision a single performance model for GPU computation.  With today's GPUs, however, a more realistic goal is a small set of algorithmic models to capture the different bottlenecks that GPUs face.
 \end{rproblem}
 
-Although there has been excitement about such an algorithmic vision among parallel computing researchers~\cite{cite-stuff}, it is unlikely that there is a single performance model that works for all computations.
+Although there has been excitement about striving for a single algorithmic GPU model among parallel computing researchers~\cite{cite-stuff}, it is unlikely that there is a single performance model that works for all computations.
 
 GPUs seem to defy efforts to model them elegantly. 
 That said, often there are particular bottlenecks for a given problem, and for a single bottleneck one can model reasonably. 
-Thus,  part of our task, for each problem that we develop, is to determined what is the central computational bottleneck, and use and algorithmic model that captures that bottleneck.
+Thus, part of our task, for each problem that we develop, is to determined what is the central computational bottleneck, and use and algorithmic model that captures that bottleneck.  Below we describe some of the models in which we will prove theorems
 
-- PRAM. Alas, these algorithms are often quite good, despite being far from the GPU architecture. Syncs and global memory are the bottlenecks, but if the PRAM somehow behaves locally it can often work well enough.
 
--Parallel external memory model (PEMM), or some variant: seems elegant-ish, and the idea of having increasing number of processors sharing increasing caches which have increasing cache lines is undoubtedly the right big picture. But not much has been done, and I feel these won't give you immediately super-good GPU algorithms
+Surprisingly, a model as old as PRAM~\cite{cite-PRAM} is often predictive, despite being far from the GPU architecture. Syncs and global memory are the bottlenecks, but if the PRAM somehow behaves locally it can often work well enough.
+
+Parallel external memory model (PEMM)~\cite{cite-PEMM}, or some variant, is elegant, and the idea of having increasing number of processors sharing increasing caches which have increasing cache lines is undoubtedly the right big picture.  But the model is still new and hasn't yet seen significant use, and it is unlikely that there is a direct transformation from a good PEMM model to a good
+
+But not much has been done, and I feel these won't give you immediately super-good GPU algorithms
 
 But one needs to worry about the other issues:
 
