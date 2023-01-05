@@ -56,10 +56,10 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks. 
+The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks.
 % Some of these data structures are compact but lossless and some are lossy.
 Compact lossless data structures include: hash tables and succinct data structures, compact string indexes, trees.
-Sketches and lossy data structures include: filters, cardinality estimators,  min-hash based sketches, other locality-sensitive hash data structures. 
+Sketches and lossy data structures include: filters, cardinality estimators,  min-hash based sketches, other locality-sensitive hash data structures.
 
 % Some of these data structures are compact but lossless. For example, compact hash tables are used in \kmer analysis, taxonomic classification, and pangenomics and succinct string indexes are used in taxonomic classification and pangenomics.
 
@@ -79,10 +79,10 @@ systems, security applications, etc.
 
 %\paragraph{CPU speed and storage capacity doesn't keep up with data growth.}
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
-Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in these and other applications. 
+Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in these and other applications.
 \prashant{Need to verify/cite these numbers.}
 Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:sra_data}.
-Thus, today's techniques won't work with tomorrow's data. 
+Thus, today's techniques won't work with tomorrow's data.
 Need a sentence that connects to data structures.
 
 \setlength\intextsep{0pt}
@@ -93,10 +93,10 @@ Need a sentence that connects to data structures.
 \label{fig1}
 \end{wrapfigure}
 
-% Other scaling issues: speed, data growth, what else? critical in these and other applications. 
+% Other scaling issues: speed, data growth, what else? critical in these and other applications.
 
-\paragraph{GPUs and other accelerators in HPC.} 
-GPUs are increasingly used in high-performance computing (HPC) because they offer a discontinuous amount of compute power and low cost compared to CPUs. 
+\paragraph{GPUs and other accelerators in HPC.}
+GPUs are increasingly used in high-performance computing (HPC) because they offer a discontinuous amount of compute power and low cost compared to CPUs.
 GPUs are fast and efficient when computations are simple and straightforward and data fits in device RAM (e.g., many examples).
 \prashant{add more examples.}
 
@@ -112,11 +112,11 @@ Not used in most comp bio pipelines because of GPU limitations:
     inefficient when computations are irregular.
 \end{enumerate}
 
-These limitations affect how data structure design: 
+These limitations affect how data structure design:
 
 Not used in other applications, such as ....
 
-%Anything that involves sophisticated data structures and when memory is constrained GPUs are not currently useful.  
+%Anything that involves sophisticated data structures and when memory is constrained GPUs are not currently useful.
 
 GPUs are not currently used for many
 computational biology applications because efficient GPU data structures do not
@@ -136,14 +136,14 @@ in other application domains (machine learning, data science).
 
 
 
-\paragraph{This project.} 
+\paragraph{This project.}
 In this project, we develop a  collection of
 memory-efficient, high-performance, dynamic, and scalable GPU data structures.
-We will show how to use these data structures for our target applications in comp bio, as well as some others. 
+We will show how to use these data structures for our target applications in comp bio, as well as some others.
 Because many of these applications require the same set of data structures, we will incorporate these data structures into a standalone library to enable easy reuse in other applications.
 
 
-Solving the data growth issue via: 
+Solving the data growth issue via:
 
 -- scaling up  (via algorithms and GPUs)
 
@@ -173,7 +173,7 @@ In this project we envision solving these problems with a combination of  scale-
 
 % The rate of growth data is much higher than the growth of the CPU speeds and single-node storage capacities. CPU growth will not keep up with application demands.
 
-Most existing applications in computational biology use CPUs to perform data  analysis. 
+Most existing applications in computational biology use CPUs to perform data  analysis.
 However, the growth of the CPU speed and capacity is slowing and at the same time data is growing faster than ever. CPU growth will not keep up with application demands.
 
 As a consequence, a few recent tools~\cite{cite-something} have tried to scale
@@ -271,7 +271,10 @@ The most successful GPU applications have historically been focused on highly pa
 \end{description}
 
 
--- past experience with GPU data structures
+Over the past fourteen years, our team has significant experience in developing data structures that address these challenges. We developed the first hash tables that could be built on the GPU~\cite{Alcantara:2009:RPH,Alcantara:2011:BAE}
+
+
+% -- past experience with GPU data structures
 
 
 
@@ -663,20 +666,20 @@ Applications require this:
 \end{itemize}
 
 \subsection{Succinct/string string data structures}
-SDSL library is heavily used across comp biology. 
+SDSL library is heavily used across comp biology.
 
 \begin{itemize}
     \item We need to build succinct data structures that are GPU-architecture aware.
     \item Making succinct data structures dynamic is hard. There is a trade off between space-efficiency and dynamism.
     \item We need to prove some lower-bounds to support dynamic operations while being succinct.
-    \item We need to understand the empirical overheads to achieve dynamic operations. 
+    \item We need to understand the empirical overheads to achieve dynamic operations.
 \end{itemize}
 
 \subsection{Trees}
 \begin{itemize}
     \item Tree are relatively easier to distribute
     \item Tree have a fair amount if locality
-    \item 
+    \item
 \end{itemize}
 
 \subsection{Distributed data structures}
@@ -684,8 +687,8 @@ SDSL library is heavily used across comp biology.
 \begin{itemize}
     \item more locality
     \item communication efficiency --- trade off between latency and bandwidth
-    \item communication pattern -- all-to-all 
-    \item global coherence 
+    \item communication pattern -- all-to-all
+    \item global coherence
 \end{itemize}
 
 \subsection{Spanning the entire hardware/software/network stack.}
