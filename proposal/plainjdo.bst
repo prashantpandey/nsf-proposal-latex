@@ -30,6 +30,7 @@ ENTRY
     series
     title
     type
+    url
     volume
     year
   }
@@ -249,6 +250,13 @@ FUNCTION {format.doi}
 { doi empty$
     { "" }
     { new.block "\doi{" doi * "}" * }
+  if$
+}
+
+FUNCTION {format.url}
+{ url empty$
+    { "" }
+    { new.block "\url{" url * "}" * }
   if$
 }
 
@@ -778,6 +786,7 @@ FUNCTION {misc}
   howpublished output
   format.date output
   new.block
+  format.url output
   format.doi output
   note output
   fin.entry
