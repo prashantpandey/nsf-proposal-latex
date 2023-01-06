@@ -19,18 +19,18 @@
 
 % \subsection{Problem}
 
-\mab{proposal format has too much white space between paragraphs...}
+% \mab{proposal format has too much white space between paragraphs...}
 
 % MAB: the problem
 
-Raw sequencing data in computational biology is increasing much faster than ever
-due to high-throughput sequencing technology (HTS)~\cite{cite-sequencing-technology}, already producing
-petabyte-scale datasets~\cite{cite-petabyte-scale}. Numerous applications in computational biology (\kmer
+Raw sequencing data in computational biology is increasing faster than ever
+due to high-throughput sequencing technology (HTS)~\cite{cite-sequencing-technology}, which is already producing
+petabyte-scale datasets~\cite{cite-petabyte-scale}. Many applications in computational biology (\kmer
 analysis~\cite{cite-kmer-analysis}, raw sequence search~\cite{cite-raw-sequence}, taxonomic classification~\cite{cite-taxonomic-classification}, and pangenomics~\cite{cite-pangenomics})
 require processing raw sequencing data at petabyte scales~\cite{cite-something-or-refer-to-figure-later-in-paper}. This project aims to
-build high-performance and scalable data analysis-pipelines for computational-biology applications.
+build high-performance and scalable data analysis-pipelines for computational-biology applications. \mfc{something about novel algorithms and target hardware}
 
-As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines is high-performance, compact, dynamic, and scalable data structures. For example:
+\mfc{How does this fit into the story here?} As we explain (see \S{xxx} and \S{xxx}), the key technology \mfc{why is this a technology?}  in these pipelines is high-performance, compact, dynamic, and scalable data structures. \mfc{we're describing the problems we are attacking here, not the solutions} For example:
 
 \begin{itemize}[leftmargin=*]
 %[noitemsep, leftmargin=*]
@@ -39,14 +39,14 @@ As we explain (see \S{xxx} and \S{xxx}), the key technology in these pipelines i
 \Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc.
 \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
 
-Existing tools use both lossy and lossless data structures (e.g., filters vs.\ compact hash tables) to construct and store \kmer indexes~\cite{xxxx}.
-For example, in raw sequencing data, singleton \kmers are erroneous and form a major fraction of the data~\cite{xxxx}. \kmer analysis tools such as  XXX use a compact filter to identify singleton \kmers and use a hash table to keep maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxxx}.
+Existing tools use both \mfc{in this context, I don't think of filters as lossy.  maybe approximate vs exact?} lossy and lossless data structures (e.g., filters vs.\ compact \mfc{so solutions require compactness?  or only good solutions?  Do the filters not need to be compact?}  hash tables) to construct and store \kmer indexes~\cite{xxxx}.
+For example, in raw sequencing data, singleton \kmers are erroneous \mfc{I don't know what erroneous means.  does it mean "sampled from a read region with coverage 1"?  why is that erroneous?  I suppose that they could also be erroneous, but just the word erroneous is confusing} and make up a large fraction of the data~\cite{xxxx}. \kmer analysis tools such as  XXX use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxxx}.
 
 \item {\bf Taxonomic classification.} Taxonomic classification~\cite{something} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics
 projects.
 
-Methods~\cite{cite-something} for taxonomic classification of metagenomic data often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
-Furthermore, to save space many solutions~\cite{cite-something} also employ lossy sketches (e.g., locality sensitive hashing (LSH)~\cite{cite-something}) to represent metagenomic data and perform similarity computations over sketches.
+Methods for taxonomic classification of metagenomic data~\cite{cite-something} often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space. \mfc{so this is not a distinct application from k-mer analysis.}
+Furthermore, to save space many solutions~\cite{cite-something} also employ lossy sketches (e.g., locality sensitive hashing (LSH)~\cite{cite-something}) to represent metagenomic data and perform similarity computations over sketches. \mfc{lossy to me means false negatives.  Isn't this false positive, so approximate?}
 They further employ compact string indexes such as FM-index~\cite{fmindex} and compressed suffix array (CSA)~\cite{csa} to perform sequence comparison to determine exact matches among the pruned-down samples.
 
 \item {\bf Pangenomics.}
@@ -54,7 +54,19 @@ Pangenomics involves storing the genome of a species as a sequence graph consist
 
 Existing tools for constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{xxx}), space-efficient, dynamic hash tables, and string data structures such as xxxxx~\cite{xxx}.
 
+\mfc{raw sequence analysis is one of the applications in the figure}
+
 \end{itemize}
+
+\setlength\intextsep{0pt}
+\begin{wrapfigure}[15]{R}{4.4in}
+\vspace{-5pt}
+\centering
+\includegraphics[width=4.4in]{images/PPoSS_App_DS.png}
+\caption{Applications -- data structures -- features.}
+\label{fig1}
+\end{wrapfigure}
+
 
 The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks.
 % Some of these data structures are compact but lossless and some are lossy.
@@ -72,7 +84,7 @@ Sketches and lossy data structures include: filters, cardinality estimators,  mi
 The performance and scalability of the computational biology applications
 depends on the space-efficiency, speed, dynamism, and scalability of the
 underlying data structures they use. These data structures are also the building
-blocks in many other domains, like databases, machine learning, software
+blocks in many other domains, such databases, machine learning, software
 systems, security applications, etc.
 
 % and having a library of high-performance data structures will have a broader impact on applications in these domains.
@@ -80,41 +92,42 @@ systems, security applications, etc.
 %\paragraph{CPU speed and storage capacity doesn't keep up with data growth.}
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in these and other applications.
-\prashant{Need to verify/cite these numbers.}
 Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:sra_data}.
 Thus, today's techniques won't work with tomorrow's data.
-Need a sentence that connects to data structures.
+\prashant{Need a sentence that connects to data structures.}
+\mfc{maybe we can say soemthing from The End of Moore's Law paper?}
 
 \setlength\intextsep{0pt}
-\begin{wrapfigure}[20]{R}{4.4in}
+\begin{wrapfigure}[18]{R}{3.0in}
 \centering
-\includegraphics[width=4.4in]{images/SRA_data_growth.png}
-\caption{Sequence read archive data growth over years. \mab{this is such a great figure. We should have an expanded caption show that to figure Plus caption speaks by itself. We should also make the figure smaller, because space is at a premium (and also because we want it to look like spaces at a premium).}}
-\label{fig1}
+\includegraphics[width=3.0in]{images/SRA_data_growth.png}
+\caption{Sequence read archive (SRA) data growth over years. SRA data contains a trove of biological diversity information. Existing computational biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
+\label{fig:sra_data}
 \end{wrapfigure}
 
 % Other scaling issues: speed, data growth, what else? critical in these and other applications.
 
 \paragraph{GPUs and other accelerators in HPC.}
-GPUs are increasingly used in high-performance computing (HPC) because they offer a discontinuous amount of compute power and low cost compared to CPUs.
-GPUs are fast and efficient when computations are simple and straightforward and data fits in device RAM (e.g., many examples).
+GPUs are increasingly used in high-performance computing (HPC) \mfc{where did HPC come from?  Stay on topic of comp bio} because they offer a discontinuous amount \mfc{what's a discontinuous amount? isn't any amount discrete and thus discontinous?} of compute power and low cost compared to CPUs.
+GPUs are fast and efficient when computations \mfc{not simple and straightforward.  rather "conform to the memory and parallelism requires of GPUs"} are simple and straightforward and data fits in device RAM (e.g., many examples).
 \prashant{add more examples.}
 
-GPUs are used in some computational biology  applications to speed up data processing~\cite{xxx}, sequence alignment~\cite{xxx}, read-to-contig mapping~\cite{xxx}.
+GPUs are used in some computational biology  applications to speed up data processing~\cite{xxx} \mfc{doesn't data processing cover all other applications?  everythign is data processing}, sequence alignment~\cite{xxx}, read-to-contig mapping~\cite{xxx}.
 Give examples.
 
-Not used in most comp bio pipelines because of GPU limitations:
-%However, GPUs have a few limitations:
+However, GPUs are not used in most computational biology pipelines because of GPU limitations:
 \begin{enumerate}[noitemsep,nolistsep]
   \item GPU device RAM is much smaller than CPU RAM; this is especially
     challenging given the data sizes in computational biology.
   \item GPUs have high contention due to thousands of threads and are
     inefficient when computations are irregular.
+  \item GPUs don't have a memory system; it is hard to perform dynamic memory management without involving the host CPU.
 \end{enumerate}
 
-These limitations affect how data structure design:
+These limitations affect the capabilities of GPU data structures: \mfc{the proceeding is vacuously true.  We might was well write: These limitations of GPUs are limitations of GPUs.}
+most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries are do not achieve high performance on GPUs; \mfc{what's a variable length data structure?  Isn't it data structures on variable-length data?  And isn't it really hard-to-align data, such as string or vectors, which have variable length?} variable-length data structures such as strings and vectors are not available; data structures do not scale out of GPU device RAM.
 
-Not used in other applications, such as ....
+GPUs have not seen widespread adoption in computational biology applications. For example, they are used in taxonomic classification of metagenomic data, indexing and searching through terabytes of raw sequencing data, constructing and querying pangenomic graphs.
 
 %Anything that involves sophisticated data structures and when memory is constrained GPUs are not currently useful.
 
@@ -128,11 +141,11 @@ desirable because transfer costs are high, and this is the direction being taken
 in other application domains (machine learning, data science).
 
 
--- GPUs increase used in HPC, esp for easy/regular computations. Offer discontinuous growth in computational power.
+% -- GPUs increase used in HPC, esp for easy/regular computations. Offer discontinuous growth in computational power.
 
--- increasingly used for data structures. E.g., in comp bio.
+% -- increasingly used for data structures. E.g., in comp bio.
 
--- of course, most comp bio still uses CPUs.
+% -- of course, most comp bio still uses CPUs.
 
 
 
@@ -198,6 +211,8 @@ structures to GPUs.}
   \item Succinct data structures (Dynamic rank-select indexes)
   \item Trees and Tries
 \end{enumerate}
+
+\prashant{Martin, Michael wants a postdoc in year 3-4-5. Maybe a PhD student from John/Prashant.}
 
 \subsection{Our solution}
 
@@ -384,14 +399,6 @@ usage and increased run time. See~\cref{fig:mhm-kmer}.
 
 \section{Background: data structures}
 
-\setlength\intextsep{0pt}
-\begin{wrapfigure}[15]{R}{4.4in}
-\vspace{-5pt}
-\centering
-\includegraphics[width=4.4in]{images/PPoSS_App_DS.png}
-\caption{Applications -- Data structures -- features.}
-\label{fig1}
-\end{wrapfigure}
 
 \subsection{Filters}\label{sec:prelim}
 
@@ -685,6 +692,51 @@ But one needs to worry about the other issues:
 \section{Research Methodology}
 
 
+\begin{rproblem}[\bf peppermint flavored GPUs]
+Make flavored GPUs that can be eaten. The challenge is that they are made of silicon, but that's better than a big mac.  
+\label{rprob:peppermint}
+\end{rproblem}
+
+\begin{rproblem}[\bf General-purpose maplets and filters on GPUs]
+Build compact, fast, distributed resizable, and general-purpose maplets (a filter where we can associate small values with keys) that scale to large datasets and exploit massive GPU parallelism. 
+[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\label{rprob:peppermint}
+\end{rproblem}
+
+Afterwards  we put in a couple of paragraphs talking about where we've used maplets effectively, where they still need to be used, etc.
+
+\begin{rproblem}[\bf General-purpose hash table on GPUs]
+Build compact, fast, distributed, resizable, and general-purpose hash table that scale to large datasets and exploit massive GPU parallelism. 
+[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\label{rprob:peppermint}
+\end{rproblem}
+
+\begin{itemize}
+    \item It is hard to build resizesable filters and hash tables GPUs.
+    \item Resizing is manual. You need an explicit call.  You need to do that from the host. 
+    \item You need a runtime in GPU that can detect the space issue and reallocate dynamially.
+    \item Theoretically, we can resize in more of an incremental way.
+    \item We want the resizing to be automatically managed from the application's perspective. 
+\end{itemize}
+
+
+\begin{rproblem}[\bf Dynamic succinct data structures on GPUs]
+Build dynamically updatable succinct data structures on GPUs.
+[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\label{rprob:peppermint}
+\end{rproblem}
+
+\begin{rproblem}[\bf Distributed data structures on multi-node GPUs]
+Build distributed data structure that can achieve low variance across for load balancing, low communication volume and high communication bandwidth. 
+[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\label{rprob:peppermint}
+\end{rproblem}
+
+\prashant{Performance issues with distributed data sturctures}
+
+\prashant{Load balancing, communication bandwidth, communication latency}
+
+
 \subsection{Filters}
 Applications require this:
 \begin{itemize}
@@ -714,7 +766,7 @@ SDSL library is heavily used across comp biology.
 \subsection{Trees}
 \begin{itemize}
     \item Tree are relatively easier to distribute
-    \item Tree have a fair amount if locality
+    \item Tree have a fair amount of locality
     \item
 \end{itemize}
 
@@ -806,7 +858,7 @@ unknown compute hardware.
 
 \subsection{A component of your plan}
 
-\input{figures/qf}
+% \input{figures/qf}
 
 
 \begin{wraptable}[15]{r}[0.01in]{4.5in}
