@@ -102,15 +102,16 @@ systems, security applications, etc.
 \paragraph{Existing software tools for computational biology applications.}
 
 There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, hash tables, and string indexes. Most of these tools are designed to shared-memory parallelism and they often do not scale out of shared memory to disks.
-Existing tools limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment. 
+Existing tools limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment.
+
+\prashant{I don't like the above paragraph much...}
 
 
-%\paragraph{CPU speed and storage capacity doesn't keep up with data growth.}
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
-Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in these and other applications.
+Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
 Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:sra_data}.
-Thus, today's techniques won't work with tomorrow's data.
-\prashant{Need a sentence that connects to data structures.}
+Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible single-node shared memory systems.
+As mentioned by Leiserson et al.~\cite{leiserson2020there}, 
 \mfc{maybe we can say something from The End of Moore's Law paper?}
 
 
