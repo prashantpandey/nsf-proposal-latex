@@ -79,10 +79,10 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 \end{itemize}
 
 \setlength\intextsep{0pt}
-\begin{wrapfigure}{R}{4.4in}
+\begin{wrapfigure}{R}{0.6\textwidth}
 \vspace{-5pt}
 \centering
-\includegraphics[width=4.4in]{images/PPOSS_App_DS.png}
+\includegraphics[width=\textwidth]{images/PPOSS_App_DS.png}
 \caption{Relation between computational biology applications, data processing tools and data structures. We further mention the desired features in data structures to achieve performance and scalability.}
 \label{fig1}
 \end{wrapfigure}
@@ -106,25 +106,26 @@ Existing tools limited by the single-node compute and shared-memory parallelism.
 
 \prashant{I don't like the above paragraph much...}
 
+\begin{wrapfigure}{r}{0.6\textwidth}
+\centering
+\includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
+\caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
+\label{fig:sra_data}
+\end{wrapfigure}
 
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
 Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:sra_data}.
 Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible single-node shared memory systems.
-As mentioned by Leiserson et al.~\cite{leiserson2020there}, 
-\mfc{maybe we can say something from The End of Moore's Law paper?}
+As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’s law period the performance gains will come from software, algorithms, and hardware (referred as the top of the computing stack) rather than the semiconductor (referred as the bottom). We can achieve massive scalability by: first scaling up using modern accelerators such as GPUs and second scaling out by using distributed memory in an HPC environment.
 
-
-
-% Other scaling issues: speed, data growth, what else? critical in these and other applications.
 
 \paragraph{GPUs and other accelerators in computational biology.}
 As with other high-performance computing (HPC) domains, 
-GPUs are increasingly used in large-scale computational biology because they offer orders of magnitude of jump in terms of low-cost parallelism, as long as data structure and algorithms can be defined to conform to the memory and parallelism requires of GPUs (e.g., many examples).
-\prashant{add more examples.}
-
-GPUs are used in some computational biology applications to speed up \kmer counting~\cite{xxx}, local assembly~\cite{xxx}, read-to-contig mapping~\cite{xxx}.
-Give examples.
+GPUs are increasingly used in large-scale computational biology because they offer orders of magnitude of jump in terms of low-cost parallelism, as long as data structure and algorithms can be defined to conform to the memory and parallelism requirement of GPUs.
+%
+For example, GPUs are used in some computational biology applications to speed up \kmer counting~\cite{nisa2021distributed} and local assembly~\cite{awan2021accelerating}.
+\prashant{Check if there are more examples.}
 
 However, the penetration of GPUs into biology pipelines is limited by how the limitations of GPUs have translated so far into data structures.  These GPU limitations include:
 \begin{enumerate}[noitemsep,nolistsep]
@@ -137,7 +138,14 @@ However, the penetration of GPUs into biology pipelines is limited by how the li
 
 These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as string or vectors, which have variable lengths are not available; data structures do not scale out of GPU device RAM.
 
-These limitations are critical for building scalable computational biology applications. \mfc{add details}
+These limitations are critical for building scalable computational biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures such filters and hash tables to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as the hash tables and filters~\cite{xxx} currently available on GPUs are sized using an over approximation which leads to space inefficiency.
+The local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to
+perform contig (contiguous strand of DNA) extension walks. The
+CPU implementation of local assembly relies heavily on dynamic
+structures like hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif
+of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing
+this module on GPUs a very challenging problem.
+
 
 
 % GPUs have not seen widespread adoption in computational biology applications. For example, they are used in taxonomic classification of metagenomic data, indexing and searching through terabytes of raw sequencing data, constructing and querying pangenomic graphs.
@@ -146,13 +154,6 @@ These limitations are critical for building scalable computational biology appli
 
 % GPUs are not currently used for many computational biology applications because efficient GPU data structures do not exist.
 
-\setlength\intextsep{0pt}
-\begin{wrapfigure}{r}{0.6\textwidth}
-\centering
-\includegraphics[width=0.6\textwidth]{images/SRA_data_growth.png}
-\caption{Sequence read archive (SRA) data growth over years. SRA data contains a trove of biological diversity information. Existing computational biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
-\label{fig:sra_data}
-\end{wrapfigure}
 
 \paragraph{This project.}
 In this project, we propose to develop a  collection of
