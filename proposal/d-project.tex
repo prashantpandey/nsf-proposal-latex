@@ -37,7 +37,7 @@ We aim to develop new data structures and algorithms that will have wide applica
 \begin{itemize}[leftmargin=*]
 
 \item {\bf \Kmer analysis.}
-\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
+\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational-biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
 
 Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as approximate if they only have false positives and lossy if they have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxx}.
 
@@ -47,7 +47,7 @@ As we will see, \kmer analysis is a part of several of the specific applications
 % FM-index, BWT, comressed suffix array.
 
 \item {\bf Sequence alignment.} Sequence alignment involves aligning a sequences of DNA, RNA or protein to identify similar regions that may be a consequence of underlying biological process and to establish evolutionary relationships.
-Sequence alignment is extensive used in the genomic or metagenomic assembly process to arrange the input raw reads together in the correct order to construct the full genome. In computational biology applications, sequence alignment is often performed sequence-to-sequence; between multiple sequences (\emph{multiple sequence alignment}); and between a sequence-to-graph where the the graph is a sequence graph representing genomes from multiple individuals. 
+Sequence alignment is extensive used in the genomic or metagenomic assembly process to arrange the input raw reads together in the correct order to construct the full genome. In computational-biology applications, sequence alignment is often performed sequence-to-sequence; between multiple sequences (\emph{multiple sequence alignment}); and between a sequence-to-graph where the the graph is a sequence graph representing genomes from multiple individuals. 
 
 Existing tools use compressed and succinct string indexes such FM-index~\cite{ferragina2000opportunistic}, BWT~\cite{burrows1994block}, compressed suffix arrays~\cite{grossi2000compressed} and dynamic programming algorithms for sequence alignment. 
 Compressed and succinct indexes help to perform sequence alignment in a memory-efficient manner and enable these tool to scale to large-scale sequencing data.
@@ -83,7 +83,7 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 \vspace{-5pt}
 \centering
 \includegraphics[width=\textwidth]{images/PPOSS_App_DS.png}
-\caption{Relation between computational biology applications, data processing tools and data structures. We further mention the desired features in data structures to achieve performance and scalability.}
+\caption{Relation between computational-biology applications, data processing tools and data structures. We further mention the desired features in data structures to achieve performance and scalability.}
 \label{fig1}
 \end{wrapfigure}
 
@@ -92,14 +92,14 @@ The computational-biology applications described above (and numerous others)  us
 Compact and exact data structures include: hash tables and succinct data structures, compact string indexes, trees.
 Sketches and approximate data structures include: filters, cardinality estimators,  min-hash based sketches, other locality-sensitive hash data structures.
 
-The performance and scalability of the computational biology applications
+The performance and scalability of the computational-biology applications
 depends on the space-efficiency, speed, dynamism, and scalability of the
 underlying data structures they use. These data structures are also the building
 blocks in many other domains, such databases, machine learning, software
 systems, security applications, etc.
 
 
-\paragraph{Existing software tools for computational biology applications.}
+\paragraph{Existing software tools for computational-biology applications.}
 
 There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, hash tables, and string indexes. Most of these tools are designed to shared-memory parallelism and they often do not scale out of shared memory to disks.
 Existing tools limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment.
@@ -109,7 +109,8 @@ Existing tools limited by the single-node compute and shared-memory parallelism.
 \begin{wrapfigure}{r}{0.6\textwidth}
 \centering
 \includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
-\caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
+\caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
+
 \label{fig:sra_data}
 \end{wrapfigure}
 
@@ -124,7 +125,7 @@ As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’
 As with other high-performance computing (HPC) domains, 
 GPUs are increasingly used in large-scale computational biology because they offer orders of magnitude of jump in terms of low-cost parallelism, as long as data structure and algorithms can be defined to conform to the memory and parallelism requirement of GPUs.
 %
-For example, GPUs are used in some computational biology applications to speed up \kmer counting~\cite{nisa2021distributed} and local assembly~\cite{awan2021accelerating}.
+For example, GPUs are used in some computational-biology applications to speed up \kmer counting~\cite{nisa2021distributed} and local assembly~\cite{awan2021accelerating}.
 \prashant{Check if there are more examples.}
 
 However, the penetration of GPUs into biology pipelines is limited by how the limitations of GPUs have translated so far into data structures.  These GPU limitations include:
@@ -138,7 +139,7 @@ However, the penetration of GPUs into biology pipelines is limited by how the li
 
 These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as string or vectors, which have variable lengths are not available; data structures do not scale out of GPU device RAM.
 
-These limitations are critical for building scalable computational biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures such filters and hash tables to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as the hash tables and filters~\cite{xxx} currently available on GPUs are sized using an over approximation which leads to space inefficiency.
+These limitations are critical for building scalable computational-biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures such filters and hash tables to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as the hash tables and filters~\cite{xxx} currently available on GPUs are sized using an over approximation which leads to space inefficiency.
 The local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to
 perform contig (contiguous strand of DNA) extension walks. The
 CPU implementation of local assembly relies heavily on dynamic
@@ -154,8 +155,71 @@ this module on GPUs a very challenging problem.
 
 % GPUs are not currently used for many computational biology applications because efficient GPU data structures do not exist.
 
+\paragraph{Requirements for building scalable computational-biology applications}
 
-\paragraph{This project.}
+Data structures are the core of computational-biology applications and are critical for their performance and scalability.
+To build scalable computational-biology applications that can keep up with the rapid growth data we need compact, high-performance, dynamic, and distributed data structures. Specifically, we need: approximate data structures such as filters, sketches, and locality-sensitive hashing data structures; exact data structures such as hash tables, string data structures, succinct data structures, and trees.
+
+We need these data structures and algorithms to exploit accelerators such as GPUs with the following features:
+\begin{itemize}[leftmargin=*]
+    \item Space-efficient
+    \item Dynamic
+    \item High concurrency
+    \item Scale out of GPU device RAM to host RAM
+    \item Distributed memory across nodes
+\end{itemize}
+
+Furthermore, to achieve fine-grained resizing and to keep the peak memory usage low we first need to develop new algorithmic approaches for traditional CPU data structures and then extend them to GPUs.
+
+\subsection{Our solution}
+
+We believe the answer to these challenges is a standalone library of
+memory-efficient, high-performance, dynamic, and scalable GPU data structures
+that can be directly used by computational biology applications that addresses
+the needs of emerging applications, allowing them to solve the problems
+described above.
+
+The project’s novelties are: a vertical-stack approach spanning theory and
+algorithms: highly-concurrent, dynamic, and distributed data structures,
+systems: scale up using GPU acceleration, high-performance computing: scale out
+using distributed data structures, and applications: computational biology
+applications; new parallel and distributed data structures and algorithms to
+exploit the massive compute on GPUs applicable to other application domains; an
+API for developers to quickly and seamlessly integrate high-performance and
+scalable data structures in applications.
+
+Our team includes a highly interdisciplinary team of researchers across four
+focus areas: applications (computational biology), theory and algorithms,
+systems, and high-performance computing. The team is taking a holistic
+theory/systems/hpc/applications co-design approach to explore four tightly
+interconnected research modules.
+These research modules are structured from bottom-up across the computing stack.
+
+\begin{itemize}[noitemsep, leftmargin=*]
+  \item {\bf Module 1 [theory/algorithms]:} Develop single-node GPU data structures.
+    Specifically, filters, hash tables, succinct/string data structures, and
+    trees. Challenges: high concurrency; being able to scale 100K threads;
+    branching statements have a high cost; data movement and irregular data
+    accesses are expensive. We will develop new theoretical data structures and
+    algorithms that can efficiently exploit massive GPU parallelism while being
+    compact and dynamic.
+
+  \item {\bf Module 2 [Systems]:} Develop GPU data structures that can scale out of
+      GPU device RAM to CPU host RAM. We will develop a memory allocator to
+      seamlessly manage the GPU and CPU ram and efficiently move data across GPU
+      and CPU RAMs.
+
+    \item {\bf Module 3 [HPC]:} Develop data structures that can scale out to
+      multiple-GPU nodes in a distributed computing environment. We will develop
+      communication-efficient distributed versions of the above data structure
+      to efficiently scale out hundreds of nodes in a HPC environment.
+
+    \item {\bf Module 4 [Applications]:} Building high-performance and scalable
+      computational biology applications by integrating GPU data structures in
+      k-mer analysis, taxonomic classification, pangenomics tools.
+
+\end{itemize}
+
 In this project, we propose to develop a  collection of
 memory-efficient, high-performance, dynamic, and distributed GPU data structures.
 We will show how to use these data structures for our target applications in computational biology, as well as some others. 
@@ -227,54 +291,7 @@ structures to GPUs.}
 
 \prashant{Martin, Michael wants a postdoc in year 3-4-5. Maybe a PhD student from John/Prashant.}
 
-\subsection{Our solution}
 
-We believe the answer to these challenges is a standalone library of
-memory-efficient, high-performance, dynamic, and scalable GPU data structures
-that can be directly used by computational biology applications that addresses
-the needs of emerging applications, allowing them to solve the problems
-described above.
-
-The project’s novelties are: a vertical-stack approach spanning theory and
-algorithms: highly-concurrent, dynamic, and distributed data structures,
-systems: scale up using GPU acceleration, high-performance computing: scale out
-using distributed data structures, and applications: computational biology
-applications; new parallel and distributed data structures and algorithms to
-exploit the massive compute on GPUs applicable to other application domains; an
-API for developers to quickly and seamlessly integrate high-performance and
-scalable data structures in applications.
-
-Our team includes a highly interdisciplinary team of researchers across four
-focus areas: applications (computational biology), theory and algorithms,
-systems, and high-performance computing. The team is taking a holistic
-theory/systems/hpc/applications co-design approach to explore four tightly
-interconnected research modules.
-These research modules are structured from bottom-up across the computing stack.
-
-\begin{itemize}[noitemsep, leftmargin=*]
-  \item {\bf Module 1 [theory/algorithms]:} Develop single-node GPU data structures.
-    Specifically, filters, hash tables, succinct/string data structures, and
-    trees. Challenges: high concurrency; being able to scale 100K threads;
-    branching statements have a high cost; data movement and irregular data
-    accesses are expensive. We will develop new theoretical data structures and
-    algorithms that can efficiently exploit massive GPU parallelism while being
-    compact and dynamic.
-
-  \item {\bf Module 2 [Systems]:} Develop GPU data structures that can scale out of
-      GPU device RAM to CPU host RAM. We will develop a memory allocator to
-      seamlessly manage the GPU and CPU ram and efficiently move data across GPU
-      and CPU RAMs.
-
-    \item {\bf Module 3 [HPC]:} Develop data structures that can scale out to
-      multiple-GPU nodes in a distributed computing environment. We will develop
-      communication-efficient distributed versions of the above data structure
-      to efficiently scale out hundreds of nodes in a HPC environment.
-
-    \item {\bf Module 4 [Applications]:} Building high-performance and scalable
-      computational biology applications by integrating GPU data structures in
-      k-mer analysis, taxonomic classification, pangenomics tools.
-
-\end{itemize}
 
 \prashant{Section 2: State of the art, data structures (theory/systems), applications. What are the deficiencies.}\\
 \prashant{Section 3: Here's what we will do. Need a concrete plan with what we are going to. Sub-problems, milestones, schedule. How the four pillars interact.}\\
