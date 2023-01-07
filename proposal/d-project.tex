@@ -157,11 +157,12 @@ this module on GPUs a very challenging problem.
 
 \paragraph{This project.}
 In this project, we propose to develop a  collection of
-memory-efficient, high-performance, dynamic, and scalable GPU data structures. \mfc{is scalable enough of a synonym of distributed?  Is it better?}
-We will show how to use these data structures for our target applications in comp bio, as well as some others.  \mfc{shoudl be more like: If successful, these data structures will XXX for our target applications in comp bio.}
+memory-efficient, high-performance, dynamic, and distributed GPU data structures.
+We will show how to use these data structures for our target applications in computational biology, as well as some others. 
+With the help these data structures, we aim to scale computational biology applications to massive datasets (raw sequencing datasets, metagenomic datasets from complex microbiomes, population-scale pangenomic datasets) and enable them to answer complex biological questions that are not possible today. 
 Because many of these applications require the same set of data structures, we will incorporate these data structures into a standalone library to enable easy reuse in other applications.
 
-\mfc{the PIs and others have shown that} Recent data structure advances~\cite{cite-something} show that
+The PIs and others have shown that recent data structure advances~\cite{cite-somethin} show that
 implementations that go beyond primitive data structures are possible on GPUs
 but this work has not had much practical impact to date. \mfc{this is a big turd in teh middle of our first page -- well maybe the end of the first page -- is it even true? My papers with John are wracking up citatoins}    \mfc{awkward transition.  this is not about what we are proposing.  this comes before what we are proposing $\rightarrow$} A pure GPU solution is
 desirable because transfer costs are high, and this is the direction being taken
