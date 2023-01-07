@@ -1,0 +1,259 @@
+\section{Filters}
+
+Filter data structures can be broadly classified into \emph{static} and
+\emph{dynamic}.  Static filters approximately represent a set of items that must
+be known before building the filter. Examples of these filters include XOR
+filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}. Static
+filters have recently seen more advancement due their use in storage
+applications, such as LSM-trees.
+
+
+In this paper, we consider dynamic filters as they have wide-spread applications
+in data analytics.  Dynamic filters approximately represent a set of items that
+does not need to be known before the construction. Dynamic filters have seen
+much more advancement in the last few decades as applications often do not know
+the set of items in advance. Examples of dynamic filters are Bloom
+filters~\cite{Bloom70}, quotient filters~\cite{BenderFaJo12,
+PandeyBJP17b,DillingerMa09,PaghPaRa05,EinzigerFr16}, and cuckoo
+filters~\cite{FanAnKa14,BreslowJ18}.
+
+\textbf{Bloom filters} consume $\log(e)\, \opt$ space, which is roughly
+$\log(e)\approx 1.44$ times more than the lower bound of $\opt + \Omega(n)$
+bits~\cite{CarterFG78}. In contrast, for a set $S$ taken from a universe $U$,
+where $|U|=u$, an error-free dictionary requires $\Omega(\log {u\choose n})
+\approx \Omega(n \log u)$ bits. Bloom filters also incur $\errbits$ cache-line
+misses on inserts and positive queries, giving them poor insertion and query
+performance.
+
+\textbf{Blocked Bloom filters}~\cite{putze2007cache} overcome the poor cache
+locality of Bloom filters by constructing a series of smaller Bloom filters each
+of which is small enough to fit inside a small number of cache lines. The first
+hash function is used to select a block and rest of the hash functions are used
+to set/test bits inside the block. However, the cache efficiency comes at the
+cost of higher false-positive rate. Blocked Bloom filters have theoretically and
+empirically higher (up to $5\times$) false positive rates compared to Bloom
+filters. See \Cref{tab:merged_fp_space} for the empirical calculations of FP
+rate.
+
+\textbf{Quotient
+filters}~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21}
+represent a set approximately by compactly storing small fingerprints of the
+items in the set via Robin Hood hashing~\cite{CelisLaMu85}. The quotient filter
+uses $1.053 (2.125 + \log_21/\epsilon)$ bits per element, which is less than the
+Bloom filter whenever $\epsilon \leq 1/64$, which is the case in almost all
+applications. It supports insertion, deletion, lookups, resizing, and merging.
+The counting quotient filter (CQF)~\cite{PandeyBJP17}, improves upon the
+performance of the quotient filter and adds variable-sized counters to count
+items using asymptotically optimal space, even in large and skewed datasets. In
+the counting quotient filter, we can also associate small values with items
+either by re-purposing the variable-sized counters~\cite{PandeyABFJP18Cell} to
+store values or by explicitly storing small values with the remainders in the
+table~\cite{PandeySMB20}.
+
+\textbf{Cuckoo filters}~\cite{FanAnKa14,BreslowJ18} also store small
+fingerprints compactly in a table. However, unlike the quotient filter that uses
+Robin Hood hashing, the cuckoo filter uses cuckoo hashing to resolve collisions
+among fingerprints. Cuckoo hashing uses kicking (or cuckooing) to find an empty
+slot for the new item when all the slots in a bucket are occupied. This results
+in a cascading sequence of kicks until the filter converges on a new stable
+state. Inserts become slower as the structure becomes full, and in fact inserts
+may fail if the number of kicks during a single insert exceeds a specified
+threshold (500 in the author's reference implementation).
+
+\textbf{Two-Choice filters}~\cite{pandeySigmod21} organize fingerprints
+compactly in blocks similar to the cuckoo filter. However, unlike the cuckoo
+filter, there is no kicking. The blocks in the two-choice filter are larger in
+size ($\approx \log{n}$, where $n$ is the number of items which is usually the
+size of the cache line on most machines) than the cuckoo filter and
+power-of-two-choice hashing is used to reduce the variance across the blocks and
+achieve a high load factor. During insertions if both blocks corresponding to a
+fingerprint are full then the data structure is declared full. The
+power-of-two-choice hashing enables the filter to probe exactly two cache lines
+during inserts and queries and write to a single cache line during inserts.
+Given the larger block sizes the vector quotient filter~\cite{pandeySigmod21}
+uses quotienting (similar to the quotient filter) to organize fingerprints
+inside blocks. It divides the fingerprints into a quotient and remainder part
+and only stores the remainder in the slot given by the quotient. It uses two
+additional metadata bits to resolve collisions among quotients.
+
+
+\subsection{Analysis of filter designs}
+
+We now look at the dynamic filters discussed in~\Cref{sec:prelim} and evaluate
+them based on the GPU design principles.  Our goal is to identify the filters
+that offer necessary features such as deletions, counting, and value
+associations and at the same time satisfy most of the design principles.  We
+will further discuss the challenges of implementing these filter on the GPUs to
+achieve high speed operations.
+
+Bloom filters are easy to implement on the GPU as they only require test and set
+operations. These operations can be implemented using atomic operations and
+achieve low thread divergence. However, each operation results in multiple cache
+misses and therefore Bloom filters have low memory coherence. They also have
+sub-optimal space usage. Moreover, Bloom filters do not support deletions,
+counting\footnote{The counting Bloom filter~\cite{FanCaAl00}, a variant of the
+Bloom filter, supports counting but it comes at a high space-overhead which
+makes it highly inefficient in practice.}, and associating small values with
+items.
+% that many data analytics applications require.
+
+Blocked Bloom filters are better suited to GPUs.  Each operation requires
+probing inside a single block. They achieve low thread divergence, high memory
+coherence, a high degree of parallelism, and atomic operations. Thus, blocked
+Bloom filters can satisfy all the GPU design principles. However, blocked Bloom
+filters have a high false-positive rate compared to Bloom filters and also do
+not support necessary features like deletions and counting.
+
+Operations in the quotient filter have high cache locality which makes it an
+appropriate choice to achieve high memory coherence. However, insert operations
+in the quotient filter requires shifting fingerprints which makes it harder to
+use atomic operations and also results in high thread divergence. However, the
+quotient filter can support all the necessary features like deletions, counting,
+and associating small values with items which makes the quotient filter a highly
+usable data structure that multiple applications can benefit from.
+
+It is quite challenging to achieve high speed operations while maintaining all
+of the features in a GPU implementation of the quotient filter. Geil et
+al.~\cite{Geil:2018:QFA} implemented a preliminary version of the GPU quotient filter.
+However, that implementation was adapted from Bender et al.'s quotient
+filter~\cite{BenderFaJo12a}, which did not have all the features, like counting
+and value association, and also had higher space overhead. Furthermore, Geil et
+al.'s GPU-based quotient filter has implementation-specific limitations (e.g., it
+supports a fixed false-positive rate and can only be sized to store less than
+$2^{26}$ items) resulting in poor performance and limited scalability.
+
+The cuckoo filter stores fingerprints in fixed size blocks. This design is
+amenable to high memory coherence and low thread divergence. Atomic operations
+can also be used to read and write fingerprints. However, the cascading sequence
+of reads and writes to random memory locations makes the cuckoo filter hard to
+implement efficiently on the GPU\@. In particular, at high load factors when the
+number of kicked items becomes high, each insertion will result in very low
+memory coherence. Moreover, each kicking operation results in multiple
+cache-line writes. This makes it challenging to achieve high speed operations in
+a GPU cuckoo filter. Moreover, cuckoo filters do not support counting and
+associating small values with items.
+
+The two-choice filter has the advantages of the cuckoo filter design. It has
+fixed size blocks. Each operation requires probing into exactly two blocks, and
+inserts and deletes only write into a single block. This results in low thread
+divergence, high memory coherence, and a high degree of parallelism. However,
+due to large block sizes a more sophisticated structure is required to maintain
+fingerprints inside each block. Therefore, it is not straightforward to use
+atomic operations to read or write fingerprints inside blocks. It is a
+challenging task to implement a two choice filter on the GPU using atomic
+operations to achieve high throughput.
+
+\section{Sketches}
+
+.....
+
+\section{Hash tables}
+
+Hash tables are a core data structure in many applications, including key-value
+stores, databases, and big-data-analysis engines, and are included in most
+standard libraries.  Hash-table performance can be a substantial bottleneck for
+many applications~\cite{NealZu21,FanAn13,MetreveliZe12}.
+
+
+We argue that two stricter criteria, \emph{referential stability} and \emph{low
+associativity} should be optimized to yield high performance on PMEM.  As we
+will see, these two goals seem to be at odds with each other, and part of the
+innovation  of our hash table design is that it simultaneously achieves both.
+Naturally, the third design goal for a high-performance hash table is
+\emph{compactness}, but compactness also seems at odds with referential
+stability and low associativity.
+
+A hash table is said to be \defn{stable} if the position where an element is
+stored is guaranteed not to change until either the element is deleted or the
+table is resized~\cite{sandersstability,originalstability,KnuthVol3}.
+Stability offers a number of desirable properties.  For example, stability
+enables simpler concurrency-control mechanisms and thus reduces the performance
+impact of locking.  Moreover, since elements are not moved, writing is
+minimized, which improves PMEM performance.
+expensive than reads~\cite{pmem-measurements}.
+
+The \defn{associativity} of a hash table is the number of locations where an
+element is allowed to be stored.\footnote{Associativity is often associated with
+caches that restrict the locations an item may be stored in.  Here we refer to
+\emph{data structural associativity}, which is a restriction on how many
+locations a data structure may choose from to put an item in, even on fully
+associative hardware.} The best known low-associative (DRAM) hash table is the
+cuckoo hash table~\cite{Pagh:CuckooHash,PaghRo01}.  In the original design, each
+element has exactly two locations in the table where it is allowed to be stored,
+meaning that the associativity is two.  Low associativity yields a different set
+of desirable properties---most importantly, it helps search costs. For example,
+searching for an element in a cuckoo hash table is fast because there are only
+two locations in the table to check.  In addition, low associativity can enable
+us to further improve query performance by keeping a small amount of metadata;
+see \Cref{sec:iceberght}.
+
+
+In combination, stability can be used to achieve high insertion throughput in
+PMEM, where writes are expensive, and low associativity can be use to achieve
+high query  performance.  Furthermore, we also show how stability enables
+locking and concurrency-control mechanisms to be simplified, leading to better
+multithreaded scaling and simpler designs for crash consistency.
+
+Unfortunately, there is a tension between stability and low associativity.  If a
+hash table has associativity $\alpha$, and elements cannot move once they are
+inserted, then an unlucky choice of $\alpha$ locations for $\alpha$ elements can
+block a $(\alpha+1)$st element from being inserted.  As $\alpha$ decreases, the
+probability of such an unlucky event increases.  Cuckoo hashing reduces the
+probability of these bad events by giving up stability via \defn{kickout
+chains}, which are chains of elements that displace each other from one location
+to another. Practical implementations~\cite{LiAn14} generally increase the
+number of elements that can be stored in a given location---and thus the
+associativity---to reduce the kickout-chain length and increase the
+maximum-allowed \defn{load factor}, i.e, the ratio of the total number of keys
+in the table to the overall capacity of the table.
+
+
+Similarly, there is a three-way tension between space efficiency, associativity,
+and stability.  For example, cuckoo hash tables can be made stable if they are
+overprovisioned so much that the kickout-chain length reaches 0.  Such
+overprovisioning directly decreases space efficiency, but it also increases
+associativity.  Linear probing hash tables are stable (assuming they use
+tombstones to implement delete) but, as the load factor approaches 1, the
+average probe length for queries goes up, increasing associativity.  Other
+open-addressing hash tables have a similar space/associativity trade-off.
+Chaining hash tables are stable, but they have large associativity and
+significant space overheads.  CLHT~\cite{david2015asynchronized} improves query
+performance despite high associativity by storing multiple items in each node,
+but this further reduces space efficiency.
+
+\iffalse
+\subsection{B-trees}
+
+The \btree(or B$^+$-tree\footnote{A \bplustree is a scan-optimized variant of
+\btrees that stores all data records in the leaves and only pivot keys in the
+internal nodes. The \bplustree is the widely implemented variant of the \btree
+in real-world applications as it supports faster range
+scans~\cite{mongodb,couchdb,scylladb,conway2020splinterdb,postgresql}. In this
+paper, we refer to \bplustree as the \btree.})~\cite{BayerMc72} has been the
+fundamental access path structure in databases and storage systems for over five
+decades~\cite{Comer79,graefe2010survey}. \btrees are an extension of
+self-balancing binary search trees to arbitrary fanouts (with more than two
+children per node). They store elements in each node in a sorted array.  Given a
+cache-line size $Z$~\cite{AggarwalVi88}, a \btree with $N$ elements and node
+size $B = \Theta(Z)$ supports the point operations \proc{insert} and \proc{find}
+in $O(\log_B(N))$ cache-line transfers in the I/O model~\cite{AggarwalVi88}.
+\btrees are one of the top choices for in-memory indexing~\cite{ZhangChOo15} due
+to their cache efficiency though they were initially introduced for indexing
+data stored on disk~\cite{BayerMc72}. In this paper, we study and improve the
+performance of in-memory \btrees.
+
+\btrees are especially popular in databases and file systems because they
+support logarithmic point operations (inserts and finds) and efficient range
+operations (range queries and scans) that read blocks of
+data~\cite{Knuth98,rodeh2013btrfs}.  They are also extensively used as the
+in-memory index in many popular databases such as MongoDB~\cite{mongodb},
+CouchDB~\cite{couchdb}, ScyllaDB~\cite{scylladb}, PostgreSQL~\cite{postgresql},
+and SplinterDB~\cite{conway2020splinterdb}.
+\fi
+
+\section{String data structures}
+
+
+
+
+
