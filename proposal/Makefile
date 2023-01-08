@@ -1,4 +1,4 @@
-DOC=main
+DOC = proposal
 OPTS = -pdf
 LATEX = pdflatex
 
