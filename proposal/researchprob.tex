@@ -23,9 +23,9 @@ Thus, part of our task, for each problem that we develop, is to determined what 
 Surprisingly, a model as old as PRAM~\cite{cite-PRAM} is often predictive, despite being far from the GPU architecture. Syncs and global memory are the bottlenecks, but if the PRAM somehow behaves locally it can often work well enough.
 The parallel external memory model (PEM)~\cite{ArgeGoNe08,ArgeGoSi10}, or some variant, is elegant, and the idea of having increasing number of processors sharing increasing caches which have increasing cache lines is undoubtedly the right big picture.  But the model is still new and hasn't yet seen significant use, and it is unlikely that there is a direct transformation from a good PEM model to a good
 
-But not much has been done, and I feel these won't give you immediately super-good GPU algorithms
+There has been GPU algorithms plus analysis for XXXX, XXXX, XXX.
 
-But one needs to worry about the other issues:
+Here are some issues to model:
 
 -Bank conflicts. There are some papers on these. These are sort of an anti-locality and seem orthogonal to how we normally make algorithms
 
