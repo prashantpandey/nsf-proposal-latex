@@ -3,21 +3,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 3: Research Plan   %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Research Methodology}
+\section{GPU models}
 
+\mab{this is just notes, but I'm trying to get stuff down.}
 
-\subsection{Theory Notes}
+One objective is to come up with a parallel algorithmic model for distributed GPUS.
 
-\mab{this is still just for private consumption. I'm writing down notes for the issues and I'm also going to be writing some research problems.
-My next step is to define a research problem macro and write down some specific research problems.}
-
-We begin with the stretch goal, which is coming up with an algorithmic model of the GPU.
-
-\begin{rproblem}[\bf asymptotic GPU models]
-We envision a single performance model for GPU computation.  With today's GPUs, however, a more realistic goal is a small set of algorithmic models to capture the different bottlenecks that GPUs face.
+\begin{rproblem}[\bf Performance model for distributor GPUs]
+We envision a single performance model for distributed GPU computation.  With today's GPUs, however, a more realistic goal is a small set of algorithmic models to capture the different bottlenecks that GPUs face.
 \end{rproblem}
 
-Although there has been excitement about striving for a single algorithmic GPU model among parallel computing researchers~\cite{cite-stuff}, it is unlikely that there is a single performance model that works for all computations.
+Although there has been excitement about striving for a single algorithmic GPU model among parallel computing researchers~\cite{SitchinavaWe13, MaChAg14,xxx}, it is unlikely that there is a single performance model that works for all computations.
 
 GPUs seem to defy efforts to model them elegantly. 
 That said, often there are particular bottlenecks for a given problem, and for a single bottleneck one can model reasonably. 
