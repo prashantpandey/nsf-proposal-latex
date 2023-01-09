@@ -29,7 +29,7 @@ Here are some issues to model:
 
 -Bank conflicts. There are some papers on these. These are sort of an anti-locality and seem orthogonal to how we normally make algorithms
 
--Memory vs parallelism. Each SM has a fairly small amount of shared memory. Normally GPUs are very good at, when a memory access need some cycles to return, brining in another warp of threads. Then one often has a bunch of warps running round-robin waiting in turn for their memory accesses to return. But, the more warps you assign to a thread, the less memory each gets. Finding the sweet spot here is very important in practice.
+-Memory vs parallelism. Each SM has a fairly small amount of shared memory. Normally GPUs are very good at, when a memory access need some cycles to return, bringing in another warp of threads. Then one often has a bunch of warps running round-robin waiting in turn for their memory accesses to return. But, the more warps you assign to a thread, the less memory each gets. Finding the sweet spot here is very important in practice.
 
 -Communication between threads in a warp. The 32 threads in a warp can communicate directly, and quickly, without going through shared memory. This leads to interesting algorithmic problems. For example, imagine an operation where thread $i$ gives row $i$ of a 32x32 matrix and receives column $i$ (one bit from each thread), what are the upper and lower bounds to sort? These questions are algorithmically beautiful but will likely lead to AKS-type results which will have no impact on practice. But, ignoring these operations ignores possible speedups.
 

@@ -107,15 +107,14 @@ There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, se
 These existing tools are limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment.
 %
 \prashant{I don't like the above paragraph much...}
+\mfc{Figure is way too larger to make a farely straightforward point}
 
 \begin{wrapfigure}{r}{0.6\textwidth}
 \centering
 \includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
 \caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
-
 \label{fig:sra_data}
 \end{wrapfigure}
-\mfc{Figure is way too larger to make a farely straightforward point}
 
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.

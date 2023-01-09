@@ -4,6 +4,8 @@
 
 PPoSS targets large-scale systems and we believe that GPUs will form the backbone of future large-scale, compute-intensive systems. Why?
 
+\john{Revise to be both NOW and even more so in THE FUTURE\@.}
+
 With power constraints continuing to be the main bottleneck in increased computing performance, the superior power-performance of GPUs~\cite{Dally:2010:GCT} will make them increasingly attractive at all scales, from mobile devices to laptop and desktop computation to the largest supercomputers. The recent and extremely rapid rise of training deep neural networks for deep-learning applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data centers in nearly every large Internet company and NVIDIA GPUs in each of the three major cloud computing providers. As well, GPUs have made enormous inroads into the largest-scale computations. GPU-centered machines dominate the top of the biannual TOP500 list~\cite{top500:nov2022}, including 7 of the top 10 (\#1 and \#3 have AMD GPUs; 157 total of the 168 GPU-centered machines have NVIDIA GPUs). In systems that have high compute requirements, GPU hardware is now ubiquitous.
 
 The most successful GPU applications have historically been focused on highly parallel, regular workloads (e.g., training deep neural networks). What has been more challenging, and the focus of significant research effort over the past decade, has been \emph{irregular} and/or \emph{sparse} workloads that are harder to parallelize effectively. These workloads include the powerful data structures that are the focus of this proposal. While these workloads may exhibit ample parallelism and thus are potentially a good fit for the GPU, they are challenging to implement efficiently because they do not naturally map well to key GPU software design guidelines:
@@ -19,7 +21,7 @@ Over the past fourteen years, our team has significant experience in developing 
 
 
 
-
+\begin{comment}
 \subsection{GPUs and High Performance Computing}
 
 PPoSS targets large-scale systems and we believe that GPUs will form the backbone of future large-scale systems. Why?
@@ -78,11 +80,7 @@ But, the front-and-center reason for a continued focus on GPU graph analytics to
 
 As a consequence of these two broad trends, NVIDIA has made a large investment into its open-source data science framework, RAPIDS, which has already integrated Gunrock into its codebase and releases, and which will allow us to immediately bring the results from this proposal into widespread use.
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "proposal"
-%%% End:
-
+\end{comment}
 
 %%% Local Variables:
 %%% mode: latex
