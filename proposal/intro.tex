@@ -30,7 +30,7 @@ petabyte-scale datasets~\cite{kodama2012sequence}. Many applications in computat
 analysis~\cite{MarccaisKi11}, raw sequence search~\cite{SolomonKi16}, taxonomic classification~\cite{wood2014kraken}, and pangenomics~\cite{computational2018computational})
 require processing raw sequencing data at petabyte scales (see ~\Cref{fig:sra_data}). This project aims to
 build high-performance and scalable data analysis-pipelines for computational-biology applications.
-Specifically, we aim to develop new massively-parallel and distributed data structures and algorithms for core computational biology data processing tasks for these tasks.
+Specifically, we aim to develop new massively-parallel and distributed data structures and algorithms for core computational biology data processing tasks.
 
 
 We aim to develop new data structures and algorithms that will have wide applicability in computation biology and beyond. For concreteness, we consider the following tools that are used throughout computational biology.
@@ -40,18 +40,19 @@ We aim to develop new data structures and algorithms that will have wide applica
 \item {\bf \Kmer analysis.}
 \Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational-biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
 
-Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as approximate if they only have false positives and lossy if they have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{xxx}.
+Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as approximate if they only have false positives and lossy if they have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{HofmeyrEGC20}.
 
 As we will see, \kmer analysis is a part of several of the specific applications we will be addressing.
 
 % \item {\bf Compressed indexes.} 
 % FM-index, BWT, comressed suffix array.
 
-\item {\bf Sequence alignment.} Sequence alignment involves aligning a sequences of DNA, RNA or protein to identify similar regions that may be a consequence of underlying biological process and to establish evolutionary relationships.
-Sequence alignment is extensive used in the genomic or metagenomic assembly process to arrange the input raw reads together in the correct order to construct the full genome. In computational-biology applications, sequence alignment is often performed sequence-to-sequence; between multiple sequences (\emph{multiple sequence alignment}); and between a sequence-to-graph where the the graph is a sequence graph representing genomes from multiple individuals. 
+\item {\bf Sequence alignment.} Sequence alignment involves aligning sequences of DNA, RNA or protein to identify similar regions that may be a consequence of underlying biological process and to establish evolutionary relationships.
+Sequence alignment is extensively used in the genomic and metagenomic assembly process to map the contigs back to the input raw reads to extend the contigs in the correct order to construct the full genome. In computational-biology applications, sequence alignment is often performed sequence to sequence; between multiple sequences (\emph{multiple sequence alignment}); and from a sequence to graph where the the graph is a sequence graph representing genomes from multiple individuals. 
 
-Existing tools use compressed and succinct string indexes such FM-index~\cite{ferragina2000opportunistic}, BWT~\cite{burrows1994block}, compressed suffix arrays~\cite{grossi2000compressed} and dynamic programming algorithms for sequence alignment. 
+Existing tools use compressed and succinct string indexes such FM-index~\cite{ferragina2000opportunistic}, BWT~\cite{burrows1994block}, compressed suffix arrays~\cite{grossi2000compressed} and dynamic programming algorithms for sequence alignment.
 Compressed and succinct indexes help to perform sequence alignment in a memory-efficient manner and enable these tool to scale to large-scale sequencing data.
+One of the most widely used tools across computational biology, BLAST~\cite{altschul1990basic}, performs fast and efficient sequence alignment using compressed string indexes.
 Given the large sizes of sequencing datasets, these tools also use hash-based \kmer indexes to seed the sequence alignment to achieve speed ups.
 
 
@@ -60,9 +61,9 @@ Given the large sizes of sequencing datasets, these tools also use hash-based \k
 This toolbox is used, for example, to solve the following problems.
 
 \begin{itemize}[leftmargin=*]
-\item {\bf Raw sequence search.} Raw sequencing search involves  identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
+\item {\bf Raw sequence search.} Raw sequence search involves  identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
 
-Methods for raw sequence search use \kmer-based indexing tools to build and inverted index from the \kmers to the underlying samples it is present in. Tools like SSBT~\cite{SolomonKi16} build a tree of approximate \kmer indexes to quickly prune down the search space of sample. While Mantis~\cite{PandeyABFJP18Cell} build an exact inverted index using compact hash tables.
+Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples the \kmer is present in. Tools like SSBT~\cite{SolomonKi16} build a tree of approximate \kmer indexes to quickly prune down the search space of sample. While Mantis~\cite{PandeyABFJP18Cell} build an exact inverted index using compact hash tables.
 In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers. 
 
 \item {\bf Taxonomic classification.} Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics
@@ -90,7 +91,7 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 
 The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks.
-Compact and exact data structures include: hash tables and succinct data structures, compact string indexes, trees.
+Compact and exact data structures include: hash tables and succinct bit vectors, compressed string indexes, trees.
 Sketches and approximate data structures include: filters, cardinality estimators,  min-hash based sketches, other locality-sensitive hash data structures.
 
 The performance and scalability of the computational-biology applications
@@ -102,9 +103,9 @@ systems, security applications, etc.
 
 \paragraph{Existing software tools for computational-biology applications.}
 
-There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, hash tables, and string indexes. Most of these tools are designed to shared-memory parallelism and they often do not scale out of shared memory to disks.
-Existing tools limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment.
-
+There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
+These existing tools are limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment.
+%
 \prashant{I don't like the above paragraph much...}
 
 \begin{wrapfigure}{r}{0.6\textwidth}
@@ -118,8 +119,9 @@ Existing tools limited by the single-node compute and shared-memory parallelism.
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
 Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:sra_data}.
-Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible single-node shared memory systems.
-As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’s law period the performance gains will come from software, algorithms, and hardware (referred as the top of the computing stack) rather than the semiconductor (referred as the bottom). We can achieve massive scalability by: first scaling up using modern accelerators such as GPUs and second scaling out by using distributed memory in an HPC environment.
+Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible on single-node shared-memory systems.
+
+As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’s law period the performance gains will come from software, algorithms, and hardware (referred as the top of the computing stack) rather than the semiconductor (referred as the bottom). We can achieve massive scalability by, first designing data structures and algorithms to scale up using modern accelerators such as GPUs and second scaling out by using distributed memory in an high-performance computing (HPC) environment.
 
 
 \paragraph{GPUs and other accelerators in computational biology.}
@@ -138,15 +140,11 @@ However, the penetration of GPUs into biology pipelines is limited by how the li
   \item GPUs don't have a memory system; it is hard to perform dynamic memory management without involving the host CPU.
 \end{enumerate}
 
-These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as string or vectors, which have variable lengths are not available; data structures do not scale out of GPU device RAM.
+These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as string or vectors, which have variable lengths are not available; data structures do not scale out of GPU device RAM to host.
 
-These limitations are critical for building scalable computational-biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures such filters and hash tables to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as the hash tables and filters~\cite{xxx} currently available on GPUs are sized using an over approximation which leads to space inefficiency.
-The local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to
-perform contig (contiguous strand of DNA) extension walks. The
-CPU implementation of local assembly relies heavily on dynamic
-structures like hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif
-of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing
-this module on GPUs a very challenging problem.
+These limitations are critical for building scalable computational-biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures such filters and hash tables to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as the hash tables and filters~\cite{GeilFO18} currently available on GPUs are sized using an over approximation of the number of \kmers which leads to space inefficiency.
+Similarly, the local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to perform contig (contiguous strand of DNA) extension walks. The CPU implementation of local assembly relies heavily on dynamic
+structures like hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing this module on GPUs a very challenging problem.
 
 
 
@@ -182,6 +180,11 @@ Specifically, out data structures are: \textbf{filters}, \textbf{hash tables}, \
 
 If successful \mfc{say what great things that happen if we succeed.  maybe pus something measurable?  blah orders of magintude improvement?}
 
+The project’s novelties are: a vertical-stack approach spanning theory and algorithms: highly-concurrent, dynamic, and distributed data structures, systems: scale up using GPU acceleration, high-performance computing: scale out using distributed data structures, and applications: computational biology applications; new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs applicable to other application domains; an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
+
+Our team includes a highly interdisciplinary team of researchers across four focus areas: applications (computational biology), theory and algorithms, systems, and high-performance computing. The team is taking a holistic theory/systems/HPC/applications co-design approach to explore four tightly interconnected research modules. These research modules are structured from bottom-up across the computing stack.
+
+
 \paragraph{Roadmap.} Roadmap here. In Section...
 
 Section 2: bioinformatics problems, state of the art, what we need
@@ -201,9 +204,6 @@ Section 8: Bioinformatics validation, with research problems for each bioinforma
 \iffalse
 ==========
 
-The project’s novelties are: a vertical-stack approach spanning theory and algorithms: highly-concurrent, dynamic, and distributed data structures, systems: scale up using GPU acceleration, high-performance computing: scale out using distributed data structures, and applications: computational biology applications; new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs applicable to other application domains; an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
-
-Our team includes a highly interdisciplinary team of researchers across four focus areas: applications (computational biology), theory and algorithms, systems, and high-performance computing. The team is taking a holistic theory/systems/HPC/applications co-design approach to explore four tightly interconnected research modules. These research modules are structured from bottom-up across the computing stack.
 
 
 \begin{itemize}[noitemsep, leftmargin=*]
@@ -285,13 +285,6 @@ structures to GPUs.}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Section 2: Overview        %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 4: Management Plan %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Time Line and Management Plan}
@@ -317,61 +310,5 @@ Present findings at scientific meetings and publish results in peer-reviewed jou
 \hline
 \end{tabularx}
 \end{table}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Section 5: Science Merit   %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Scientific Merit}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Section 6: Impact/Outreach %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Broader Impacts}
-\label{broadimpacts}
-\vspace*{-8pt}
-
-This project will have direct impacts on research and education through access to simulation data products, student training, and K-12 outreach.
-
-\vspace{4pt}
-\noindent \underline{\textit{Data Access}}: Maybe write about you will make data available.
-
-\vspace{4pt}
-\noindent \underline{\textit{Student Training}}: Write about how you will train students.
-
-\vspace{4pt}
-\noindent \underline{\textit{Some Other Outreach}}: Write about more outreach.
-
-\vspace{4pt}
-\noindent \underline{\textit{Dissemination}}: Write about how you will disseminate results (i.e., journal articles, workshops, etc).
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Section 7: Prior NSF Work  %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results from Prior NSF Support}
-
-\noindent \emph{\underline{Person One}}: No NSF support in the past five years \newline
-
-\noindent The most relevant prior NSF award to the proposed project for
-\underline{Person Two} (Co-PI) is: (a) NSF PDM \#\#\#\#\#\#\#, \$000,000,
-MM/DD/YY to MM/DD/YY; (b) Title: Super Cool Project That Got Funded; (c)
-Accomplishments related to the \textbf{intellectual merit} of this research project
-include something something. The \textbf{broader impacts} include outreach at many
-levels. Something Something. To date, the grant has funded one post-doc and 1000
-graduate students. The project has also involved 500 undergraduate students. (d)
-To date this project has resulted in 100 conference presentations, one million
-journal publications (cite them) with one under review (cite it) and two in
-preparation with well-developed drafts.
-
-For PI Owens, the NSF award whose outcomes most influenced this grant was the recently completed NSF Algorithms in the Field award CCF-1637442, ``AitF: Collaborative Research: Theory and Implementation of Dynamic Data Structures for the GPU'', with Mart\'{i}n Farach-Colton (Rutgers). This work focused on the design and implementation of GPU-friendly, dynamic, general-purpose data structures.
-
-\paragraph{Intellectual Merit.} In this AitF award, the PIs designed and built numerous dynamic data structures that marked their first implementation on GPUs: linked lists and hash tables~\cite{Ashkiani:2018:ADH}, log-structured merge trees~\cite{Ashkiani:2018:GLA}, B-trees~\cite{Awad:2019:EAH}, quotient filters~\cite{Geil:2018:QFA}, and dynamic graphs~\cite{Awad:2020:DGO}. RXMesh's mesh data structure~\cite{Mahmoud:2021:RAG} was a result of this award. As well, the PIs recently designed and implemented the fastest GPU static hash tables~\cite{Awad:2023:AAI}.
-
-\paragraph{Broader Impacts.} Each of the abovementioned projects is available as open-source software, a significant reason why this work is highly cited. The dynamic graphs were integrated into Gunrock~\cite{Awad:2020:DGO,Wang:2017:GGG}, which subsequently was selected as the performance reference for the DARPA HIVE program and in turn integrated into NVIDIA's open-source RAPIDS framework for data science. Finally, NVIDIA's cuCollections library currently only supports static and dynamic maps but these were both influenced by the PIs' work and we expect as this library grows, it will incorporate the abovementioned work either directly or as the basis for NVIDIA's implementation and improvements.
-
-
-% \nocite*
-% don't do that
 
 \fi
