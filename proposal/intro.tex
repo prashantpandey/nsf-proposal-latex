@@ -28,7 +28,7 @@ Raw sequencing data in computational biology is increasing faster than ever
 due to high-throughput sequencing technology (HTS), which is already producing
 petabyte-scale datasets~\cite{kodama2012sequence}. Many applications in computational biology (\kmer
 analysis~\cite{MarccaisKi11}, raw sequence search~\cite{SolomonKi16}, taxonomic classification~\cite{wood2014kraken}, and pangenomics~\cite{computational2018computational})
-require processing raw sequencing data at petabyte scales (see ~\Cref{fig:sra_data}). This project aims to
+require processing raw sequencing data at petabyte scales~\cite{kodama2012sequence}. This project aims to
 build high-performance and scalable data analysis-pipelines for computational-biology applications.
 Specifically, we aim to develop new massively-parallel and distributed data structures and algorithms for core computational biology data processing tasks.
 
@@ -107,18 +107,17 @@ There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, se
 These existing tools are limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment.
 %
 \prashant{I don't like the above paragraph much...}
-\mfc{Figure is way too larger to make a farely straightforward point}
 
-\begin{wrapfigure}{r}{0.4\textwidth}
-\centering
-\includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
-\caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
-\label{fig:sra_data}
-\end{wrapfigure}
+% \begin{wrapfigure}{r}{0.4\textwidth}
+% \centering
+% \includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
+% \caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
+% \label{fig:sra_data}
+% \end{wrapfigure}
 
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
-Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%; see Figure~\ref{fig:sra_data}.
+Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%~\cite{kodama2012sequence}.
 Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible on single-node shared-memory systems.
 
 As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’s law period the performance gains will come from software, algorithms, and hardware (referred as the top of the computing stack) rather than the semiconductor (referred as the bottom). We can achieve massive scalability by, first designing data structures and algorithms to scale up using modern accelerators such as GPUs and second scaling out by using distributed memory in an high-performance computing (HPC) environment.

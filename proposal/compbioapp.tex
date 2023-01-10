@@ -6,47 +6,39 @@
 \subsection{Taxonomic classification of metagenomic data}
 
 The microbes that live in an environment can be identified by the combined genomic material, also called the metagenome.
-In metagenomics, we aim to identify and characterise the microorganisms that live in an environment, such as the human gut or a soil sample.
 The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
-
-Both short-read and long-read sequencing data are commonly used in metagenomics. 
-The advantages of short-read data are high accuracy and low cost, which allow metagenomes to be sequenced at high depth and provide large amounts of high-quality data to the software.
-On the other hand, the short read length can be a limitation  as less information in available in terms of the nucleotide composition.
-Long reads offer the advantage of longer sequences capable of spanning long genomic repeats that are notoriously difficult to handle with short reads, at the price of higher error rates and higher sequencing costs.
-Such high error rates can make it difficult for computational software to distinguish different species in a metagenomics sample.
-
-Typically, a metagenomics pipeline consists of four main steps that serve as preprocessing for a variety of downstream applications: DNA extraction, DNA fragmentation, DNA sequencing, and read classification.
-Read classification is a critical first computational step in any metagenomic analysis pipeline.
+%
+Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment. 
+Taxonomic classification of reads is a critical first computational step in any metagenomic analysis pipeline.
 For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step.
 
-Nevertheless, the task of read classification is far from straightforward.
+The task of read classification is far from straightforward.
 First of all, species can be similar and even share some genomic patterns, which makes the discrimination complex. 
 Moreover, genomes are not uniformly present in the sample.
 In general, there are a few species that are very abundant, while many other organisms have a low proportion of genomic material in the sample.
 
-In the literature, metagenomic analysis tools can be broadly divided into binning (or clustering) and taxonomic classification tools~\cite{simon2019benchmarking, maric2020benchmarking}. 
-Taxonomic classification tools are further divided into taxonomic binning and taxonomic profiling. Taxonomic profilers compute the relative abundances of taxa in a dataset without assigning taxonomic labels to individual reads. In practice, however, these methods are often used interchangeably, as one can compute the profile of a dataset based on the taxonomic labels of individual reads.
-
-Binning tools~\cite{balvert2019ogre, wickramarachchi2020metabcc, van2015two, alanko2017framework, cleary2015detection, girotto2016metaprob, luo2019metagenomic, alneberg2014binning, wu2016maxbin, sedlar2017bioinformatics, HerathTTAH17, kelley2010clustering, kang2019metabat, strous2012binning} perform \textit{de novo} binning (i.e., without using a reference database) and use unsupervised approaches. 
-These tools perform classification based on nucleotide composition and/or abundance profiles of reads.
-
-On the other hand, taxonomic classification tools~\cite{ames2013scalable, kim2016centrifuge, menzel2016fast, wood2014kraken, wood2019improved, dilthey2019strain,liu2018novel} use a supervised approach to assign taxonomic labels to reads.
+Taxonomic classification tools~\cite{ames2013scalable, kim2016centrifuge, menzel2016fast, wood2014kraken, wood2019improved, dilthey2019strain,liu2018novel} use a supervised approach to assign taxonomic labels to reads.
 These tools build a database of known genomes and their taxonomic labels from the NCBI database. 
-The database is typically an index that maps smaller subsequences ($k$-mers) to the list of taxa corresponding to the genomes in which the subsequences occur. 
-During the classification phase, the input reads are decomposed into $k$-mers and queried in the index to determine the most appropriate taxon.
+The database is typically an index that maps smaller subsequences (\kmers) to the list of taxa corresponding to the genomes in which the subsequences occur. 
+During the classification phase, the input reads are decomposed into \kmers and queried in the index to determine the most appropriate taxon.
 
-Using only the nucleotide content of individual sequences is proven to be suboptimal for both short and long read data.
-Often short reads simply do not have enough information (due to their limited length) to distinguish sequences that originate from different species.
-Long reads are often hindered by their error rates, which can lead to misclassification.
-However, long-read classification tools that use databases of known genomes have shown good performance despite the high error rates.
 
-Recently, there have been approaches that use connectivity information between sequences to perform classification.
-OGRE~\cite{balvert2019ogre} uses the overlap information between reads in the form of an overlap graph and a pre-trained logistic regression model to perform binning.
-GraphBin~\cite{mallawaarachchi2020graphbin} and GraphBin2~\cite{mallawaarachchi2020graphbin2}, on the other hand, use the connectivity information between contigs (longer sequences obtained after assembly) in the assembly graph and perform label propagation in a semi-supervised setting for classification.
+\paragraph{Metagenomic data.}
+A metagenomic sample can contain thousands of genomes with varying level of similarity and often occurring at vastly different abundances. Furthermore, due to high-throughput sequencing metagenomic datasets contains millions of sequencing reads making traditional, string-matching-based tools like BLAST infeasible to perform classification. Metagenomic datasets today easily range from hundreds of GBs to TBs. For example, WA dataset contains a collection of marine microbial communities from the Western Arctic Ocean and consists of 822 GB of 2.5 billion reads in 12 samples~\cite{hofmeyr2020terabase}.
 
-Pan-genome studies of plants and animals remained elusive at first, due to the large genome sizes and vast amounts of intergenic sequence in these species. However, in recent years, thanks to dramatic improvements in the efficiency of sequencing technology, the scientific community has been able to sequence dozens, hundreds or even thousands of individuals of a single plant or animal species~\cite{XXX}. Additionally, new long-read sequencing technologies now allow us to better assemble repetitive regions of large genomes, including centromeric regions, that are difficult to characterize with short reads~\cite{XXX}.
+\paragraph{Reference database.}
+Building the database of known genomes is often quite memory intensive.
+The sheer size of sequenced microbial genetic sequences presents a considerable computational challenge.
+The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species as well as the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ millon sequences. 
+Kraken's~\cite{wood2014kraken} memory requirements can easily exceed 100GB~\cite{simon2019benchmarking}, especially when the reference data includes large eukaryotic genomes~\cite{meiser2017sequencing, knutson2017porcine}.
+%
+The universe of microbial sequences is large and diverse. The vast search space often results in false positives as sequences can be matched against multiple taxa. Also, a large number of undiscovered microbial species can result in false negatives as these species are not present in the database.
 
-Human sequencing, too, has accelerated. Over the past few years, a flurry of publications have described large collections of newly sequenced human genomes, including population-specific cohorts from Iceland~\cite{XXX}, Denmark~\cite{XXX}, Sweden~\cite{XXX}, Papua New Guinea~\cite{XXX}, Mongolia~\cite{XXX} and Africa~\cite{XXX}, as well as large-scale surveys of the entire world~\cite{XXX}. 
+\begin{rproblem}[\bf Metagenomic classification at terabyte scale]
+Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, classification operation is computationally intensive and makes it infeasible to scale to terabyte-scale metagenomic datasets.
+Scaling taxonomic classification to terabyte-scale requires scaling up computations and scaling out database construction at the same time.
+\label{rprob:peppermint}
+\end{rproblem}
 
 
 \subsection{Large-scale raw sequence search}
@@ -55,7 +47,11 @@ The ability to issue sequence-level searches over publicly available databases o
 
 There are a number of reasons that typical reference-database-based search techniques cannot easily be applied in the context of searching raw, unassembled sequences. One major reason is that most current techniques do not scale well as the amount of data grows to the size of the SRA (which today is $\approx4$ petabases of sequence information). A second reason is that searching unassembled sequences means that relatively long queries (e.g., genes) are unlikely to be present in their entirety as an approximate substring of the input.
 
-
+\begin{rproblem}[\bf Scale Mantis to index all of SRA]
+Currently, Mantis and other raw sequecence search indexes are not able to index a large fraction of the SRA.
+[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\label{rprob:peppermint}
+\end{rproblem}
 
 \subsection{Pangenomics}
 
@@ -63,6 +59,17 @@ Much of the field of genomics revolves around the existence of reference genomes
 
 Cataloguing the DNA from all individuals in a species is a daunting task. The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be
 
+Pan-genome studies of plants and animals remained elusive at first, due to the large genome sizes and vast amounts of intergenic sequence in these species. However, in recent years, thanks to dramatic improvements in the efficiency of sequencing technology, the scientific community has been able to sequence dozens, hundreds or even thousands of individuals of a single plant or animal species~\cite{XXX}. Additionally, new long-read sequencing technologies now allow us to better assemble repetitive regions of large genomes, including centromeric regions, that are difficult to characterize with short reads~\cite{XXX}.
+
+Human sequencing, too, has accelerated. Over the past few years, a flurry of publications have described large collections of newly sequenced human genomes, including population-specific cohorts from Iceland~\cite{XXX}, Denmark~\cite{XXX}, Sweden~\cite{XXX}, Papua New Guinea~\cite{XXX}, Mongolia~\cite{XXX} and Africa~\cite{XXX}, as well as large-scale surveys of the entire world~\cite{XXX}. 
+
+
+
+\begin{rproblem}[\bf Building a pangenomic graph at population-scale and performing sequence-to-graph mapping]
+Current pangenomic indexes can not scale to population-scale variation datasets.
+[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\label{rprob:peppermint}
+\end{rproblem}
 
 \subsection{MetaHipMer}
 
@@ -119,6 +126,13 @@ Multi-Process Service (MPS). On a Summit node there will be 42 processes (one
 per core) and hence there will be 7 processes per GPU\@. Using the MPS has the
 benefits of simplicity, because there is no inter-GPU communication required,
 and it improves performance by increasing the utilization of the GPUs.
+
+\begin{rproblem}[\bf Run MetaHipMer on largest possible metagenomic dataset]
+So far MetaHipMer is limited by the peak RAM usage in HPC environments.
+[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\label{rprob:peppermint}
+\end{rproblem}
+
 
 % \Cref{fig:mhm-kmer} shows different parts of the $k$-mer analysis phase in
 % MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table
