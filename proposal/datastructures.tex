@@ -2,6 +2,12 @@
 
 \section{Filters}
 
+\prashant{Notes for Martin}
+
+\prashant{Comp bio applications require Maplets on GPUs that support dynamic resizing and deletes.}
+
+\prashant{Adaptive filters can be really useful for comp bio application as they can be used to construct MPH (minimal perfect hash) on GPUs.}
+
 Filter data structures can be broadly classified into \emph{static} and
 \emph{dynamic}.  Static filters approximately represent a set of items that must
 be known before building the filter. Examples of these filters include XOR
@@ -147,9 +153,20 @@ operations to achieve high throughput.
 
 \section{Sketches}
 
+\prashant{Notes for Martin.}
+
+\prashant{Given a fastq file containing raw sequencing reads. Can we quickly and space-efficiently (maybe sublinear time and space?) estimate a frequency distribution for \kmers for a given $k$?
+Specifically, we are interested in estimating the total number of \kmers, the total number of distinct \kmers, the total number of \kmers with a given count C?}
+
 .....
 
 \section{Hash tables}
+
+\prashant{Notes for Martin/John.}
+
+\prashant{Scale up: We need hash tables with: fine-grained resizing on GPUs. Applications often do not know the number of items in advance. If they under size the hash table they fail at run time and if they oversize they waste memory.}
+
+\prashant{Scale out: We need hash table that can be distributed across multiple nodes in HPC clusters. However, when partitioning data across multiple nodes there are two challenges: First, we need to reduce the load variance across nodes. Second, we need to reduce the communication volume to while constructing the hash table and also to perform operations on the hash table. Operations can include: performing a join/intersection across two distributed hash tables.}
 
 Hash tables are a core data structure in many applications, including key-value
 stores, databases, and big-data-analysis engines, and are included in most
