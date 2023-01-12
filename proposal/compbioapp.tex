@@ -7,8 +7,8 @@
 
 The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
 The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
-%
 Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment. 
+
 Taxonomic classification of reads is a critical first computational step in any metagenomic analysis pipeline.
 For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step.
 
@@ -45,15 +45,21 @@ Scaling taxonomic classification to terabyte-scale requires scaling up computati
 
 \subsection{Large-scale raw sequence search}
 
-The ability to issue sequence-level searches over publicly available databases of assembled genomes and known proteins has played an instrumental role in many studies in the field of genomics, and has made BLAST~\cite{altschul1990basic} and its variants some of the most widely used tools in all of science. Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences. However, the vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive [SRA]~\cite{kodama2012sequence}) exist in the form of raw, unassembled sequencing reads. As such, these data have mostly been rendered impervious to sequence-level search, which substantially reduces the utility of such publicly available data.
+The vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive [SRA]~\cite{kodama2012sequence}) exist in the form of raw, unassembled sequencing reads. The raw sequencing data contains a lot of diversity information which is lost during the assembly process. Furthermore, only a small fraction of all the raw sequencing data is assembled making the raw sequencing data even more important.
+
+There have been multiple tools such as BLAST~\cite{altschul1990basic} and its variants that are designed to issue sequence level searches over publicly available databases of assembled genomes and known proteins. Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences which is much smaller in size compared to the SRA.
 
 There are a number of reasons that typical reference-database-based search techniques cannot easily be applied in the context of searching raw, unassembled sequences. One major reason is that most current techniques do not scale well as the amount of data grows to the size of the SRA (which today is $\approx4$ petabases of sequence information). A second reason is that searching unassembled sequences means that relatively long queries (e.g., genes) are unlikely to be present in their entirety as an approximate substring of the input.
+As such, these data have mostly been rendered impervious to sequence-level search, which substantially reduces the utility of such publicly available data.
+
+Recently, new computational schemes have been proposed
+that hold the potential to allow searching raw SARs while overcoming these challenges. Solomon and Kingsford~\cite{solomon2016fast} introduced the sequence bloom tree (SBT) data structure and an associated algorithm that enables an efficient type of search over thousands of sequencing experiments. Specifically, they re-phrase the query in terms of k-mer set membership in a way that is robust to the fact that the target sequences have not been assembled. The resulting problem is coined as the experiment discovery problem, where the goal is to return all experiments that contain at least some user-defined q fraction of the k-mers present in the query string.
+
+Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and PI Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} as in exact map to map \kmers. They further continued this effort in collaboration with Prof. Patro UMD to scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} to storage devices. 
 
 
-
-\begin{rproblem}[\bf Scale Mantis to index all of SRA]
-Currently, Mantis and other raw sequence search indexes are not able to index a large fraction of the SRA.
-[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+\begin{rproblem}[\bf Build a distributed Mantis to index all of SRA]
+Currently, Mantis and other raw sequence search indexes are not able to index a large fraction of the SRA. Scaling Mantis-like indexes to index all of SRA on single machine is not feasible given the limitation of the shared-memory sizes and storage. Distributing the Mantis across hundreds of nodes will enable the index to scale to index all of SRA at petabyte scale.
 \label{rprob:peppermint}
 \end{rproblem}
 
@@ -61,17 +67,23 @@ Currently, Mantis and other raw sequence search indexes are not able to index a 
 
 Much of the field of genomics revolves around the existence of reference genomes, which are roadmaps for a ‘typical’ individual of each species. The creation of each reference was, and still remains, a major focus of the genomics community, with 13 years and US$2.7$ billion having been spent on the creation of the human reference genome alone. The ability to compare a newly sequenced individual with a reference and find differences has enabled myriad discoveries and innovations, and in human genomics this ability has formed the basis of thousands of studies seeking the genetic origins of disease. However, as the number and scope of sequencing experiments have grown dramatically, scientists have begun to realize the many limitations that a single reference genome imposes upon the community. To better capture the variation missed by using one reference, we can create and utilize a ‘pan-genome’, a collection of all the DNA sequences that occur in a species.
 
-Cataloguing the DNA from all individuals in a species is a daunting task. The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be
+Cataloguing the DNA from all individuals in a species is a daunting task. The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be.
 
 Pan-genome studies of plants and animals remained elusive at first, due to the large genome sizes and vast amounts of intergenic sequence in these species. However, in recent years, thanks to dramatic improvements in the efficiency of sequencing technology, the scientific community has been able to sequence dozens, hundreds or even thousands of individuals of a single plant or animal species~\cite{XXX}. Additionally, new long-read sequencing technologies now allow us to better assemble repetitive regions of large genomes, including centromeric regions, that are difficult to characterize with short reads~\cite{XXX}.
 
 Human sequencing, too, has accelerated. Over the past few years, a flurry of publications have described large collections of newly sequenced human genomes, including population-specific cohorts from Iceland~\cite{XXX}, Denmark~\cite{XXX}, Sweden~\cite{XXX}, Papua New Guinea~\cite{XXX}, Mongolia~\cite{XXX} and Africa~\cite{XXX}, as well as large-scale surveys of the entire world~\cite{XXX}. 
 
+Pangenomic studies are performed by storing the genomes of multiple individuals in a genome graph (also known as the sequence graph or variation graph). A genome graph is a directed, acyclic graph (DAG) $G = (N, E, P)$ that embeds a set of DNA sequences. It comprises a set of
+nodes $N$, a set of direct edges $E$, and a set of paths $P$. For DNA sequences, we use the
+alphabet {A, C, G, T, N}. Each $n_i \in N$ represents a sequence $seq(n_i)$. Edges in the graph connect nodes that are followed on a path. Nodes on a path
+are assigned positions based on the coordinate systems of sequences they represent.
+
+Efficiently indexing and storing a genome graph is a computationally and memory/space intensive process due to the presence of thousands of coordinate systems corresponding to the individuals. Existing applications that index genome graphs~\cite{pandey2021variantstore,garrison2018variation} are designed to use compressed string indexes and off-the-shelf graph indexes. However, these indexes do not scale to pangenomic datasets available today due the limitations to the memory-intensive characteristics of these data structures. Furthermore, these indexes are not designed to efficiently support adding new genomes to an existing index. They to rebuild the whole index in order to add a new sample.
 
 
-\begin{rproblem}[\bf Building a pangenomic graph at population-scale and performing sequence-to-graph mapping]
-Current pangenomic indexes can not scale to population-scale variation datasets.
-[Summary sentence talking a little bit about the state of the art and one about the challenges.]
+
+\begin{rproblem}[\bf Building a pangenomic index at population-scale and performing sequence-to-graph mapping]
+Current pangenomic indexes can not scale to population-scale variation datasets such as 100,000 Genomes project. Furthermore, they do not support adding new genomes to an existing index. We want to build a pangenomic index that can perform fast variation queries, sequence-to-graph mapping, support updates, and scale to population-scale datasets.
 \label{rprob:peppermint}
 \end{rproblem}
 
