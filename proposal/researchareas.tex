@@ -6,15 +6,16 @@
 % Describe the targeted distributed applications and systems, and the heterogeneous platforms on which they run; and
 % Define relevant notions of scale and describe how scalability will be theoretically and experimentally evaluated for the targeted distributed applications and systems and heterogeneous platforms in (2) with respect to the full hardware/software stack.
 
-\john{What is ``AT'' below? I don't know.}
 
-\paragraph{Coverage areas.} Data structures are ubiquitous throughout the
+
+\paragraph{Coverage areas.} \john{What is ``AT'' here? I don't know.}
+Data structures are ubiquitous throughout the
 hardware/software stack, as a way to connect heterogeneous components within a
 system and to scale out in data-center-scale applications.  AT has become a
 bottleneck, but redesigning AT is tantamount to renegotiating the division of
 labor among system components---requiring a closely knit team and an approach
 that weighs the costs and benefits holistically.
-Our team has the needed expertise:
+Our team has extensive expertise in the following four research areas:
 
 % \begin{itemize}[noitemsep,nolistsep]
 \begin{description}
@@ -22,7 +23,8 @@ Our team has the needed expertise:
     Bender and Farach-Colton have written numerous
     top-tier theory
     publications~\cite{DBLP:conf/stoc/BenderFK19,DBLP:conf/focs/BenderFGJM018,DBLP:conf/soda/BenderCCFJT19,DBLP:conf/soda/AfshaniBFFGT17,DBLP:conf/pods/BenderFJMMPX17,DBLP:conf/stoc/BenderKPY16,DBLP:conf/soda/BenderFGKM17,DBLP:conf/pods/BenderBJKMPSSZ16}
-    and have made significant contributions the use of theoreticall grounded algorithms in computer systems~\cite{BenderFaGo18,BenderFaJo12,BenderFaJo11,PandeyBeJo17,PandeyAlBe18,PandeyBeJo18,PandeyBeJo17c,DBLP:conf/icalp/ConwayFS18,betrfsmany,other}.
+    and have made significant contributions the use of theoretically grounded algorithms in computer systems~\cite{BenderFaGo18,BenderFaJo12,BenderFaJo11,PandeyBeJo17,PandeyAlBe18,PandeyBeJo18,PandeyBeJo17c,DBLP:conf/icalp/ConwayFS18,betrfsmany,other}.
+\john{It would be better to have a set of citations here closer to the topic of the proposal, e.g., data structures and/or scalability.}
 
 
     \item[GPU Systems (PIs Owens and Pandey)] Owens's research program in GPU computing~\cite{Owens:2007:ASO,Owens:2008:GC} spans nearly 20 years and includes representative research advances in fundamental algorithms~\cite{Sengupta:2007:SPF}, data structures~\cite{Lefohn:2006:GGE,Alcantara:2009:RPH}, % scalability to multiple GPUs~\cite{Stuart:2009:MPO,Stuart:2011:EMT,Stuart:2011:MMO,Pan:2017:MGA,Pan:2018:SBS,Chen:2022:SIP},
@@ -31,10 +33,10 @@ Our team has the needed expertise:
     \item[High-Performance Computing (PIs Bender, Farach-Colton, Owens, and
         Pandey)] Bender, Farach-Colton, Owens, and Pandey have
       written a number of top-tier papers in HPC~\cite{pandey2020timely,bender2017two,eckstein2015pebbl,agrawal1989four,bender2008communication,greenberg1999enabling},
-      and had considerable impact on HPC practice.  PI Bender's and Phillips
+      and had considerable impact on HPC practice. \john{Again, specificity here is more helpful than just ``top-tier papers''. Please be more specific about the intersection between the cited work and the issues at hand here.}  PI Bender's and Phillips \john{Who is ``Phillips'' and what does Phillips have to do with this proposal?}
       work in HPC has focused on scheduling and  won a joint R\&D 100 Award for
       processor scheduling and allocation algorithms, which were licensed by
-      Cray and incorporated into SLURM.  PIs Bender and Farach-Colton's company
+      Cray and incorporated into SLURM\@.  PIs Bender and Farach-Colton's company
       Tokutek deployed software to manage metadata in a large cloud storage
       service. Owens led the first implementation of MPI on GPUs~\cite{Stuart:2009:MPO:withouturl,Stuart:2011:EMT}, the first multi-GPU MapReduce~\cite{Stuart:2011:MMO}, and more recent work on scalable graph analytics on HPC machines~\cite{Pan:2018:SBS,Pan:2017:MGA,Chen:2022:SIP}.
 
@@ -54,8 +56,7 @@ translating accesses to resources that are distributed across multiple machines.
 %multiple SGX enclaves.
 If successful, our work will improve the performance of each node, as well as
 the working-set size each node can handle, potentially improving both by orders
-of magnitude.  Third, this includes scaling from only CPUs, to {\em
-heterogeneous} computing accelerators, such as GPUs and FPGAs, at rack-scale or
+of magnitude.  Third, this includes scaling from only CPUs, to \emph{heterogeneous} computing accelerators, such as GPUs and FPGAs, at rack-scale or
 greater.  Prior work has demonstrated that data movement and address translation
 in GPUs is a first-order performance issue~\cite{pichai:gpu,
 power:gpummu,rossbach:ptask}. Further, cloud computing infrastructure, such as
@@ -63,4 +64,4 @@ Microsoft's Catapult, aggregate these accelerators and move data  at the
 granularity of racks, not single nodes~\cite{putnam:catapult}.  These
 accelerators are evolving rapidly and in ways that are hard to anticipate; thus,
 a principled design is necessary to efficiently scale to new classes of future,
-unknown compute hardware.
+unknown compute hardware. \john{It's hard to edit this effectively when I don't even know what the referenced work. Please fill in cites.}
