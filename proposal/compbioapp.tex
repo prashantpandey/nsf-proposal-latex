@@ -5,13 +5,21 @@
 
 \subsection{Taxonomic classification of metagenomic data}
 
-\mfc{I don't get the organization of this section.  What I was expecting:
+{\color{red} I don't get the organization of this section.  What I was expecting:
 
-> definition of the problem -- that's mostly there but mixed in with other things
+-- definition of the problem -- that's mostly there but mixed in with other things
 
-> importance of the problem --  
+-- importance of the problem -- no idea why it's important.  are there 1000 people who do this?  5?  1M?  No clue 
 
-> challenges in solving problem
+-- challenges in solving problem
+
+-- state of the art
+
+-- requirement in a solution and what that will unlock
+
+-- a crisp statment research statement that is something like: "Validate our datastructural solution for problem X"
+
+-- a discussion of what methodology we will use.  what databases.  why are these the databases.  what hardware or class of hardware.
 }
 
 The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
@@ -55,9 +63,9 @@ The universe of microbial sequences is large and diverse. The vast search space 
 
 \subsection{Large-scale raw sequence search}
 
-The vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive [SRA]~\cite{kodama2012sequence}) exist in the form of raw, unassembled sequencing reads. The raw sequencing data contains a lot of diversity information which is lost during the assembly process. Furthermore, only a small fraction of all the raw sequencing data is assembled making the raw sequencing data even more important.
+The vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive [SRA]~\cite{kodama2012sequence}) exist in the form of raw, unassembled sequencing reads. The raw sequencing data contains a lot of diversity information \mfc{should the average computer scientist know what diversity information is?  I can speculate but ...}  which is lost during the assembly process. Furthermore, only a small fraction of all the raw sequencing data is assembled, making the raw sequencing data even more important. \mfc{wha?  why is it even more important?  I don't follow this line of reasoning.}
 
-There have been multiple tools such as BLAST~\cite{altschul1990basic} and its variants that are designed to issue sequence level searches over publicly available databases of assembled genomes and known proteins. Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences which is much smaller in size compared to the SRA.
+There have been multiple tools such as BLAST~\cite{altschul1990basic} and its variants that are designed to issue \mfc{but not perform?} sequence level searches over publicly available databases of assembled genomes and known proteins. Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. \mfc{This previous sentence is a jolt. what does that have to do with raw sequence data?}  However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences which is much smaller in size compared to the SRA. \mfc{again, what does this have to do with raw sequence data?}
 
 There are a number of reasons that typical reference-database-based search techniques cannot easily be applied in the context of searching raw, unassembled sequences. One major reason is that most current techniques do not scale well as the amount of data grows to the size of the SRA (which today is $\approx4$ petabases of sequence information). A second reason is that searching unassembled sequences means that relatively long queries (e.g., genes) are unlikely to be present in their entirety as an approximate substring of the input.
 As such, these data have mostly been rendered impervious to sequence-level search, which substantially reduces the utility of such publicly available data.
