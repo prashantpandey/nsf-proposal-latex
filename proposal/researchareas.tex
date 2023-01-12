@@ -8,22 +8,16 @@
 
 
 
-\paragraph{Coverage areas.} \john{What is ``AT'' here? I don't know.}
-Data structures are ubiquitous throughout the
-hardware/software stack, as a way to connect heterogeneous components within a
-system and to scale out in data-center-scale applications.  AT has become a
-bottleneck, but redesigning AT is tantamount to renegotiating the division of
-labor among system components---requiring a closely knit team and an approach
-that weighs the costs and benefits holistically.
+\paragraph{Coverage areas.} 
+Data structures are ubiquitous throughout the hardware/softwar stack, as a way to connect heterogeneous components within a system and to scale out in large-scale computational biology applications. 
+Data structures have become a bottleneck, but building scale up and scale out data structures is tantamount to renegotiating the division of labor among system components---requiring a closely knit team and an approach that weighs the costs and benefits holistically.
 Our team has extensive expertise in the following four research areas:
 
 % \begin{itemize}[noitemsep,nolistsep]
 \begin{description}
   \item[Theory and Algorithms (PIs Bender and Farach-Colton)]
     Bender and Farach-Colton have written numerous
-    top-tier theory
-    publications~\cite{DBLP:conf/stoc/BenderFK19,DBLP:conf/focs/BenderFGJM018,DBLP:conf/soda/BenderCCFJT19,DBLP:conf/soda/AfshaniBFFGT17,DBLP:conf/pods/BenderFJMMPX17,DBLP:conf/stoc/BenderKPY16,DBLP:conf/soda/BenderFGKM17,DBLP:conf/pods/BenderBJKMPSSZ16}
-    and have made significant contributions the use of theoretically grounded algorithms in computer systems~\cite{BenderFaGo18,BenderFaJo12,BenderFaJo11,PandeyBeJo17,PandeyAlBe18,PandeyBeJo18,PandeyBeJo17c,DBLP:conf/icalp/ConwayFS18,betrfsmany,other}.
+    top-tier theory and have made significant contributions the use of theoretically grounded algorithms in computer systems~\cite{BenderFaGo18,BenderFaJo12,BenderFaJo11,PandeyBeJo17,PandeyAlBe18,PandeyBeJo18,PandeyBeJo17c,DBLP:conf/icalp/ConwayFS18,betrfsmany,other}.
 \john{It would be better to have a set of citations here closer to the topic of the proposal, e.g., data structures and/or scalability.}
 
 
@@ -46,22 +40,24 @@ Our team has extensive expertise in the following four research areas:
 
 
 \paragraph{Notions of Scale.}  Our proposed work address several notions of
-scale.  First, virtual memory is a major bottleneck for scaling individual
-machines to larger memories and CPU counts.  Without a principled redesign of
-VM, additional RAM and cores will be of diminishing value.  Second, our work
-supports \emph{scale-out} cloud applications, which rely on naming, placing, and
-translating accesses to resources that are distributed across multiple machines.
-%Currently, if one needs to do complex operations on sensitive data in the
-%cloud, there is no secure and sensible option other than scaling out across
-%multiple SGX enclaves.
-If successful, our work will improve the performance of each node, as well as
-the working-set size each node can handle, potentially improving both by orders
-of magnitude.  Third, this includes scaling from only CPUs, to \emph{heterogeneous} computing accelerators, such as GPUs and FPGAs, at rack-scale or
-greater.  Prior work has demonstrated that data movement and address translation
-in GPUs is a first-order performance issue~\cite{pichai:gpu,
-power:gpummu,rossbach:ptask}. Further, cloud computing infrastructure, such as
-Microsoft's Catapult, aggregate these accelerators and move data  at the
-granularity of racks, not single nodes~\cite{putnam:catapult}.  These
-accelerators are evolving rapidly and in ways that are hard to anticipate; thus,
-a principled design is necessary to efficiently scale to new classes of future,
-unknown compute hardware. \john{It's hard to edit this effectively when I don't even know what the referenced work. Please fill in cites.}
+scale.  
+
+% First, virtual memory is a major bottleneck for scaling individual
+% machines to larger memories and CPU counts.  Without a principled redesign of
+% VM, additional RAM and cores will be of diminishing value.  Second, our work
+% supports \emph{scale-out} cloud applications, which rely on naming, placing, and
+% translating accesses to resources that are distributed across multiple machines.
+% %Currently, if one needs to do complex operations on sensitive data in the
+% %cloud, there is no secure and sensible option other than scaling out across
+% %multiple SGX enclaves.
+% If successful, our work will improve the performance of each node, as well as
+% the working-set size each node can handle, potentially improving both by orders
+% of magnitude.  Third, this includes scaling from only CPUs, to \emph{heterogeneous} computing accelerators, such as GPUs and FPGAs, at rack-scale or
+% greater.  Prior work has demonstrated that data movement and address translation
+% in GPUs is a first-order performance issue~\cite{pichai:gpu,
+% power:gpummu,rossbach:ptask}. Further, cloud computing infrastructure, such as
+% Microsoft's Catapult, aggregate these accelerators and move data  at the
+% granularity of racks, not single nodes~\cite{putnam:catapult}.  These
+% accelerators are evolving rapidly and in ways that are hard to anticipate; thus,
+% a principled design is necessary to efficiently scale to new classes of future,
+% unknown compute hardware. \john{It's hard to edit this effectively when I don't even know what the referenced work. Please fill in cites.}
