@@ -7,16 +7,16 @@
 
 \mab{this is just notes, but I'm trying to get stuff down.}
 
-One objective is to come up with a parallel algorithmic model for distributed GPUS.
+One objective is to come up with a parallel algorithmic model for distributed GPUs.
 
-\begin{rproblem}[\bf Performance model for distributor GPUs]
+\begin{rproblem}[\textbf{Performance model for distributor GPUs}]
 We envision a single performance model for distributed GPU computation.  Given the complications of GPUs, this may be a stretch goal, with an intermediate goal of adapting a small set of algorithmic models to capture the different bottlenecks that GPUs face.
 \end{rproblem}
 
 Although there has been excitement about striving for algorithmic GPU models among parallel computing researchers~\cite{SitchinavaWe13, MaChAg14a,MaChAa14b}, it is unlikely that there is a single performance model that works for all computations.
 
-GPUs seem to defy efforts to model them elegantly. 
-That said, often there are particular bottlenecks for a given problem, and for a single bottleneck one can model reasonably. 
+GPUs seem to defy efforts to model them elegantly.
+That said, often there are particular bottlenecks for a given problem, and for a single bottleneck one can model reasonably.
 Thus, part of our task, for each problem that we develop, is to determined what is the central computational bottleneck, and use and algorithmic model that captures that bottleneck.  Below we describe some of the models in which we will prove theorems
 
 
@@ -37,44 +37,44 @@ Here are some issues to model:
 
 
 
-\begin{rproblem}[\bf peppermint flavored GPUs]
-Make flavored GPUs that can be eaten. The challenge is that they are made of silicon, but that's better than a big mac.  
-\label{rprob:peppermint}
+\begin{rproblem}[\textbf{peppermint flavored GPUs}]
+Make flavored GPUs that can be eaten. The challenge is that they are made of silicon, but that's better than a big mac.
+\label{rprob:peppermint5}
 \end{rproblem}
 
-\begin{rproblem}[\bf General-purpose maplets and filters on GPUs]
-Build compact, fast, distributed resizable, and general-purpose maplets (a filter where we can associate small values with keys) that scale to large datasets and exploit massive GPU parallelism. 
+\begin{rproblem}[\textbf{General-purpose maplets and filters on GPUs}]
+Build compact, fast, distributed resizable, and general-purpose maplets (a filter where we can associate small values with keys) that scale to large datasets and exploit massive GPU parallelism.
 [Summary sentence talking a little bit about the state of the art and one about the challenges.]
-\label{rprob:peppermint}
+\label{rprob:peppermint6}
 \end{rproblem}
 
 Afterwards  we put in a couple of paragraphs talking about where we've used maplets effectively, where they still need to be used, etc.
 
-\begin{rproblem}[\bf General-purpose hash table on GPUs]
-Build compact, fast, distributed, resizable, and general-purpose hash table that scale to large datasets and exploit massive GPU parallelism. 
+\begin{rproblem}[\textbf{General-purpose hash table on GPUs}]
+Build compact, fast, distributed, resizable, and general-purpose hash table that scale to large datasets and exploit massive GPU parallelism.
 [Summary sentence talking a little bit about the state of the art and one about the challenges.]
-\label{rprob:peppermint}
+\label{rprob:peppermint7}
 \end{rproblem}
 
 \begin{itemize}
     \item It is hard to build resizesable filters and hash tables GPUs.
-    \item Resizing is manual. You need an explicit call.  You need to do that from the host. 
+    \item Resizing is manual. You need an explicit call.  You need to do that from the host.
     \item You need a runtime in GPU that can detect the space issue and reallocate dynamially.
     \item Theoretically, we can resize in more of an incremental way.
-    \item We want the resizing to be automatically managed from the application's perspective. 
+    \item We want the resizing to be automatically managed from the application's perspective.
 \end{itemize}
 
 
-\begin{rproblem}[\bf Dynamic succinct data structures on GPUs]
+\begin{rproblem}[\textbf{Dynamic succinct data structures on GPUs}]
 Build dynamically updatable succinct data structures on GPUs.
 [Summary sentence talking a little bit about the state of the art and one about the challenges.]
-\label{rprob:peppermint}
+\label{rprob:peppermint8}
 \end{rproblem}
 
-\begin{rproblem}[\bf Distributed data structures on multi-node GPUs]
-Build distributed data structure that can achieve low variance across for load balancing, low communication volume and high communication bandwidth. 
+\begin{rproblem}[\textbf{Distributed data structures on multi-node GPUs}]
+Build distributed data structure that can achieve low variance across for load balancing, low communication volume and high communication bandwidth.
 [Summary sentence talking a little bit about the state of the art and one about the challenges.]
-\label{rprob:peppermint}
+\label{rprob:peppermint9}
 \end{rproblem}
 
 
@@ -208,5 +208,3 @@ granularity of racks, not single nodes~\cite{putnam:catapult}.  These
 accelerators are evolving rapidly and in ways that are hard to anticipate; thus,
 a principled design is necessary to efficiently scale to new classes of future,
 unknown compute hardware.
-
-

@@ -9,7 +9,7 @@
 
 -- definition of the problem -- that's mostly there but mixed in with other things
 
--- importance of the problem -- no idea why it's important.  are there 1000 people who do this?  5?  1M?  No clue 
+-- importance of the problem -- no idea why it's important.  are there 1000 people who do this?  5?  1M?  No clue
 
 -- challenges in solving problem
 
@@ -24,19 +24,19 @@
 
 The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
 The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
-Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment. 
+Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment.
 
 Taxonomic classification of reads is a critical first computational step in any metagenomic analysis pipeline.
 For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step.
 
 The task of read classification is far from straightforward.
-First of all, species can be similar and even share some genomic patterns, which makes the discrimination complex. 
+First of all, species can be similar and even share some genomic patterns, which makes the discrimination complex.
 Moreover, genomes are not uniformly present in the sample.
 In general, there are a few species that are very abundant, while many other organisms have a low proportion of genomic material in the sample.
 
 Taxonomic classification tools~\cite{ames2013scalable, kim2016centrifuge, menzel2016fast, wood2014kraken, wood2019improved, dilthey2019strain,liu2018novel} use a supervised approach to assign taxonomic labels to reads.
-These tools build a database of known genomes and their taxonomic labels from the NCBI database. 
-The database is typically an index that maps smaller subsequences (\kmers) to the list of taxa corresponding to the genomes in which the subsequences occur. 
+These tools build a database of known genomes and their taxonomic labels from the NCBI database.
+The database is typically an index that maps smaller subsequences (\kmers) to the list of taxa corresponding to the genomes in which the subsequences occur.
 During the classification phase, the input reads are decomposed into \kmers and queried in the index to determine the most appropriate taxon.
 
 
@@ -46,15 +46,15 @@ A metagenomic sample can contain thousands of genomes with varying level of simi
 \paragraph{Reference database.} \mfc{most of this is not about what the reference database is, or perhaps I don't know what you mean by those words}
 Building the database of known genomes is often quite memory intensive.
 The sheer size of sequenced microbial genetic sequences presents a considerable computational challenge.
-The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species as well as the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ millon sequences. 
+The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species as well as the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ millon sequences.
 Kraken's~\cite{wood2014kraken} memory requirements can easily exceed 100GB~\cite{simon2019benchmarking}, especially when the reference data includes large eukaryotic genomes~\cite{meiser2017sequencing, knutson2017porcine}.
 %
 The universe of microbial sequences is large and diverse. The vast search space often results in false positives as sequences can be matched against multiple taxa. Also, a large number of undiscovered microbial species can result in false negatives as these species are not present in the database.
 
-\begin{rproblem}[\bf Metagenomic classification at terabyte scale]
+\begin{rproblem}[\textbf{Metagenomic classification at terabyte scale}]
 \mfc{This is not a problem $\rightarrow$}Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, classification operation is computationally intensive and makes it infeasible to scale to terabyte-scale metagenomic datasets. \mfc{so far, none of this belongs in the problem formulation, but it "what's wrong with the current situation" or "what are the challenges of solving this problem"}
 \mfc{Again: this is not a problem and is a controvercial claim about wha tis required $\rightarrow$} Scaling taxonomic classification to terabyte-scale requires scaling up computations and scaling out database construction at the same time.
-\label{rprob:peppermint}
+\label{rprob:peppermint1}
 \end{rproblem}
 
 \mfc{there is no discussion of what we are actually going to do.  what hardware?  what tests?  how will we know that we succeeded?  How much of an improvement do we need in order to succeed?  What it will it mean to our target application community if we succeed?}
@@ -73,12 +73,12 @@ As such, these data have mostly been rendered impervious to sequence-level searc
 Recently, new computational schemes have been proposed
 that hold the potential to allow searching raw SARs while overcoming these challenges. Solomon and Kingsford~\cite{solomon2016fast} introduced the sequence bloom tree (SBT) data structure and an associated algorithm that enables an efficient type of search over thousands of sequencing experiments. Specifically, they re-phrase the query in terms of k-mer set membership in a way that is robust to the fact that the target sequences have not been assembled. The resulting problem is coined as the experiment discovery problem, where the goal is to return all experiments that contain at least some user-defined q fraction of the k-mers present in the query string.
 
-Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and PI Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} as in exact map to map \kmers. They further continued this effort in collaboration with Prof. Patro UMD to scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} to storage devices. 
+Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and PI Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} as in exact map to map \kmers. They further continued this effort in collaboration with Prof. Patro UMD to scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} to storage devices.
 
 
-\begin{rproblem}[\bf Build a distributed Mantis to index all of SRA]
+\begin{rproblem}[\textbf{Build a distributed Mantis to index all of SRA}]
 Currently, Mantis and other raw sequence search indexes are not able to index a large fraction of the SRA. Scaling Mantis-like indexes to index all of SRA on single machine is not feasible given the limitation of the shared-memory sizes and storage. Distributing the Mantis across hundreds of nodes will enable the index to scale to index all of SRA at petabyte scale.
-\label{rprob:peppermint}
+\label{rprob:peppermint2}
 \end{rproblem}
 
 \subsection{Pangenomics}
@@ -89,7 +89,7 @@ Cataloguing the DNA from all individuals in a species is a daunting task. The fi
 
 Pan-genome studies of plants and animals remained elusive at first, due to the large genome sizes and vast amounts of intergenic sequence in these species. However, in recent years, thanks to dramatic improvements in the efficiency of sequencing technology, the scientific community has been able to sequence dozens, hundreds or even thousands of individuals of a single plant or animal species~\cite{XXX}. Additionally, new long-read sequencing technologies now allow us to better assemble repetitive regions of large genomes, including centromeric regions, that are difficult to characterize with short reads~\cite{XXX}.
 
-Human sequencing, too, has accelerated. Over the past few years, a flurry of publications have described large collections of newly sequenced human genomes, including population-specific cohorts from Iceland~\cite{XXX}, Denmark~\cite{XXX}, Sweden~\cite{XXX}, Papua New Guinea~\cite{XXX}, Mongolia~\cite{XXX} and Africa~\cite{XXX}, as well as large-scale surveys of the entire world~\cite{XXX}. 
+Human sequencing, too, has accelerated. Over the past few years, a flurry of publications have described large collections of newly sequenced human genomes, including population-specific cohorts from Iceland~\cite{XXX}, Denmark~\cite{XXX}, Sweden~\cite{XXX}, Papua New Guinea~\cite{XXX}, Mongolia~\cite{XXX} and Africa~\cite{XXX}, as well as large-scale surveys of the entire world~\cite{XXX}.
 
 Pangenomic studies are performed by storing the genomes of multiple individuals in a genome graph (also known as the sequence graph or variation graph). A genome graph is a directed, acyclic graph (DAG) $G = (N, E, P)$ that embeds a set of DNA sequences. It comprises a set of
 nodes $N$, a set of direct edges $E$, and a set of paths $P$. For DNA sequences, we use the
@@ -100,9 +100,9 @@ Efficiently indexing and storing a genome graph is a computationally and memory/
 
 
 
-\begin{rproblem}[\bf Building a pangenomic index at population-scale and performing sequence-to-graph mapping]
+\begin{rproblem}[\textbf{Building a pangenomic index at population-scale and performing sequence-to-graph mapping}]
 Current pangenomic indexes can not scale to population-scale variation datasets such as 100,000 Genomes project. Furthermore, they do not support adding new genomes to an existing index. We want to build a pangenomic index that can perform fast variation queries, sequence-to-graph mapping, support updates, and scale to population-scale datasets.
-\label{rprob:peppermint}
+\label{rprob:peppermint3}
 \end{rproblem}
 
 \subsection{MetaHipMer}
@@ -161,10 +161,10 @@ per core) and hence there will be 7 processes per GPU\@. Using the MPS has the
 benefits of simplicity, because there is no inter-GPU communication required,
 and it improves performance by increasing the utilization of the GPUs.
 
-\begin{rproblem}[\bf Run MetaHipMer on largest possible metagenomic dataset]
+\begin{rproblem}[\textbf{Run MetaHipMer on largest possible metagenomic dataset}]
 So far MetaHipMer is limited by the peak RAM usage in HPC environments.
 [Summary sentence talking a little bit about the state of the art and one about the challenges.]
-\label{rprob:peppermint}
+\label{rprob:peppermint4}
 \end{rproblem}
 
 
@@ -179,7 +179,7 @@ So far MetaHipMer is limited by the peak RAM usage in HPC environments.
 %\resizebox{\columnwidth}{!}{%
     \begin{tabular}{c | c | c | c | c | c}
     \toprule
-    {\bf Dataset} & \multicolumn{5}{c}{\bf Percentage singleton $k$-mers} \\
+    \textbf{Dataset} & \multicolumn{5}{c}{\textbf{Percentage singleton $k$-mers}} \\
     \midrule
     & $K=21$ & $k=33$ & $k=55$ & $k=77$ & $k=99$ \\
     \midrule
@@ -210,5 +210,3 @@ and much slower running time.
 Using a space-efficient filter to weed out singleton \kmers helps to reduce
 the memory pressure on the counting hash table thereby reducing the peak memory
 usage and increased run time. See~\cref{fig:mhm-kmer}.
-
-
