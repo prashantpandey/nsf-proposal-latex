@@ -164,14 +164,7 @@ structures like hash tables, vectors and strings, which are a challenge to imple
 Data structures are the core of computational-biology applications and are critical for their performance and scalability.
 To build scalable computational-biology applications that can keep up with the rapid growth data we need compact, high-performance, dynamic, and distributed data structures. Specifically, we need: approximate data structures such as filters, sketches, and locality-sensitive hashing data structures; exact data structures such as hash tables, string data structures, succinct data structures, and trees.
 
-We need these data structures and algorithms to exploit accelerators such as GPUs with the following features:
-\begin{itemize}[noitemsep, leftmargin=*]
-    \item Space-efficient
-    \item Dynamic
-    \item High concurrency
-    \item Scale out of GPU device RAM to host RAM
-    \item Distributed memory across nodes
-\end{itemize}
+These data structures and algorithms will need to exploit accelerators such as GPUs to scale up computations and at the same time support  features like space-efficiency, dynamism, high concurrency, scaling out of GPU device RAM to host RAM, and distributed memory design to scale out to multiple nodes.
 
 Furthermore, to achieve fine-grained resizing and to keep the peak memory usage low we first need to develop new algorithmic approaches for traditional CPU data structures and then extend them to GPUs.
 
