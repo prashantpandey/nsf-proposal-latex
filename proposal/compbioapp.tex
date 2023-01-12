@@ -83,7 +83,7 @@ Currently, Mantis and other raw sequence search indexes are not able to index a 
 
 \subsection{Pangenomics}
 
-Much of the field of genomics revolves around the existence of reference genomes, which are roadmaps for a ‘typical’ individual of each species. The creation of each reference was, and still remains, a major focus of the genomics community, with 13 years and US$2.7$ billion having been spent on the creation of the human reference genome alone. The ability to compare a newly sequenced individual with a reference and find differences has enabled myriad discoveries and innovations, and in human genomics this ability has formed the basis of thousands of studies seeking the genetic origins of disease. However, as the number and scope of sequencing experiments have grown dramatically, scientists have begun to realize the many limitations that a single reference genome imposes upon the community. To better capture the variation missed by using one reference, we can create and utilize a ‘pan-genome’, a collection of all the DNA sequences that occur in a species.
+Much of the field of genomics revolves around the existence of reference genomes, which are roadmaps for a ‘typical’ individual of each species. The creation of each reference was, and still remains, a major focus of the genomics community, with 13 years and US\$2.7 billion having been spent on the creation of the human reference genome alone. The ability to compare a newly sequenced individual with a reference and find differences has enabled myriad discoveries and innovations, and in human genomics this ability has formed the basis of thousands of studies seeking the genetic origins of disease. However, as the number and scope of sequencing experiments have grown dramatically, scientists have begun to realize the many limitations that a single reference genome imposes upon the community. To better capture the variation missed by using one reference, we can create and utilize a ‘pan-genome’, a collection of all the DNA sequences that occur in a species.
 
 Cataloguing the DNA from all individuals in a species is a daunting task. The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be.
 
@@ -93,7 +93,7 @@ Human sequencing, too, has accelerated. Over the past few years, a flurry of pub
 
 Pangenomic studies are performed by storing the genomes of multiple individuals in a genome graph (also known as the sequence graph or variation graph). A genome graph is a directed, acyclic graph (DAG) $G = (N, E, P)$ that embeds a set of DNA sequences. It comprises a set of
 nodes $N$, a set of direct edges $E$, and a set of paths $P$. For DNA sequences, we use the
-alphabet {A, C, G, T, N}. Each $n_i \in N$ represents a sequence $seq(n_i)$. Edges in the graph connect nodes that are followed on a path. Nodes on a path
+alphabet \{A, C, G, T, N\}\@. Each $n_i \in N$ represents a sequence $seq(n_i)$. Edges in the graph connect nodes that are followed on a path. Nodes on a path
 are assigned positions based on the coordinate systems of sequences they represent.
 
 Efficiently indexing and storing a genome graph is a computationally and memory/space intensive process due to the presence of thousands of coordinate systems corresponding to the individuals. Existing applications that index genome graphs~\cite{pandey2021variantstore,garrison2018variation} are designed to use compressed string indexes and off-the-shelf graph indexes. However, these indexes do not scale to pangenomic datasets available today due the limitations to the memory-intensive characteristics of these data structures. Furthermore, these indexes are not designed to efficiently support adding new genomes to an existing index. They to rebuild the whole index in order to add a new sample.
@@ -109,9 +109,9 @@ Current pangenomic indexes can not scale to population-scale variation datasets 
 
 Metagenome assembly involves reconstructing long contiguous sequences ({\it
 contigs}) of genetic material from short input {\it reads}. These reads are
-strings of bases (the DNA alphabet A,C,G,T) of length 150 to 250 that are
+strings of bases (the DNA alphabet A, C, G, T) of length 150 to 250 that are
 produced by gene sequencing machines.  For metagenomes, these reads are
-extracted from environmental samples (e.g. gut bacteria, or a soil sample) that
+extracted from environmental samples (e.g., gut bacteria, or a soil sample) that
 contain the genes of potentially thousands of microbes, existing at varying
 abundances.  The reads are error prone (typically about 0.24\% error per base)
 and sequencing is done multiple times to ensure every region of genetic material
@@ -135,7 +135,7 @@ correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on
 $k$) to store each $k$-mer.
 
 To ensure accurate contigs, the $k$-mers that occur only once (singletons) are
-treated as errors and dropped. In a typical set of metagenome reads, 70 to 80\%
+treated as errors and dropped. In a typical set of metagenome reads, 70--80\%
 of unique $k$-mers are singletons, but they still need to be stored and counted
 in the distributed hash table. In the default MetaHipMer implementation, storing
 the unique $k$-mers is the most memory intensive part of the computation and can
@@ -150,13 +150,13 @@ procedure calls (RPCs). In the hash table insertion phase, the $k$-mers are
 aggregated, dispatched over the network, and inserted in bulk into the local
 hash tables, which are running on GPUs. Using GPUs boosts performance, but
 further constrains memory (e.g. the Summit supercomputer~\cite{VazhkudaiDBG18}
-has an aggregate of 96GB GPU memory and 512GB CPU memory per node).
+has an aggregate of 96~GB GPU memory and 512~GB CPU memory per node).
 
 MetaHipMer runs on distributed systems with multiple nodes, and each node could
 have multiple GPUs, e.g. Summit has 6 GPUs per node. To utilize all the GPUs on
 a node, MetaHipMer maps the UPC++ processes to the GPUs in a round robin
-fashion, so multiple processes will share each GPU using the Nvidia
-Multi-Process Service (MPS). On a Summit node there will be 42 processes (one
+fashion, so multiple processes will share each GPU using the NVIDIA
+Multi-Process Service (MPS)\@. On a Summit node there will be 42 processes (one
 per core) and hence there will be 7 processes per GPU\@. Using the MPS has the
 benefits of simplicity, because there is no inter-GPU communication required,
 and it improves performance by increasing the utilization of the GPUs.
