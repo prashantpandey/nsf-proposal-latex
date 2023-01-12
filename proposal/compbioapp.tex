@@ -5,7 +5,7 @@
 
 \subsection{Taxonomic classification of metagenomic data}
 
-The microbes that live in an environment can be identified by the combined genomic material, also called the metagenome.
+The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
 The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
 %
 Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment. 
@@ -48,6 +48,8 @@ Scaling taxonomic classification to terabyte-scale requires scaling up computati
 The ability to issue sequence-level searches over publicly available databases of assembled genomes and known proteins has played an instrumental role in many studies in the field of genomics, and has made BLAST~\cite{altschul1990basic} and its variants some of the most widely used tools in all of science. Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences. However, the vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive [SRA]~\cite{kodama2012sequence}) exist in the form of raw, unassembled sequencing reads. As such, these data have mostly been rendered impervious to sequence-level search, which substantially reduces the utility of such publicly available data.
 
 There are a number of reasons that typical reference-database-based search techniques cannot easily be applied in the context of searching raw, unassembled sequences. One major reason is that most current techniques do not scale well as the amount of data grows to the size of the SRA (which today is $\approx4$ petabases of sequence information). A second reason is that searching unassembled sequences means that relatively long queries (e.g., genes) are unlikely to be present in their entirety as an approximate substring of the input.
+
+
 
 \begin{rproblem}[\bf Scale Mantis to index all of SRA]
 Currently, Mantis and other raw sequence search indexes are not able to index a large fraction of the SRA.
