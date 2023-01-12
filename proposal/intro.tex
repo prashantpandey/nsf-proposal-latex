@@ -80,16 +80,21 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-\setlength\intextsep{0pt}
-\begin{wrapfigure}{R}{0.6\textwidth}
-\vspace{-5pt}
-\centering
-\includegraphics[width=\textwidth]{images/PPOSS_App_DS}
-\caption{Relation between computational-biology applications, data processing tools and data structures. We further mention the desired features in data structures to achieve performance and scalability.}
-\label{fig1}
-\end{wrapfigure}
+\prashant{Add a high level detail about target dataset for these applications. What are we planning to do.}
 
 \john{We actually need specifics on the applications that we will implement: what, specifically, will they do? input and output? is there a CPU equivalent?}
+
+
+% \setlength\intextsep{0pt}
+% \begin{wrapfigure}{R}{0.6\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{images/PPOSS_App_DS}
+\caption{Relation between computational-biology applications, data processing tools and data structures. We further mention the desired features in data structures to achieve performance and scalability.}
+\label{fig1}
+\end{figure}
+% \end{wrapfigure}
+
 
 The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks.
 Compact and exact data structures include: hash tables and succinct bit vectors, compressed string indexes, trees.
