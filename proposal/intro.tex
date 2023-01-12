@@ -44,11 +44,11 @@ Existing tools use both  approximate\footnote{In this proposal, we refer to data
 
 As we will see, \kmer analysis is a part of several of the specific applications we will be addressing.
 
-% \item {\bf Compressed indexes.} 
+% \item {\bf Compressed indexes.}
 % FM-index, BWT, comressed suffix array.
 
 \item {\bf Sequence alignment.} Sequence alignment involves aligning sequences of DNA, RNA or protein to identify similar regions that may be a consequence of underlying biological process and to establish evolutionary relationships.
-Sequence alignment is extensively used in the genomic and metagenomic assembly process to map the contigs back to the input raw reads to extend the contigs in the correct order to construct the full genome. In computational-biology applications, sequence alignment is often performed sequence to sequence; between multiple sequences (\emph{multiple sequence alignment}); and from a sequence to graph where the the graph is a sequence graph representing genomes from multiple individuals. 
+Sequence alignment is extensively used in the genomic and metagenomic assembly process to map the contigs back to the input raw reads to extend the contigs in the correct order to construct the full genome. In computational-biology applications, sequence alignment is often performed sequence to sequence; between multiple sequences (\emph{multiple sequence alignment}); and from a sequence to graph where the the graph is a sequence graph representing genomes from multiple individuals.
 
 Existing tools use compressed and succinct string indexes such FM-index~\cite{ferragina2000opportunistic}, BWT~\cite{burrows1994block}, compressed suffix arrays~\cite{grossi2000compressed} and dynamic programming algorithms for sequence alignment.
 Compressed and succinct indexes help to perform sequence alignment in a memory-efficient manner and enable these tool to scale to large-scale sequencing data.
@@ -64,13 +64,13 @@ This toolbox is used, for example, to solve the following problems.
 \item {\bf Raw sequence search.} Raw sequence search involves  identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
 
 Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples the \kmer is present in. Tools like SSBT~\cite{SolomonKi16} build a tree of approximate \kmer indexes to quickly prune down the search space of sample. While Mantis~\cite{PandeyABFJP18Cell} build an exact inverted index using compact hash tables.
-In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers. 
+In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers.
 
 \item {\bf Taxonomic classification.} Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics
 projects.
 
-Methods for taxonomic classification of metagenomic data~\cite{wood2014kraken} often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space. 
-Furthermore, to save space many solutions~\cite{wood2019improved} also employ approximate sketches (e.g., locality sensitive hashing (LSH)~\cite{roberts2004reducing}) to represent metagenomic data and perform similarity computations over sketches. 
+Methods for taxonomic classification of metagenomic data~\cite{wood2014kraken} often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
+Furthermore, to save space many solutions~\cite{wood2019improved} also employ approximate sketches (e.g., locality sensitive hashing (LSH)~\cite{roberts2004reducing}) to represent metagenomic data and perform similarity computations over sketches.
 They further employ compact string indexes such as FM-index~\cite{ferragina2000opportunistic} and compressed suffix array (CSA)~\cite{grossi2000compressed} to perform sequence comparison to determine exact matches among the pruned-down samples.
 
 \item {\bf Pangenomics.}
@@ -89,6 +89,7 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 \label{fig1}
 \end{wrapfigure}
 
+\john{We actually need specifics on the applications that we will implement: what, specifically, will they do? input and output? is there a CPU equivalent?}
 
 The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks.
 Compact and exact data structures include: hash tables and succinct bit vectors, compressed string indexes, trees.
@@ -124,7 +125,7 @@ As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’
 
 
 \paragraph{GPUs and other accelerators in computational biology.}
-As with other high-performance computing (HPC) domains, 
+As with other high-performance computing (HPC) domains,
 GPUs are increasingly used in large-scale computational biology because they offer orders of magnitude of jump in terms of low-cost parallelism, as long as data structure and algorithms can be defined to conform to the memory and parallelism requirement of GPUs.
 %
 For example, GPUs are used in some computational-biology applications to speed up \kmer counting~\cite{nisa2021distributed} and local assembly~\cite{awan2021accelerating}.
@@ -234,8 +235,8 @@ Section 8: Bioinformatics validation, with research problems for each bioinforma
 
 In this project, we propose to develop a  collection of
 memory-efficient, high-performance, dynamic, and distributed GPU data structures.
-We will show how to use these data structures for our target applications in computational biology, as well as some others. 
-With the help these data structures, we aim to scale computational biology applications to massive datasets (raw sequencing datasets, metagenomic datasets from complex microbiomes, population-scale pangenomic datasets) and enable them to answer complex biological questions that are not possible today. 
+We will show how to use these data structures for our target applications in computational biology, as well as some others.
+With the help these data structures, we aim to scale computational biology applications to massive datasets (raw sequencing datasets, metagenomic datasets from complex microbiomes, population-scale pangenomic datasets) and enable them to answer complex biological questions that are not possible today.
 Because many of these applications require the same set of data structures, we will incorporate these data structures into a standalone library to enable easy reuse in other applications.
 
 The PIs and others have shown that recent data structure advances~\cite{cite-somethin} show that
