@@ -5,6 +5,15 @@
 
 \subsection{Taxonomic classification of metagenomic data}
 
+\mfc{I don't get the organization of this section.  What I was expecting:
+
+> definition of the problem -- that's mostly there but mixed in with other things
+
+-- 
+
+> challenges in solving problem
+}
+
 The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
 The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
 Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment. 
@@ -26,7 +35,7 @@ During the classification phase, the input reads are decomposed into \kmers and 
 \paragraph{Metagenomic data.}
 A metagenomic sample can contain thousands of genomes with varying level of similarity and often occurring at vastly different abundances. Furthermore, due to high-throughput sequencing metagenomic datasets contains millions of sequencing reads making traditional, string-matching-based tools like BLAST infeasible to perform classification. Metagenomic datasets today easily range from hundreds of GBs to TBs. For example, WA dataset contains a collection of marine microbial communities from the Western Arctic Ocean and consists of 822 GB of 2.5 billion reads in 12 samples~\cite{hofmeyr2020terabase}.
 
-\paragraph{Reference database.}
+\paragraph{Reference database.} \mfc{most of this is not about what the reference database is, or perhaps I don't know what you mean by those words}
 Building the database of known genomes is often quite memory intensive.
 The sheer size of sequenced microbial genetic sequences presents a considerable computational challenge.
 The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species as well as the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ millon sequences. 
@@ -35,11 +44,12 @@ Kraken's~\cite{wood2014kraken} memory requirements can easily exceed 100GB~\cite
 The universe of microbial sequences is large and diverse. The vast search space often results in false positives as sequences can be matched against multiple taxa. Also, a large number of undiscovered microbial species can result in false negatives as these species are not present in the database.
 
 \begin{rproblem}[\bf Metagenomic classification at terabyte scale]
-Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, classification operation is computationally intensive and makes it infeasible to scale to terabyte-scale metagenomic datasets.
-Scaling taxonomic classification to terabyte-scale requires scaling up computations and scaling out database construction at the same time.
+\mfc{This is not a problem $\rightarrow$}Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, classification operation is computationally intensive and makes it infeasible to scale to terabyte-scale metagenomic datasets. \mfc{so far, none of this belongs in the problem formulation, but it "what's wrong with the current situation" or "what are the challenges of solving this problem"}
+\mfc{Again: this is not a problem and is a controvercial claim about wha tis required $\rightarrow$} Scaling taxonomic classification to terabyte-scale requires scaling up computations and scaling out database construction at the same time.
 \label{rprob:peppermint}
 \end{rproblem}
 
+\mfc{there is no discussion of what we are actually going to do.  what hardware?  what tests?  how will we know that we succeeded?  How much of an improvement do we need in order to succeed?  What it will it mean to our target application community if we succeed?}
 
 \prashant{Working on the following subsections}
 
