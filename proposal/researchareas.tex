@@ -45,23 +45,14 @@ Our team has extensive expertise in the following four research areas:
 \end{description}
 
 
-\paragraph{Notions of Scale.}  Our proposed work address several notions of
-scale.  First, virtual memory is a major bottleneck for scaling individual
-machines to larger memories and CPU counts.  Without a principled redesign of
-VM, additional RAM and cores will be of diminishing value.  Second, our work
-supports \emph{scale-out} cloud applications, which rely on naming, placing, and
-translating accesses to resources that are distributed across multiple machines.
-%Currently, if one needs to do complex operations on sensitive data in the
-%cloud, there is no secure and sensible option other than scaling out across
-%multiple SGX enclaves.
-If successful, our work will improve the performance of each node, as well as
-the working-set size each node can handle, potentially improving both by orders
-of magnitude.  Third, this includes scaling from only CPUs, to \emph{heterogeneous} computing accelerators, such as GPUs and FPGAs, at rack-scale or
-greater.  Prior work has demonstrated that data movement and address translation
-in GPUs is a first-order performance issue~\cite{pichai:gpu,
-power:gpummu,rossbach:ptask}. Further, cloud computing infrastructure, such as
-Microsoft's Catapult, aggregate these accelerators and move data  at the
-granularity of racks, not single nodes~\cite{putnam:catapult}.  These
-accelerators are evolving rapidly and in ways that are hard to anticipate; thus,
-a principled design is necessary to efficiently scale to new classes of future,
-unknown compute hardware. \john{It's hard to edit this effectively when I don't even know what the referenced work is. Please fill in cites.}
+\paragraph{Notions of Scale.}
+
+\prashant{Fill this in based in facilities document from Berkeley}
+Multi-core parallelism
+single-node GPU
+Multi-GPU on a single node
+Multi-node GPU (~100s of nodes)
+
+GPU: V100 32GB RAM, A100: 80GB RAM
+
+Size of biggest comp bio problems we will attack
