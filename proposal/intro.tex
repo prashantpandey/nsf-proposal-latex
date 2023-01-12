@@ -117,7 +117,7 @@ These existing tools are limited by the single-node compute and shared-memory pa
 
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
-Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is increasing by 100-200\%~\cite{kodama2012sequence}.
+Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is is likely to double in size every $1.5$ years~\cite{kodama2012sequence}.
 Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible on single-node shared-memory systems.
 
 As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’s law period the performance gains will come from software, algorithms, and hardware (referred as the top of the computing stack) rather than the semiconductor (referred as the bottom). We can achieve massive scalability by, first designing data structures and algorithms to scale up using modern accelerators such as GPUs and second scaling out by using distributed memory in an high-performance computing (HPC) environment.
