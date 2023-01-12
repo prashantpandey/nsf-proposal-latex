@@ -168,6 +168,8 @@ Specifically, we are interested in estimating the total number of \kmers, the to
 
 \prashant{Scale out: We need hash table that can be distributed across multiple nodes in HPC clusters. However, when partitioning data across multiple nodes there are two challenges: First, we need to reduce the load variance across nodes. Second, we need to reduce the communication volume to while constructing the hash table and also to perform operations on the hash table. Operations can include: performing a join/intersection across two distributed hash tables.}
 
+\prashant{Expand on the distributed HT usecase.}
+
 Hash tables are a core data structure in many applications, including key-value
 stores, databases, and big-data-analysis engines, and are included in most
 standard libraries.  Hash-table performance can be a substantial bottleneck for
