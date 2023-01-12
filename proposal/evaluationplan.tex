@@ -1,6 +1,32 @@
 \section{Evaluation plan}
 
+% The Project Description must contain a section titled "Evaluation Plan" that (a) includes a timeline of proof-of-concept implementations of the key components; and (b) outlines how the project's success will be measured.
+
+\subsection{Timeline}
+
+\subsection{Measuring Success} We will combine our systems and theory advances into a standalone GPU library for distributed data structures that we will link with our focus computational biology applications. We expect to be measured on the success of these applications and the data-structure library.
+
+For each of our three applications (taxonomic classification, raw sequence search, and pangenomics), success means:
+
+\begin{itemize}
+  \item Best-in-class performance (vs.\ CPUs) on a single node
+  \item Achieved strong and weak scalability across multiple GPUs and multiple nodes for
+  \item Best-in-class performance (vs.\ CPUs) on multiple nodes
+\end{itemize}
+
+Success for our distributed data-structure library means:
+
+\begin{itemize}
+  \item Our library is the data-structure substrate for the three applications above, for both single-GPU and multi-GPU/multi-node configurations
+  \item Our library embodies best practices in software development: open-source software with an Apache 2.0 license, available via Github; a suite of functional and performance tests; use of code-coverage tools together with these tests; internally documented code with Doxygen; and high-level developer documentation that guides use of the library.
+  \item We quantitatively measure the success of our library to others with github download and star counts; with issues filed and closed; with the number of pull requests from external developers; and primarily, via the use of our library in other projects, where we will measure both uses by developers with whom we develop as well as uses from those with whom we do not.
+\end{itemize}
+
+
+
 \subsection{Datasets}
+
+\john{I'm not sure what ``datasets'' are doing in an evaluation plan.}
 
 \paragraph{Raw sequencing data}
 Over the past decade the cost of sequencing has decreased dramatically, making the generation of sequence data more accessible. This has led to increasingly ambitious sequencing projects. For example, the 1,000 Genomes Project, which began in
@@ -12,6 +38,8 @@ of datasets, alone or in combination, creates vast opportunities for scientific 
 laboratory experiments.
 
 \john{This isn't an ``evaluation plan''. This is background.}
+
+\john{We need actual citations here.}
 
 \paragraph{Metagenomic data}
 
