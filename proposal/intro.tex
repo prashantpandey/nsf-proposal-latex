@@ -179,7 +179,11 @@ We believe the answer to these challenges is a standalone library of memory-effi
 
 Specifically, out data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxialiary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
 
-If successful \mfc{say what great things that happen if we succeed.  maybe pus something measurable?  blah orders of magintude improvement?}
+\prashant{Martin, I added the below para to answer your concern.}
+\mfc{say what great things that happen if we succeed.  maybe pus something measurable?  blah orders of magintude improvement?}
+
+If successful we will be able to perform complex data analyses to answer biological questions on terabyte and petabyte scale datasets available. For example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100K genome project~\cite{XXX}. Existing data structures and software tools fail to scale to the data sizes making a these publicly-available and highly-valuable data resources largely inert.
+
 
 The project’s novelties are: a vertical-stack approach spanning theory and algorithms: highly-concurrent, dynamic, and distributed data structures, systems: scale up using GPU acceleration, high-performance computing: scale out using distributed data structures, and applications: computational biology applications; new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs applicable to other application domains; an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
 
