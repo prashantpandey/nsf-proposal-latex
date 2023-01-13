@@ -6,3 +6,17 @@
 % Correctness and accuracy (including, but not limited to, emerging techniques for programming, analysis, testing, debugging, probabilistic reasoning and inference, verification); and
 % Heterogeneous architectures (including, but not limited to, systems with many cores and heterogeneous computing components such as Graphics Processing Units (GPUs), Tensor Processing Units, Field-Programmable Gate Arrays (FPGAs), continually changing memory systems (e.g., Non-Volatile Random Access Memories).
 % The intent is that these efforts will foster the development of principles that lead to rigorous and reproducible methodologies for the design and implementation of large-scale systems while simultaneously incorporating the cross-cutting concerns listed above.
+
+The cross-cutting concerns of particular interest to the PPoSS program are well-covered by this proposal.
+
+\begin{description}
+  \item[Scalability and performance] are the principal outcomes of the software we will build, with our explicit goals to both increase the performance of our target applications on existing datasets and to increase the scale of datasets we can target beyond what is currently possible. We describe this goal in more detail in Section~\ref{sec:we-need-performance-and-scalability}. \john{Prashant---please move this section label if you don't like where it points.}
+
+  \item[Correctness and accuracy] are primary targets of our software development methodology (Section~\ref{sec:sw-methodology}), which describes our proposed use a suite of functional and performance tests; use of code-coverage tools together with these tests; and the use of continuous-integration and continuous-development tools and methodologies.
+
+  \item[The capabilities of heterogeneous architectures] are our chief motivation for our choice of single-GPU, multi-GPU, and multi-node-multi-GPU architectural targets for this work. We elaborate on this choice in Section~\ref{sec:gpu}.
+
+
+\end{description}
+
+\john{I think we should move this section to a subsection within an existing section, perhaps after ``our proposed work'' in the introduction? There's just not a lot to say here, and that's fine, since we cover it logically elsewhere.}
