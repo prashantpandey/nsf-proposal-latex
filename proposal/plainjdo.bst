@@ -1126,7 +1126,7 @@ FUNCTION {begin.bib}
   write$ newline$
   "  \providecommand{\doi}[1]{\texttt{doi:}\discretionary{}{}{}\begingroup"
   write$ newline$
-  "    \urlstyle{tt}\url{#1}\endgroup}\fi"
+  "    \texttt{\href{https://doi.org/#1}{#1}}\endgroup}\fi"
   write$ newline$
 }
 
