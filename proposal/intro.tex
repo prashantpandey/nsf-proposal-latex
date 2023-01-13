@@ -80,9 +80,11 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-\prashant{Add a high level detail about target dataset for these applications. What are we planning to do.}
 
 \john{We actually need specifics on the applications that we will implement: what, specifically, will they do? input and output? is there a CPU equivalent?}
+
+\prashant{John, I have added the below para to answer your concern.}
+Our goal is to build tools to perform complex biological analyses at terabyte and petabyte scale to explore datasets available today and expected to be available in future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from 100K genome project~\cite{XXX} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (V100 and A100) and also the distributed computing infrastructure of super computers (Perlmutter and Summit).
 
 
 % \setlength\intextsep{0pt}
