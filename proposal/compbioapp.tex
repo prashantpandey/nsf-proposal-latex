@@ -75,6 +75,11 @@ that hold the potential to allow searching raw SARs while overcoming these chall
 Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and PI Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} as in exact map to map \kmers. They further continued this effort in collaboration with Prof. Patro UMD to scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} to storage devices.
 
 
+\noindent
+{\bf Gaps and requirement.}
+
+\prashant{Fill in...}
+
 \begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
 Build a \kmer index over all the raw experiments present in SRA~\cite{kodama2012sequence} and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world. Researchers can quickly ask biological questions and get answers. For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is
 common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant. 
@@ -83,100 +88,70 @@ common among samples with a given subtype, which samples contain a new unexpecte
 
 \subsection{Pangenomics}
 
+{\bf Problem definition.}
+Pangenomics~\cite{garrison2018variation} involves storing the genome of a species as a sequence graph consisting of genomes of multiple individuals instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
+
+\noindent
+{\bf Importance.}
 Much of the field of genomics revolves around the existence of reference genomes, which are roadmaps for a ‘typical’ individual of each species. The creation of each reference was, and still remains, a major focus of the genomics community, with 13 years and US\$2.7 billion having been spent on the creation of the human reference genome alone. The ability to compare a newly sequenced individual with a reference and find differences has enabled myriad discoveries and innovations, and in human genomics this ability has formed the basis of thousands of studies seeking the genetic origins of disease. However, as the number and scope of sequencing experiments have grown dramatically, scientists have begun to realize the many limitations that a single reference genome imposes upon the community. To better capture the variation missed by using one reference, we can create and utilize a ‘pan-genome’, a collection of all the DNA sequences that occur in a species.
 
+\noindent
+{\bf Challenges.}
 Cataloguing the DNA from all individuals in a species is a daunting task. The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be.
 
 Pan-genome studies of plants and animals remained elusive at first, due to the large genome sizes and vast amounts of intergenic sequence in these species. However, in recent years, thanks to dramatic improvements in the efficiency of sequencing technology, the scientific community has been able to sequence dozens, hundreds or even thousands of individuals of a single plant or animal species~\cite{XXX}. Additionally, new long-read sequencing technologies now allow us to better assemble repetitive regions of large genomes, including centromeric regions, that are difficult to characterize with short reads~\cite{XXX}.
 
 Human sequencing, too, has accelerated. Over the past few years, a flurry of publications have described large collections of newly sequenced human genomes, including population-specific cohorts from Iceland~\cite{XXX}, Denmark~\cite{XXX}, Sweden~\cite{XXX}, Papua New Guinea~\cite{XXX}, Mongolia~\cite{XXX} and Africa~\cite{XXX}, as well as large-scale surveys of the entire world~\cite{XXX}.
 
-Pangenomic studies are performed by storing the genomes of multiple individuals in a genome graph (also known as the sequence graph or variation graph). A genome graph is a directed, acyclic graph (DAG) $G = (N, E, P)$ that embeds a set of DNA sequences. It comprises a set of
-nodes $N$, a set of direct edges $E$, and a set of paths $P$. For DNA sequences, we use the
-alphabet \{A, C, G, T, N\}\@. Each $n_i \in N$ represents a sequence $seq(n_i)$. Edges in the graph connect nodes that are followed on a path. Nodes on a path
-are assigned positions based on the coordinate systems of sequences they represent.
+\noindent
+{\bf State of the art.}
+Pangenomic studies are performed by storing the genomes of multiple individuals in a genome graph (also known as the sequence graph or variation graph). A genome graph is a directed, acyclic graph (DAG) $G = (N, E, P)$ that embeds a set of DNA sequences. It comprises a set of nodes $N$, a set of direct edges $E$, and a set of paths $P$. For DNA sequences, we use the alphabet \{A, C, G, T, N\}\@. Each $n_i \in N$ represents a sequence $seq(n_i)$. Edges in the graph connect nodes that are followed on a path. Nodes on a path are assigned positions based on the coordinate systems of sequences they represent.
 
 Efficiently indexing and storing a genome graph is a computationally and memory/space intensive process due to the presence of thousands of coordinate systems corresponding to the individuals. Existing applications that index genome graphs~\cite{pandey2021variantstore,garrison2018variation} are designed to use compressed string indexes and off-the-shelf graph indexes. However, these indexes do not scale to pangenomic datasets available today due the limitations to the memory-intensive characteristics of these data structures. Furthermore, these indexes are not designed to efficiently support adding new genomes to an existing index. They to rebuild the whole index in order to add a new sample.
 
-
+\noindent
+{\bf Gaps and requirement.}
+Current pangenomic indexes do not scale to population-scale variation datasets such as 100,000 Genomes project~\cite{1002021100}. Furthermore, they do not support adding new genomes to an existing index. In order to add a new genomic sample to the pangenomic index required rebuilding the complete index.
 
 \begin{rproblem}[\textbf{Building a pangenomic index at population-scale and performing sequence-to-graph mapping}]
-Current pangenomic indexes can not scale to population-scale variation datasets such as 100,000 Genomes project. Furthermore, they do not support adding new genomes to an existing index. We want to build a pangenomic index that can perform fast variation queries, sequence-to-graph mapping, support updates, and scale to population-scale datasets.
+ We want to build a pangenomic index that can perform fast variation queries, sequence-to-graph mapping, support updates, and scale to population-scale datasets.
 \label{rprob:peppermint3}
 \end{rproblem}
 
-\prashant{Solution is building scalable data structures that will help scale pangenomic studies.}
+\subsection{\kmer analysis during metagenome assembly}
 
-\prashant{Research outcome...}
+% \begin{figure}
+\begin{wrapfigure}{R}{0.7\textwidth}
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/mhm-pipeline.png}
+    \caption{The \textit{k}-mer analysis pipeline in MetaHipMer. A filter can help weed out singleton $k$-mers from being inserted into the hash table.}
+    \vspace{-0.5em}
+    \label{fig:mhm-kmer}
+\end{wrapfigure}
+% \end{figure}
 
-\subsection{MetaHipMer}
+Metagenome assembly involves reconstructing long contiguous sequences ({\it contigs}) of genetic material from short input {\it reads}. These reads are strings of bases (the DNA alphabet A, C, G, T) of length 150 to 250 that are produced by gene sequencing machines.  For metagenomes, these reads are extracted from environmental samples (e.g., gut bacteria, or a soil sample) that contain the genes of potentially thousands of microbes, existing at varying abundances.  The reads are error prone (typically about 0.24\% error per base) and sequencing is done multiple times to ensure every region of genetic material is covered with some error free sequences.
 
-Metagenome assembly involves reconstructing long contiguous sequences ({\it
-contigs}) of genetic material from short input {\it reads}. These reads are
-strings of bases (the DNA alphabet A, C, G, T) of length 150 to 250 that are
-produced by gene sequencing machines.  For metagenomes, these reads are
-extracted from environmental samples (e.g., gut bacteria, or a soil sample) that
-contain the genes of potentially thousands of microbes, existing at varying
-abundances.  The reads are error prone (typically about 0.24\% error per base)
-and sequencing is done multiple times to ensure every region of genetic material
-is covered with some error free sequences.
+In the approach used by MetaHipMer~\cite{GeorganasEHG18,HofmeyrEGC20}, the reads are first divided into overlapping substrings of fixed length {\it k}, called {\it $k$-mers}, which are then used to form a de Bruijn graph~\cite{CompeauPeTe11}. In a de Bruijn graph, the vertices are $k$-mers and edges connect any two $k$-mers that have an overlap of $k-1$ bases. These vertices are stored in a hash table that is distributed across all the compute processes.  The size of the hash table is dependent on the number of unique $k$-mers.  Traversal of the de Bruijn graph enables the construction of the contigs (longer sequences).  This approach is more efficient than an all-to-all alignment of the reads, which would be prohibitive for the size of typical metagenome datasets (up to billions of reads).
 
-In the approach used by MetaHipMer~\cite{GeorganasEHG18,HofmeyrEGC20}, the reads are first divided into overlapping
-substrings of fixed length {\it k}, called {\it $k$-mers}, which are then used
-to form a de Bruijn graph~\cite{CompeauPeTe11}. In a de Bruijn graph, the
-vertices are $k$-mers and edges connect any two $k$-mers that have an overlap of
-$k-1$ bases. These vertices are stored in a hash table that is distributed
-across all the compute processes.  The size of the hash table is dependent on
-the number of unique $k$-mers.  Traversal of the de Bruijn graph enables the
-construction of the contigs (longer sequences).  This approach is more efficient
-than an all-to-all alignment of the reads, which would be prohibitive for the
-size of typical metagenome datasets (up to billions of reads).
-
-Forward and backward extensions of the $k$-mer and the counts of those
-extensions are also maintained in the hash table along with the $k$-mer.
-Information regarding the extensions and their counts is critical to identifying
-correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on
-$k$) to store each $k$-mer.
+Forward and backward extensions of the $k$-mer and the counts of those extensions are also maintained in the hash table along with the $k$-mer. Information regarding the extensions and their counts is critical to identifying correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on $k$) to store each $k$-mer.
 
 To ensure accurate contigs, the $k$-mers that occur only once (singletons) are
 treated as errors and dropped. In a typical set of metagenome reads, 70--80\%
 of unique $k$-mers are singletons, but they still need to be stored and counted
-in the distributed hash table. In the default MetaHipMer implementation, storing
-the unique $k$-mers is the most memory intensive part of the computation and can
-be roughly an order of magnitude larger than the input data.  The space required
-to store the $k$-mers can be much larger than the size of the original raw
-dataset (up to $10\times$ larger) as $k$-mers contain a lot of redundant
-information due to their overlaps.
-
-The distributed hash table in MetaHipMer is implemented as a collection of local
-hash tables, one per process, with communication happening via UPC++ remote
-procedure calls (RPCs). In the hash table insertion phase, the $k$-mers are
-aggregated, dispatched over the network, and inserted in bulk into the local
-hash tables, which are running on GPUs. Using GPUs boosts performance, but
-further constrains memory (e.g. the Summit supercomputer~\cite{VazhkudaiDBG18}
-has an aggregate of 96~GB GPU memory and 512~GB CPU memory per node).
-
-MetaHipMer runs on distributed systems with multiple nodes, and each node could
-have multiple GPUs, e.g. Summit has 6 GPUs per node. To utilize all the GPUs on
-a node, MetaHipMer maps the UPC++ processes to the GPUs in a round robin
-fashion, so multiple processes will share each GPU using the NVIDIA
-Multi-Process Service (MPS)\@. On a Summit node there will be 42 processes (one
-per core) and hence there will be 7 processes per GPU\@. Using the MPS has the
-benefits of simplicity, because there is no inter-GPU communication required,
-and it improves performance by increasing the utilization of the GPUs.
-
-\begin{rproblem}[\textbf{Run MetaHipMer on largest possible metagenomic dataset}]
-So far MetaHipMer is limited by the peak RAM usage in HPC environments.
-[Summary sentence talking a little bit about the state of the art and one about the challenges.]
-\label{rprob:peppermint4}
-\end{rproblem}
+in the distributed hash table. In the default MetaHipMer implementation, storing the unique $k$-mers is the most memory intensive part of the computation and can be roughly an order of magnitude larger than the input data.  The space required to store the $k$-mers can be much larger than the size of the original raw dataset (up to $10\times$ larger) as $k$-mers contain a lot of redundant information due to their overlaps.
 
 
-% \Cref{fig:mhm-kmer} shows different parts of the $k$-mer analysis phase in
-% MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table
-% and then a separate phase is required to purge all the singleton $k$-mers.
 
-\subsection{\Kmer distribution}
+The distributed hash table in MetaHipMer is implemented as a collection of local hash tables, one per process, with communication happening via UPC++ remote procedure calls (RPCs). In the hash table insertion phase, the $k$-mers are aggregated, dispatched over the network, and inserted in bulk into the local hash tables, which are running on GPUs. Using GPUs boosts performance, but further constrains memory (e.g. the Summit supercomputer~\cite{VazhkudaiDBG18} has an aggregate of 96~GB GPU memory and 512~GB CPU memory per node).
+
+MetaHipMer runs on distributed systems with multiple nodes, and each node could have multiple GPUs, e.g. Summit has 6 GPUs per node. To utilize all the GPUs on a node, MetaHipMer maps the UPC++ processes to the GPUs in a round robin fashion, so multiple processes will share each GPU using the NVIDIA Multi-Process Service (MPS)\@. On a Summit node there will be 42 processes (one per core) and hence there will be 7 processes per GPU\@. Using the MPS has the benefits of simplicity, because there is no inter-GPU communication required, and it improves performance by increasing the utilization of the GPUs.
+
+
+\Cref{fig:mhm-kmer} shows different parts of the $k$-mer analysis phase in
+MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table and then a separate phase is required to purge all the singleton $k$-mers.
+
+\paragraph{\Kmer distribution}
 
 \begin{wraptable}{r}{4.5in}
 \centering
@@ -214,3 +189,14 @@ and much slower running time.
 Using a space-efficient filter to weed out singleton \kmers helps to reduce
 the memory pressure on the counting hash table thereby reducing the peak memory
 usage and increased run time. See~\cref{fig:mhm-kmer}.
+
+
+\noindent
+{Challenges.}
+So far MetaHipMer is limited by the peak RAM usage in high-performance computing (HPC) environments.
+
+\begin{rproblem}[\textbf{Scale MetaHipMer to petabyte-scale metagenomic datasets on supercomputers}]
+Accelerate \kmer analysis phase in MetaHipMer using GPUs and reduce the peak RAM usage to support assembly of petabyte-scale metagenomic datasets from complex biological environments.
+\label{rprob:peppermint4}
+\end{rproblem}
+
