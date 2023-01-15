@@ -5,79 +5,79 @@
 
 \subsection{Taxonomic classification of metagenomic data}
 
-{\color{red} I don't get the organization of this section.  What I was expecting:
-
--- definition of the problem -- that's mostly there but mixed in with other things
-
--- importance of the problem -- no idea why it's important.  are there 1000 people who do this?  5?  1M?  No clue
-
--- challenges in solving problem
-
--- state of the art
-
--- requirement in a solution and what that will unlock
-
--- a crisp statment research statement that is something like: "Validate our datastructural solution for problem X"
-
--- a discussion of what methodology we will use.  what databases.  why are these the databases.  what hardware or class of hardware.
-}
-
+{\bf Problem definition.}
 The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
 The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
 Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment.
+%
+Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics projects.
 
+\noindent
+{\bf Importance.}
 Taxonomic classification of reads is a critical first computational step in any metagenomic analysis pipeline.
-For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step.
+For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step~\cite{venter2004environmental,brady2009phymm,brady2011phymmbl,rosen2008metagenome,segata2012metagenomic}.
 
-The task of read classification is far from straightforward.
-First of all, species can be similar and even share some genomic patterns, which makes the discrimination complex.
-Moreover, genomes are not uniformly present in the sample.
-In general, there are a few species that are very abundant, while many other organisms have a low proportion of genomic material in the sample.
+\noindent
+{\bf Challenges.}
+The task of read classification is far from straightforward. 
+A metagenomic sample can contain thousands of genomes with varying level of similarity and often occurring at vastly different abundances. Furthermore, due to high-throughput sequencing metagenomic datasets contains millions of sequencing reads making traditional, string-matching-based tools like BLAST infeasible to perform classification. Metagenomic datasets today easily range from hundreds of GBs to TBs. For example, WA dataset contains a collection of marine microbial communities from the Western Arctic Ocean and consists of 822 GB of 2.5 billion reads in 12 samples~\cite{hofmeyr2020terabase}.
 
+\noindent
+{\bf State of the art.}
 Taxonomic classification tools~\cite{ames2013scalable, kim2016centrifuge, menzel2016fast, wood2014kraken, wood2019improved, dilthey2019strain,liu2018novel} use a supervised approach to assign taxonomic labels to reads.
 These tools build a database of known genomes and their taxonomic labels from the NCBI database.
 The database is typically an index that maps smaller subsequences (\kmers) to the list of taxa corresponding to the genomes in which the subsequences occur.
 During the classification phase, the input reads are decomposed into \kmers and queried in the index to determine the most appropriate taxon.
 
-
-\paragraph{Metagenomic data.}
-A metagenomic sample can contain thousands of genomes with varying level of similarity and often occurring at vastly different abundances. Furthermore, due to high-throughput sequencing metagenomic datasets contains millions of sequencing reads making traditional, string-matching-based tools like BLAST infeasible to perform classification. Metagenomic datasets today easily range from hundreds of GBs to TBs. For example, WA dataset contains a collection of marine microbial communities from the Western Arctic Ocean and consists of 822 GB of 2.5 billion reads in 12 samples~\cite{hofmeyr2020terabase}.
-
-\paragraph{Reference database.} \mfc{most of this is not about what the reference database is, or perhaps I don't know what you mean by those words}
-Building the database of known genomes is often quite memory intensive.
+\noindent
+{\bf Gaps and requirements.}
 The sheer size of sequenced microbial genetic sequences presents a considerable computational challenge.
+Building the database of known genomes is often quite memory intensive.
 The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species as well as the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ millon sequences.
 Kraken's~\cite{wood2014kraken} memory requirements can easily exceed 100GB~\cite{simon2019benchmarking}, especially when the reference data includes large eukaryotic genomes~\cite{meiser2017sequencing, knutson2017porcine}.
 %
 The universe of microbial sequences is large and diverse. The vast search space often results in false positives as sequences can be matched against multiple taxa. Also, a large number of undiscovered microbial species can result in false negatives as these species are not present in the database.
 
+Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, classification operation is computationally intensive and makes it infeasible to scale to terabyte-scale metagenomic datasets.
+%
+Furthermore, existing reference database indexes give up updatability to save space. However, the ability to add new assembled genomes to an existing database is a critical feature to avoid rebuilding the databases. 
+
+
 \begin{rproblem}[\textbf{Metagenomic classification at terabyte scale}]
-\mfc{This is not a problem $\rightarrow$}Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, classification operation is computationally intensive and makes it infeasible to scale to terabyte-scale metagenomic datasets. \mfc{so far, none of this belongs in the problem formulation, but it "what's wrong with the current situation" or "what are the challenges of solving this problem"}
-\mfc{Again: this is not a problem and is a controvercial claim about wha tis required $\rightarrow$} Scaling taxonomic classification to terabyte-scale requires scaling up computations and scaling out database construction at the same time.
+Build a software tool to perform reference-based taxnomic classification of metagenomic reads for terabyte-scale metagenomic datasets. Furthermore, the software tool should support adding new assembled genomes to the database and updating the labels of existing ones without rebuilding the database.
 \label{rprob:peppermint1}
 \end{rproblem}
 
-\mfc{there is no discussion of what we are actually going to do.  what hardware?  what tests?  how will we know that we succeeded?  How much of an improvement do we need in order to succeed?  What it will it mean to our target application community if we succeed?}
+% \mfc{there is no discussion of what we are actually going to do.  what hardware?  what tests?  how will we know that we succeeded?  How much of an improvement do we need in order to succeed?  What it will it mean to our target application community if we succeed?}
 
-\prashant{Working on the following subsections}
 
 \subsection{Large-scale raw sequence search}
 
-The vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive [SRA]~\cite{kodama2012sequence}) exist in the form of raw, unassembled sequencing reads. The raw sequencing data contains a lot of diversity information \mfc{should the average computer scientist know what diversity information is?  I can speculate but ...}  which is lost during the assembly process. Furthermore, only a small fraction of all the raw sequencing data is assembled, making the raw sequencing data even more important. \mfc{wha?  why is it even more important?  I don't follow this line of reasoning.}
+{\bf Problem statement.} Raw sequence search involves  identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
 
+\noindent
+{\bf Importance.}
+The vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive [SRA]~\cite{kodama2012sequence}) exist in the form of raw, unassembled sequencing reads. The raw sequencing data contains a lot of biological diversity information which is lost during the assembly process. Furthermore, only a small fraction of all the raw sequencing data is assembled, making the raw sequencing data even more important to answer complex biological-diversity related questions. 
+
+\noindent
+{\bf Challenges.}
 There have been multiple tools such as BLAST~\cite{altschul1990basic} and its variants that are designed to issue \mfc{but not perform?} sequence level searches over publicly available databases of assembled genomes and known proteins. Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. \mfc{This previous sentence is a jolt. what does that have to do with raw sequence data?}  However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences which is much smaller in size compared to the SRA. \mfc{again, what does this have to do with raw sequence data?}
-
+%
 There are a number of reasons that typical reference-database-based search techniques cannot easily be applied in the context of searching raw, unassembled sequences. One major reason is that most current techniques do not scale well as the amount of data grows to the size of the SRA (which today is $\approx4$ petabases of sequence information). A second reason is that searching unassembled sequences means that relatively long queries (e.g., genes) are unlikely to be present in their entirety as an approximate substring of the input.
 As such, these data have mostly been rendered impervious to sequence-level search, which substantially reduces the utility of such publicly available data.
 
+
+\noindent
+{\bf State of the art.}
 Recently, new computational schemes have been proposed
 that hold the potential to allow searching raw SARs while overcoming these challenges. Solomon and Kingsford~\cite{solomon2016fast} introduced the sequence bloom tree (SBT) data structure and an associated algorithm that enables an efficient type of search over thousands of sequencing experiments. Specifically, they re-phrase the query in terms of k-mer set membership in a way that is robust to the fact that the target sequences have not been assembled. The resulting problem is coined as the experiment discovery problem, where the goal is to return all experiments that contain at least some user-defined q fraction of the k-mers present in the query string.
-
+%
 Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and PI Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} as in exact map to map \kmers. They further continued this effort in collaboration with Prof. Patro UMD to scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} to storage devices.
 
 
-\begin{rproblem}[\textbf{Build a distributed Mantis to index all of SRA}]
-Currently, Mantis and other raw sequence search indexes are not able to index a large fraction of the SRA. Scaling Mantis-like indexes to index all of SRA on single machine is not feasible given the limitation of the shared-memory sizes and storage. Distributing the Mantis across hundreds of nodes will enable the index to scale to index all of SRA at petabyte scale.
+\begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
+Build a \kmer index over all the raw experiments present in SRA~\cite{kodama2012sequence} and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world. Researchers can quickly ask biological questions and get answers. For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is
+common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant. 
 \label{rprob:peppermint2}
 \end{rproblem}
 
