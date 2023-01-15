@@ -38,7 +38,7 @@ We aim to develop new data structures and algorithms that will have wide applica
 \begin{itemize}[leftmargin=*]
 
 \item {\bf \Kmer analysis.}
-\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational-biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{xxxx}.
+\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about the genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational-biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc~\cite{wood2014kraken,GeorganasEHG18,hofmeyr2020terabase,solomon2016fast,PatroSailfish:2014,PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b}.
 
 Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as approximate if they only have false positives and lossy if they have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc) about the \kmers~\cite{HofmeyrEGC20}.
 
@@ -61,16 +61,19 @@ Given the large sizes of sequencing datasets, these tools also use hash-based \k
 This toolbox is used, for example, to solve the following problems.
 
 \begin{itemize}[leftmargin=*]
-\item {\bf Raw sequence search.} Raw sequence search involves  identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
-
-Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples the \kmer is present in. Tools like SSBT~\cite{SolomonKi16} build a tree of approximate \kmer indexes to quickly prune down the search space of sample. While Mantis~\cite{PandeyABFJP18Cell} build an exact inverted index using compact hash tables.
-In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers.
 
 \item {\bf Taxonomic classification.} Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics projects.
 
 Methods for taxonomic classification of metagenomic data~\cite{wood2014kraken} often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
 Furthermore, to save space many solutions~\cite{wood2019improved} also employ approximate sketches (e.g., locality sensitive hashing (LSH)~\cite{roberts2004reducing}) to represent metagenomic data and perform similarity computations over sketches.
 They further employ compact string indexes such as FM-index~\cite{ferragina2000opportunistic} and compressed suffix array (CSA)~\cite{grossi2000compressed} to perform sequence comparison to determine exact matches among the pruned-down samples.
+
+
+\item {\bf Raw sequence search.} Raw sequence search involves  identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
+
+Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples the \kmer is present in. Tools like SSBT~\cite{SolomonKi16} build a tree of approximate \kmer indexes to quickly prune down the search space of sample. While Mantis~\cite{PandeyABFJP18Cell} build an exact inverted index using compact hash tables.
+In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers.
+
 
 \item {\bf Pangenomics.}
 Pangenomics~\cite{garrison2018variation} involves storing the genome of a species as a sequence graph consisting of genomes of multiple individuals instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
@@ -79,7 +82,7 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-Our goal is to build tools to perform complex biological analyses at terabyte and petabyte scale to explore datasets available today and expected to be available in future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from 100K genome project~\cite{XXX} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (V100 and A100) and also the distributed computing infrastructure of super computers (Perlmutter and Summit).
+Our goal is to build tools to perform complex biological analyses at terabyte and petabyte scale to explore datasets available today and expected to be available in future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from 100,000 genome project~\cite{1002021100} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (V100 and A100) and also the distributed computing infrastructure of super computers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}).
 
 
 
@@ -176,7 +179,7 @@ We believe the answer to these challenges is a standalone library of memory-effi
 %
 Specifically, out data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxialiary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
 
-If successful we will be able to perform complex data analyses to answer biological questions on terabyte and petabyte scale datasets available. For example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100K genome project~\cite{XXX}. Existing data structures and software tools fail to scale to the data sizes making a these publicly-available and highly-valuable data resources largely inert.
+If successful we will be able to perform complex data analyses to answer biological questions on terabyte and petabyte scale datasets available. For example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. Existing data structures and software tools fail to scale to the data sizes making a these publicly-available and highly-valuable data resources largely inert.
 
 
 The project’s novelties are: a vertical-stack approach spanning theory and algorithms: highly-concurrent, dynamic, and distributed data structures, systems: scale up using GPU acceleration, high-performance computing: scale out using distributed data structures, and applications: computational biology applications; new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs applicable to other application domains; an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
