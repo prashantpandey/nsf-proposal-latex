@@ -80,22 +80,9 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-
-\john{We actually need specifics on the applications that we will implement: what, specifically, will they do? input and output? is there a CPU equivalent?}
-
-\prashant{John, I have added the below para to answer your concern.}
 Our goal is to build tools to perform complex biological analyses at terabyte and petabyte scale to explore datasets available today and expected to be available in future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from 100K genome project~\cite{XXX} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (V100 and A100) and also the distributed computing infrastructure of super computers (Perlmutter and Summit).
 
 
-% \setlength\intextsep{0pt}
-% \begin{wrapfigure}{R}{0.6\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width=0.75\textwidth]{images/PPOSS_App_DS}
-\caption{Relation between computational-biology applications, data processing tools and data structures. We further mention the desired features in data structures to achieve performance and scalability.}
-\label{fig1}
-\end{figure}
-% \end{wrapfigure}
 
 
 The computational-biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks.
@@ -107,6 +94,17 @@ depends on the space-efficiency, speed, dynamism, and scalability of the
 underlying data structures they use. These data structures are also the building
 blocks in many other domains, such databases, machine learning, software
 systems, security applications, etc.
+
+
+% \setlength\intextsep{0pt}
+\begin{wrapfigure}{R}{0.6\textwidth}
+% \begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{images/PPOSS_App_DS}
+\caption{Relation between computational-biology applications, data processing tools and data structures. We further mention the desired features in data structures to achieve performance and scalability.}
+\label{fig1}
+% \end{figure}
+\end{wrapfigure}
 
 
 \paragraph{Existing software tools for computational-biology applications.}
@@ -178,9 +176,6 @@ We believe the answer to these challenges is a standalone library of memory-effi
 \paragraph{Our approach is four-pronged.}  We will develop new \textbf{algorithmic theory} to design scalable data structures; we will develop new \textbf{systems} that implement our solutions in a scale-up manner,  both on CPU and GPU; we will a new framework to distribute our solutions in an \textbf{HPC} environment, so they  scale out to clusters of GPUs; and finally we will validate out solutions on \textbf{computational biology} workloads.
 %
 Specifically, out data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxialiary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
-
-\prashant{Martin, I added the below para to answer your concern.}
-\mfc{say what great things that happen if we succeed.  maybe pus something measurable?  blah orders of magintude improvement?}
 
 If successful we will be able to perform complex data analyses to answer biological questions on terabyte and petabyte scale datasets available. For example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100K genome project~\cite{XXX}. Existing data structures and software tools fail to scale to the data sizes making a these publicly-available and highly-valuable data resources largely inert.
 
