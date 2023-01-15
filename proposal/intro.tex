@@ -168,7 +168,7 @@ Data structures are the core of computational-biology applications and are criti
 To build scalable computational-biology applications that can keep up with the rapid growth data we need compact, high-performance, dynamic, and distributed data structures. Specifically, we need: approximate data structures such as filters, sketches, and locality-sensitive hashing data structures; exact data structures such as hash tables, string data structures, succinct data structures, and trees.
 
 These data structures and algorithms will need to exploit accelerators such as GPUs to scale up computations and at the same time support  features like space-efficiency, dynamism, high concurrency, scaling out of GPU device RAM to host RAM, and distributed memory design to scale out to multiple nodes.
-
+%
 Furthermore, to achieve fine-grained resizing and to keep the peak memory usage low we first need to develop new algorithmic approaches for traditional CPU data structures and then extend them to GPUs.
 
 \subsection{Our proposed work}
@@ -176,7 +176,7 @@ Furthermore, to achieve fine-grained resizing and to keep the peak memory usage 
 We believe the answer to these challenges is a standalone library of memory-efficient, high-performance, dynamic, and scalable GPU data structures that can be directly used by computational biology applications that addresses the needs of emerging applications, allowing them to solve the problems described above.
 
 \paragraph{Our approach is four-pronged.}  We will develop new \textbf{algorithmic theory} to design scalable data structures; we will develop new \textbf{systems} that implement our solutions in a scale-up manner,  both on CPU and GPU; we will a new framework to distribute our solutions in an \textbf{HPC} environment, so they  scale out to clusters of GPUs; and finally we will validate out solutions on \textbf{computational biology} workloads.
-
+%
 Specifically, out data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxialiary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
 
 \prashant{Martin, I added the below para to answer your concern.}
@@ -186,25 +186,25 @@ If successful we will be able to perform complex data analyses to answer biologi
 
 
 The project’s novelties are: a vertical-stack approach spanning theory and algorithms: highly-concurrent, dynamic, and distributed data structures, systems: scale up using GPU acceleration, high-performance computing: scale out using distributed data structures, and applications: computational biology applications; new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs applicable to other application domains; an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
-
+%
 Our team includes a highly interdisciplinary team of researchers across four focus areas: applications (computational biology), theory and algorithms, systems, and high-performance computing. The team is taking a holistic theory/systems/HPC/applications co-design approach to explore four tightly interconnected research modules. These research modules are structured from bottom-up across the computing stack.
 
 
-\paragraph{Roadmap.} Roadmap here. In Section...
+% \paragraph{Roadmap.} Roadmap here. In Section
 
-Section 2: bioinformatics problems, state of the art, what we need
+% Section 2: bioinformatics problems, state of the art, what we need
 
-Section 3: Our approach: Why GPUs?  Also GPU-specific generic research problems
+% Section 3: Our approach: Why GPUs?  Also GPU-specific generic research problems
 
-Section 4: Filters, with reserach problems -- theory, systems, HPC
+% Section 4: Filters, with reserach problems -- theory, systems, HPC
 
-Section 5: Hash tables, with reserach problems -- theory, systems, HPC
+% Section 5: Hash tables, with reserach problems -- theory, systems, HPC
 
-Section 6: String indexes, with reserach problems -- theory, systems, HPC
+% Section 6: String indexes, with reserach problems -- theory, systems, HPC
 
-Section 7: Sketches, with reserach problems -- theory, systems, HPC
+% Section 7: Sketches, with reserach problems -- theory, systems, HPC
 
-Section 8: Bioinformatics validation, with research problems for each bioinformatics problem, and if successful statements.
+% Section 8: Bioinformatics validation, with research problems for each bioinformatics problem, and if successful statements.
 
 \iffalse
 ==========
