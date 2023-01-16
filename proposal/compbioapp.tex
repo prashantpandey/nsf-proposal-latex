@@ -84,16 +84,14 @@ As such, these data have mostly been rendered impervious to sequence-level searc
 {\bf State of the art.}
 Recently, new computational schemes have been proposed that hold the potential to allow searching raw SRA while overcoming these challenges. Solomon and Kingsford~\cite{solomon2016fast} introduced the sequence Bloom tree (SBT) data structure and an associated algorithm that enables an efficient type of search over thousands of sequencing experiments. Specifically, they re-phrase the query in terms of k-mer set membership in a way that is robust to the fact that the target sequences have not been assembled. The resulting problem is coined as the experiment discovery problem, where the goal is to return all experiments that contain at least some user-defined $q$ fraction of the \kmers present in the query string.
 %
-Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and PI Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} as an exact map to map \kmers. Mantis index is smaller in size, faster to index and query, and has no false positives compared to the SBT (and other SBT-based tools~\cite{solo})
+Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and PI Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} as an exact map to map \kmers. Mantis index is smaller in size, faster to index and query, and has no false positives compared to the SBT (and other SBT-based tools~\cite{SolomonK17,HarrisM20,BingmannBGI19}).
 %
-They further continued this effort in collaboration with Prof. Patro UMD to scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} to storage devices.
-Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20,almodaresi2022incrementally} has been extended 
+PI Pandey further continued this effort in collaboration with Prof. Patro UMD to compress the Mantis index in order to reduce memory requirements and scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} to storage devices.
 
 
 \noindent
 {\bf Gaps and requirement.}
 
-\prashant{Fill in...}
 
 \begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
 Build a \kmer index over all the raw experiments present in SRA~\cite{kodama2012sequence} and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world. Researchers can quickly ask biological questions and get answers. For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is
