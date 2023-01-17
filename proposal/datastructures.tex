@@ -18,7 +18,7 @@ For typical values of $\varepsilon$, the best filters takes one or two bytes per
 
 The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafLe20m,DillingerWalzer21}.  Some filters, such as Bloom filters, allow insertions but no deletions.  Quotient and cuckoo filters are fully dynamic.  Futhermore, quotient filters are \defn{mergable}, in that, under the right conditions, two filters can be merged into a single filter, perhaps increasing the false-positive rate, depending on how the filters are configured.  Mergeability turns out to be critical in some applications~\cite{conway2020splinterdb}.  
 
-Finally, it is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \mfc{Prashant, please add applications for maplets}
+Finally, it is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain the prefix-suffix extensions along with \kmers~\cite{mccoy2022high}. 
 
 
 
@@ -262,3 +262,5 @@ and SplinterDB~\cite{conway2020splinterdb}.
 \fi
 
 \section{String data structures}
+
+\prashant{Fill in...}
