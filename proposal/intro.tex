@@ -27,7 +27,7 @@
 Raw sequencing data in computational biology is increasing faster than ever
 due to high-throughput sequencing technology (HTS), which is already producing
 petabyte-scale datasets~\cite{kodama2012sequence}. Many applications in computational biology (\kmer
-analysis~\cite{MarccaisKi11}, raw sequence search~\cite{SolomonKi16}, taxonomic classification~\cite{wood2014kraken}, and pangenomics~\cite{computational2018computational})
+analysis~\cite{MarccaisKi11}, raw sequence search~\cite{solomon2016fast}, taxonomic classification~\cite{wood2014kraken}, and pangenomics~\cite{computational2018computational})
 require processing raw sequencing data at petabyte scales~\cite{kodama2012sequence}. This project aims to
 build high-performance and scalable data analysis-pipelines for computational-biology applications.
 Specifically, we aim to develop new massively-parallel and distributed data structures and algorithms for core computational biology data processing tasks.
@@ -71,7 +71,7 @@ They further employ compact string indexes such as FM-index~\cite{ferragina2000o
 
 \item {\bf Raw sequence search.} Raw sequence search involves  identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
 
-Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples the \kmer is present in. Tools like SSBT~\cite{SolomonKi16} build a tree of approximate \kmer indexes to quickly prune down the search space of sample. While Mantis~\cite{PandeyABFJP18Cell} build an exact inverted index using compact hash tables.
+Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples the \kmer is present in. Tools like SSBT~\cite{solomon2016fast} build a tree of approximate \kmer indexes to quickly prune down the search space of sample. While Mantis~\cite{PandeyABFJP18Cell} build an exact inverted index using compact hash tables.
 In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers.
 
 
