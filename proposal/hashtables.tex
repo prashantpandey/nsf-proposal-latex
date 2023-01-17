@@ -25,6 +25,12 @@ $k-1$ bases. These vertices are stored in a hash table that is distributed
 across all the compute processes.  The size of the hash table is dependent on
 the number of unique \kmers which is not known in advance. Currently, an approximation of the number of unique \kmers is used to size the HT. If it is an over approximation GPU device memory is wasted and if it is an under approximation then \kmers are arbitrarily dropped when HT becomes full resulting in dropped quality of the final result.}
 
+\john{I don't see any requirement here for stability. In fact I think stability is probably not what we want because we probably want to periodically load-balance, or at least explore the cost vs.\ benefit of load balancing as part of our work. So I don't think any stability stuff gets included.}
+
+\john{Question for Prashant. Do we need to support deletes? If so we probably want to have a garbage collection effort.}
+
+\john{Here's the stuff I want to write up. (1) Build dynamic hash tables with variable-length keys. I don't know how to do that but I know it's not really been done on GPUs. One possibility: Hash the \kmers and use the hash as the key into the hash table. Of course we can also look to natively support variable-sized keys. (2) Overlapping communication and on-GPU-hash-table operations, so we don't have periods with all-compute-no-communicate and all-communicate-no-compute. (3) Explore tradeoff between better load balance and cost of load balance. (4) Explore tradeoff between more locality and reduced hash table efficiency (this is basically ``can we reduce overall communication by trying to keep/move hash table entries to their home nodes, and does that help overall performance''). (5) Communication management, in particular bundling up small communications into larger ones to achieve better bandwidth.}
+
 Hash tables are a core data structure in many applications, including key-value
 stores, databases, and big-data-analysis engines, and are included in most
 standard libraries.  Hash-table performance can be a substantial bottleneck for
