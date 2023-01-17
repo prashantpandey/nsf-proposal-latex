@@ -4,44 +4,27 @@
 
 \subsection{Timeline}
 
-\subsection{Measuring Success} We will combine our systems and theory advances into a standalone GPU library for distributed data structures that we will link with our focus computational biology applications. We expect to be measured on the success of these applications and the data-structure library.
-
-For each of our three applications (taxonomic classification, raw sequence search, and pangenomics), success means:
-
-\begin{itemize}[noitemsep]
-  \item Best-in-class performance (vs.\ CPUs) on a single node
-  \item Achieved strong and weak scalability across multiple GPUs and multiple nodes for
-  \item Best-in-class performance (vs.\ CPUs) on multiple nodes
-\end{itemize}
+\subsection{Measuring Success} We will combine our systems and theory advances into a standalone GPU library for compact, dynamic, and distributed data structures that we will link with our focus computational biology applications. We expect to be measured on the success of these the data-structure library and these applications.
 
 \noindent
-Success for our distributed data-structure library means:
+\paragraph{Success for our data-structure library}
 
 \label{sec:sw-methodology}
 
 \begin{itemize}[noitemsep]
-  \item Our library is the data-structure substrate for the three applications above, for both single-GPU and multi-GPU/multi-node configurations
-  \item Our library embodies best practices in software development: open-source software with an Apache 2.0 license, available via Github; a suite of functional and performance tests; use of code-coverage tools together with these tests; use of continuous-integration and continuous-development tools and methodologies; internally documented code with Doxygen; and high-level developer documentation that guides use of the library. Particularly with our widely cited and used Gunrock library~\cite{Wang:2017:GGG} for GPU graph analytics, we have extensive experience with building and deploying high-quality academic software.
+  \item Our library is the data-structure substrate for the three computational biology applications described below, for both single-GPU and multi-GPU/multi-node configurations.
+  \item Our library embodies best practices in software development: open-source software with an Apache 2.0 license, available via Github; a suite of functional and performance tests; a benchmarking suite to evaluate the performance of these data structures and help drive subsequent modules; use of code-coverage tools together with these tests; use of continuous-integration and continuous-development tools and methodologies; internally documented code with Doxygen; and high-level developer documentation that guides use of the library. Particularly with our widely cited and used Gunrock library~\cite{Wang:2017:GGG} for GPU graph analytics, we have extensive experience with building and deploying high-quality academic software.
   \item We quantitatively measure the success of our library to others with github download and star counts; with issues filed and closed; with the number of pull requests from external developers; and primarily, via the use of our library in other projects, where we will measure both uses by developers with whom we develop as well as uses from those with whom we do not.
 \end{itemize}
 
-\subsection{Datasets}
+\paragraph{Success of computational biology applications}
 
-\john{I'm not sure what ``datasets'' are doing in an evaluation plan.}
+For each of our three applications (taxonomic classification, raw sequence search, and pangenomics), success means:
 
-\paragraph{Raw sequencing data}
-Over the past decade the cost of sequencing has decreased dramatically, making the generation of sequence data more accessible. This has led to increasingly ambitious sequencing projects. For example, the 1,000 Genomes Project, which began in
-2008 and completed in 2012 (Clarke et al., 2012), led to the 100,000 Genomes Project, which began in 2014 and completed
-in 2018 (Turnbull et al., 2018). There are dozens of other large-scale sequencing projects completed or underway, including
-GEUVADIS (Lappalainen et al., 2013), GenomeTrakr (Timme et al., 2018), and MetaSub (The MetaSUB International Consortium, 2016). An overwhelming amount of public data is now available at EBI’s European Nucleotide Archive (ENA) (Cook
-et al., 2018) and NCBI’s Sequence Read Archive (SRA) (Leinonen et al., 2010). The possibility of analyzing these collections
-of datasets, alone or in combination, creates vast opportunities for scientific discovery, exceeding the capabilities of traditional
-laboratory experiments.
-
-\john{This isn't an ``evaluation plan''. This is background.}
-
-\john{We need actual citations here.}
-
-\paragraph{Metagenomic data}
-
-\paragraph{Pangenomic data}
+\begin{itemize}[noitemsep]
+  \item We will scale each of these applications to process and perform complex data analyses on biggest datasets available. For example, we will scale taxonomic classification on terabyte-scale metagenomic datasets from WA, Rhizo, and Tymeflies~\cite{hofmeyr2020terabase}; index and query raw sequence search in real time on all of SRA at petabyte scale~\cite{kodama2012sequence}; build a pangenomic index at population scale (100,000 genomes project~\cite{1002021100}) and perform fast variant queries and sequence-to-graph alignment.
+  \item For all of these applications we will build open-source software tools with an Apache 2.0 license, available via Github. Particularly with our widely cited and used computational biology tools~\cite{PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b,PandeyBJP17,pandey2020timely,pandey2021variantstore,pandey2021terrace,pandey2022iceberght}, we have extensive experience with building and deploying high-quality academic software.
+  \item Best-in-class performance (vs.\ CPUs) on a single node.
+  \item Achieved strong and weak scalability across multiple GPUs and multiple nodes in an HPC environment. 
+  \item Best-in-class performance (vs.\ CPUs) on multiple nodes.
+\end{itemize}
