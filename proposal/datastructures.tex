@@ -2,11 +2,21 @@
 
 \section{Filters}
 
-\prashant{Notes for Martin}
 
 \prashant{Comp bio applications require Maplets on GPUs that support dynamic resizing and deletes.}
 
 \prashant{Adaptive filters can be really useful for comp bio application as they can be used to construct MPH (minimal perfect hash) on GPUs.}
+
+A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under approximate membership queries.  Specifically, $\texttt{Member}(x)$ returns \textsc{True} if $x\in S$, and returns \textsc{True} with probability at most $\varepsilon$ for $x\notin S$, where $\varepsilon$ is a parameter of the filter specified at initialization.  When a filter returns \textsc{True} erroneously, we say that it has experienced a \defn{false positive}.   
+
+A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega(\log {u\choose n})
+\approx \Omega(n \log u)$ bits, whereas a filter  takes space at least  lower bound of $\opt + \Omega(n)$
+bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound w.h.p., including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21}, XOR
+filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}.  Bloom filters do not meet this lower bound, nor do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p. grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
+%
+For typical values of $\varepsilon$, the best filters takes one or two bytes per item.
+
+The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization.   
 
 Filter data structures can be broadly classified into \emph{static} and
 \emph{dynamic}.  Static filters approximately represent a set of items that must

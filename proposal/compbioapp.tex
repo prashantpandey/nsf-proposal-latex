@@ -91,82 +91,79 @@ PI Pandey further continued this effort in collaboration with Prof. Patro UMD to
 
 \noindent
 {\bf Gaps and requirement.}
+Existing raw sequence search indexes suffer from the scalability challenge. Indexing \kmers from the SRA samples is memory intensive and indexes often take hundreds of GBs. For example, the SBT index size for 2652 experiments consisting of short-read RNA sequencing runs of human blood, brain, and breast tissues is 97GB. Scaling SBT-based indexes to 100K experiments in SRA is not feasible on single-node machines. 
+Furthermore, SBT-based indexes are approximate the search results include false positives which can quickly become problem even if 1\% results are false positives due to the shear size of the search space.
 
+Mantis index is exact and has no false positives in the results. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using the~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA. These indexes are reaching the limits of single-node RAM and storage hardware.
 
 \begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
-Build a \kmer index over all the raw experiments present in SRA~\cite{kodama2012sequence} and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world. Researchers can quickly ask biological questions and get answers. For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is
-common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant. 
+Build a \kmer index over all the raw experiments present in SRA and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world. 
+% Researchers can quickly ask biological questions and get answers. 
+% For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant. 
 \label{rprob:peppermint2}
 \end{rproblem}
 
 \subsection{Pangenomics}
 
 {\bf Problem definition.}
-Pangenomics~\cite{garrison2018variation} involves storing the genome of a species as a sequence graph consisting of genomes of multiple individuals instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
+Pangenomics~\cite{sherman2020pan} involves cataloging the DNA of multiple individuals in a species in the form of a sequence graph to preserve the variation across the individuals in a species. This pangenome is used as the reference genome for the species and forms the basis of thousands of studies seeking the genetic origins of diseases. In pangenomics, we need to efficiently index the variations (SNPs. indels, copy number, structural, etc) and support variant queries. Furthermore, we need to perform sequence-to-graph alignment to determine new variants. 
+
 
 \noindent
 {\bf Importance.}
-Much of the field of genomics revolves around the existence of reference genomes, which are roadmaps for a ‘typical’ individual of each species. The creation of each reference was, and still remains, a major focus of the genomics community, with 13 years and US\$2.7 billion having been spent on the creation of the human reference genome alone. The ability to compare a newly sequenced individual with a reference and find differences has enabled myriad discoveries and innovations, and in human genomics this ability has formed the basis of thousands of studies seeking the genetic origins of disease. However, as the number and scope of sequencing experiments have grown dramatically, scientists have begun to realize the many limitations that a single reference genome imposes upon the community. To better capture the variation missed by using one reference, we can create and utilize a ‘pan-genome’, a collection of all the DNA sequences that occur in a species.
+Much of the field of genomics revolves around the existence of reference genomes, which are roadmaps for a ‘typical’ individual of each species.  However, as the number and scope of sequencing experiments have grown dramatically, scientists have begun to realize the many limitations that a single reference genome imposes upon the community. To better capture the variation missed by using one reference, we can create and utilize a ‘pan-genome’, a collection of all the DNA sequences that occur in a species.
+A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
+The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be~\cite{sherman2020pan}.
 
 \noindent
 {\bf Challenges.}
-Cataloguing the DNA from all individuals in a species is a daunting task. The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be.
-
-Pan-genome studies of plants and animals remained elusive at first, due to the large genome sizes and vast amounts of intergenic sequence in these species. However, in recent years, thanks to dramatic improvements in the efficiency of sequencing technology, the scientific community has been able to sequence dozens, hundreds or even thousands of individuals of a single plant or animal species~\cite{XXX}. Additionally, new long-read sequencing technologies now allow us to better assemble repetitive regions of large genomes, including centromeric regions, that are difficult to characterize with short reads~\cite{XXX}.
-
-Human sequencing, too, has accelerated. Over the past few years, a flurry of publications have described large collections of newly sequenced human genomes, including population-specific cohorts from Iceland~\cite{XXX}, Denmark~\cite{XXX}, Sweden~\cite{XXX}, Papua New Guinea~\cite{XXX}, Mongolia~\cite{XXX} and Africa~\cite{XXX}, as well as large-scale surveys of the entire world~\cite{XXX}.
+Cataloguing the DNA from all individuals in a species is a daunting task.
+Building a pangenome graph involves storing the genomic sequences of thousands individuals in the form of a sequence graph. Each path in the sequence graph follows the genome of an individual and has a unique coordinate system. A coordinate systems helps to identify the location of a variant in the gneome of an individual. Due to the presence of insertions and deletions in genomes across individuals, each individual can have a unique coordinate system~\cite{pandey2021variantstore}.
+During variant queries, we need to identify a variant with respect to an individual's coordinate system due to the abscence of a reference genome. 
+A Pangenome consists of thousands of individuals and hence thousands of coordinate system in a single index. Indexing and querying the pangenome graph across thousands of coordinate system is computationally and memory intensive and requires scale up and scale out solutions~\cite{garrison2018variation,pandey2021variantstore}.
 
 \noindent
 {\bf State of the art.}
 Pangenomic studies are performed by storing the genomes of multiple individuals in a genome graph (also known as the sequence graph or variation graph). A genome graph is a directed, acyclic graph (DAG) $G = (N, E, P)$ that embeds a set of DNA sequences. It comprises a set of nodes $N$, a set of direct edges $E$, and a set of paths $P$. For DNA sequences, we use the alphabet \{A, C, G, T, N\}\@. Each $n_i \in N$ represents a sequence $seq(n_i)$. Edges in the graph connect nodes that are followed on a path. Nodes on a path are assigned positions based on the coordinate systems of sequences they represent.
 
-Efficiently indexing and storing a genome graph is a computationally and memory/space intensive process due to the presence of thousands of coordinate systems corresponding to the individuals. Existing applications that index genome graphs~\cite{pandey2021variantstore,garrison2018variation} are designed to use compressed string indexes and off-the-shelf graph indexes. However, these indexes do not scale to pangenomic datasets available today due the limitations to the memory-intensive characteristics of these data structures. Furthermore, these indexes are not designed to efficiently support adding new genomes to an existing index. They to rebuild the whole index in order to add a new sample.
+% Efficiently indexing and storing a genome graph is a computationally and memory/space intensive process due to the presence of thousands of coordinate systems corresponding to the individuals. 
+Existing applications that index genome graphs~\cite{pandey2021variantstore,garrison2018variation} are designed to use compressed string indexes and off-the-shelf graph indexes. VG toolkit~\cite{garrison2018variation} is one of the most widely used tools to represent genomic variation data, and it also supports multiple coordinate systems. VG toolkit stores each sample path as a list of nodes in the graph and maintains a separate index corresponding to the coordinates of the reference and samples. 
+%
+VariantStore~\cite{pandey2021variantstore}  encodes genomic variation in a directed, acyclic variation graph and build a position index (a mapping of node positions to node identifiers) on the graph to quickly access a node in the graph corresponding to a queried position. It builds an inverted index from variants to the nodes in the graph to achieve space-efficiency due to repeated variants and fast variant queries.
 
 \noindent
 {\bf Gaps and requirement.}
-Current pangenomic indexes do not scale to population-scale variation datasets such as 100,000 Genomes project~\cite{1002021100}. Furthermore, they do not support adding new genomes to an existing index. In order to add a new genomic sample to the pangenomic index required rebuilding the complete index.
+Current pangenomic indexes do not scale to population-scale variation datasets such as 100,000 Genomes project~\cite{1002021100}. For example, VG toolkit stores each sample path as a list of nodes in the graph and maintains a separate index corresponding to the coordinates of the reference and samples. Storing a separate list of nodes for each sequence impedes the scalability of the representation for storing variation from thousands of samples. Moreover, variants are often shared among samples, so storing a list of nodes for each sample path introduces redundancy in the representation. 
+%
+Existing pangenome indexes do not support adding new genomes to an existing index. In order to add a new genomic sample to the pangenomic index required rebuilding the complete index. For example, both VG toolkit and VariantStore are static indexes and do not support an efficient approach for adding new genomes to an existing index.
 
-\begin{rproblem}[\textbf{Building a pangenomic index at population-scale and performing sequence-to-graph mapping}]
- We want to build a pangenomic index that can perform fast variation queries, sequence-to-graph mapping, support updates, and scale to population-scale datasets.
+Finally, pangenomic indexes need to support fast variant queries and sequence-to-graph alignment. Achieving both these operations in a single index is a challenging task. Existing tools are optimized for one of these operations but not both. VG toolkit is designed for fast sequence-to-graph alignment and VariantStore for variant queries.
+
+
+\begin{rproblem}[\textbf{Building a pangenomic index at population-scale }]
+ Build a pangenomic index that can perform fast variation queries and sequence-to-graph alignment at population-scale datasets available today. We further want to support adding new genomic samples to an existing index without rebuilding the index.
 \label{rprob:peppermint3}
 \end{rproblem}
 
-\subsection{\kmer analysis for metagenome assembly}
-\prashant{Annotate figures to show where's the problem in terms of scale...}
-
-
+\subsection{Metagenome assembly}
 % \begin{figure}
-\begin{wrapfigure}{R}{0.7\textwidth}
-    \centering
-    \includegraphics[width=0.9\linewidth]{images/mhm-pipeline.png}
-    \caption{The \textit{k}-mer analysis pipeline in MetaHipMer. A filter can help weed out singleton $k$-mers from being inserted into the hash table.}
-    \vspace{-0.5em}
-    \label{fig:mhm-kmer}
-\end{wrapfigure}
+% \begin{wrapfigure}{R}{0.7\textwidth}
+%     \centering
+%     \includegraphics[width=0.9\linewidth]{images/mhm-pipeline.png}
+%     \caption{The \textit{k}-mer analysis pipeline in MetaHipMer. A filter can help weed out singleton $k$-mers from being inserted into the hash table.}
+%     \vspace{-0.5em}
+%     \label{fig:mhm-kmer}
+% \end{wrapfigure}
 % \end{figure}
 
-Metagenome assembly involves reconstructing long contiguous sequences ({\it contigs}) of genetic material from short input {\it reads}. These reads are strings of bases (the DNA alphabet A, C, G, T) of length 150 to 250 that are produced by gene sequencing machines.  For metagenomes, these reads are extracted from environmental samples (e.g., gut bacteria, or a soil sample) that contain the genes of potentially thousands of microbes, existing at varying abundances.  The reads are error prone (typically about 0.24\% error per base) and sequencing is done multiple times to ensure every region of genetic material is covered with some error free sequences.
+{\bf Problem definition.}
+Metagenome assembly involves reconstructing long contiguous sequences ({\it contigs}) of genetic material from short input {\it reads}~\cite{yang2021review}. These reads are strings of bases (the DNA alphabet A, C, G, T) of length 150 to 250 that are produced by gene sequencing machines. 
+For metagenomes, these reads are extracted from environmental samples (e.g., gut bacteria, or a soil sample) that contain the genes of potentially thousands of microbes, existing at varying abundances. 
+The reads are error prone (typically about 0.24\% error per base) and sequencing is done multiple times to ensure every region of genetic material is covered with some error free sequences.
 
-In the approach used by MetaHipMer~\cite{GeorganasEHG18,HofmeyrEGC20}, the reads are first divided into overlapping substrings of fixed length {\it k}, called {\it $k$-mers}, which are then used to form a de Bruijn graph~\cite{CompeauPeTe11}. In a de Bruijn graph, the vertices are $k$-mers and edges connect any two $k$-mers that have an overlap of $k-1$ bases. These vertices are stored in a hash table that is distributed across all the compute processes.  The size of the hash table is dependent on the number of unique $k$-mers.  Traversal of the de Bruijn graph enables the construction of the contigs (longer sequences).  This approach is more efficient than an all-to-all alignment of the reads, which would be prohibitive for the size of typical metagenome datasets (up to billions of reads).
-
-Forward and backward extensions of the $k$-mer and the counts of those extensions are also maintained in the hash table along with the $k$-mer. Information regarding the extensions and their counts is critical to identifying correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on $k$) to store each $k$-mer.
-
-To ensure accurate contigs, the $k$-mers that occur only once (singletons) are
-treated as errors and dropped. In a typical set of metagenome reads, 70--80\%
-of unique $k$-mers are singletons, but they still need to be stored and counted
-in the distributed hash table. In the default MetaHipMer implementation, storing the unique $k$-mers is the most memory intensive part of the computation and can be roughly an order of magnitude larger than the input data.  The space required to store the $k$-mers can be much larger than the size of the original raw dataset (up to $10\times$ larger) as $k$-mers contain a lot of redundant information due to their overlaps.
-
-
-
-The distributed hash table in MetaHipMer is implemented as a collection of local hash tables, one per process, with communication happening via UPC++ remote procedure calls (RPCs). In the hash table insertion phase, the $k$-mers are aggregated, dispatched over the network, and inserted in bulk into the local hash tables, which are running on GPUs. Using GPUs boosts performance, but further constrains memory (e.g. the Summit supercomputer~\cite{VazhkudaiDBG18} has an aggregate of 96~GB GPU memory and 512~GB CPU memory per node).
-
-MetaHipMer runs on distributed systems with multiple nodes, and each node could have multiple GPUs, e.g. Summit has 6 GPUs per node. To utilize all the GPUs on a node, MetaHipMer maps the UPC++ processes to the GPUs in a round robin fashion, so multiple processes will share each GPU using the NVIDIA Multi-Process Service (MPS)\@. On a Summit node there will be 42 processes (one per core) and hence there will be 7 processes per GPU\@. Using the MPS has the benefits of simplicity, because there is no inter-GPU communication required, and it improves performance by increasing the utilization of the GPUs.
-
-
-\Cref{fig:mhm-kmer} shows different parts of the $k$-mer analysis phase in
-MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table and then a separate phase is required to purge all the singleton $k$-mers.
-
-\paragraph{\Kmer distribution}
+\noindent
+{\bf Importance.}
+Metagenomic sequencing provides a culture-independent avenue to investigate the complex microbial communities by constructing metagenome-assembled genomes (MAGs). A MAG represents a microbial genome by a group of sequences from genome assembly with similar characteristics. It enables us to identify novel species and understand their potential functions in a dynamic ecosystem.
 
 \begin{wraptable}{r}{4.5in}
 \centering
@@ -187,28 +184,29 @@ MetaHipMer. In the standard pipeline, all $k$-mers are counted in the hash table
     \label{tab:kmer-dist}
 \end{wraptable}
 
-\Cref{tab:kmer-dist} shows the distribution of singleton \kmers in three
-different metagenomic datasets. Singleton \kmers form a majority fraction of
-the total number of distinct \kmers. The distribution often depends on the
-sequencing depth and the size of $k$. The larger value $k$ results in larger
-fraction of singleton \kmers. This is due to the higher probability of seeing
-an erroneous base in the \kmer given the higher value of $k$. The erroneous
-bases result in singleton \kmers.
-
-Weeding out singleton \kmers before inserting them in the hash table to count
-is critical in any \kmer analysis phase to reduce the memory usage of the
-counting phase. These singleton $k$-mers can also be pruned from the hash table
-after the counting phase. However, that results in the high peak memory usage
-and much slower running time.
-
-Using a space-efficient filter to weed out singleton \kmers helps to reduce
-the memory pressure on the counting hash table thereby reducing the peak memory
-usage and increased run time. See~\cref{fig:mhm-kmer}.
-
+\noindent
+{\bf Challenges.}
+Metagenome assembly is challenging due to sequencing error, repetitive content, and library and sequencing bias. In addition, a metagenome sample can contain many thousands of different genomes with varying degrees of similarity, sometimes sharing genetic material, and occurring at vastly different abundances.
+%
+Furthermore, high-throughput sequencing technology is producing large-amount of metagenomic datasets ranging in TB and PB scales~\cite{hofmeyr2020terabase}. Metagenomic assembly is a complex process consiting of multiple phases and scaling all these phases to terabyte scale comes with myriad of challenges.
 
 \noindent
-{Challenges.}
-So far MetaHipMer is limited by the peak RAM usage in high-performance computing (HPC) environments.
+{\bf State of the art.}
+MetaHipMer~\cite{GeorganasEHG18,HofmeyrEGC20} is the first exa-scale metagenome assembler.
+In the approach used by MetaHipMer, the reads are first divided into overlapping substrings of fixed length {\it k}, called {\it $k$-mers}, which are then used to form a de Bruijn graph~\cite{CompeauPeTe11}. 
+\Kmer counting is the very first step. During \kmer counting, forward and backward extensions of the $k$-mer and the counts of those extensions are also maintained in the hash table along with the $k$-mer. Information regarding the extensions and their counts is critical to identifying correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on $k$) to store each $k$-mer.
+MetaHipmer uses GPUs to speed up \kmer analysis phase.
+In a de Bruijn graph, the vertices are $k$-mers and edges connect any two $k$-mers that have an overlap of $k-1$ bases. These vertices are stored in a hash table that is distributed across all the compute nodes in a supercomputer like Perlmutter~\cite{perlmutter} and Summit~\cite{summit}. 
+Traversal of the de Bruijn graph enables the construction of the contigs (longer sequences).  This approach is more efficient than an all-to-all alignment of the reads, which would be prohibitive for the size of typical metagenome datasets (up to billions of reads).
+
+\noindent
+{\bf Gap and requirements.}
+\Kmer counting and analysis is the very first and the most memory intensive step in the metagenome assembly. The $k$-mers that occur only once (singletons) are treated as sequencing errors and dropped. In a typical set of metagenome reads, 70--80\% of unique $k$-mers are singletons, but they still need to be stored and counted in the distributed hash table~\Cref{tab:kmer-dist}. 
+In the default MetaHipMer implementation, storing the unique $k$-mers is the most memory intensive part of the computation and can be roughly an order of magnitude larger than the input data.  The space required to store the $k$-mers can be much larger than the size of the original raw dataset (up to $10\times$ larger) as $k$-mers contain a lot of redundant information due to their overlaps.
+Weeding out singleton \kmers before inserting them in the hash table to count is critical in any \kmer analysis phase to reduce the memory usage of the counting phase. These singleton $k$-mers can also be pruned from the hash table after the counting phase. However, that results in the high peak memory usage and much slower running time. MetaHipMer uses filers to weed out singleton \kmers.
+
+The size of the filter and hash table is dependent on the number of unique $k$-mers. Given that the distribution of \kmers is highly skewed and not known in advance, it is challenging to size the filter and the hash table in order to efficiently utilize the limited memory. Filter and hash tables that can be efficiently resized at run time will enable efficient memory utilization. 
+
 
 \begin{rproblem}[\textbf{Scale MetaHipMer to petabyte-scale metagenomic datasets on supercomputers}]
 Accelerate \kmer analysis phase in MetaHipMer using GPUs and reduce the peak RAM usage to support assembly of petabyte-scale metagenomic datasets from complex biological environments.
