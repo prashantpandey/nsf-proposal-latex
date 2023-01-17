@@ -721,6 +721,7 @@ FUNCTION {inproceedings}
   new.block
   format.doi output
   note output
+  format.url output
   fin.entry
 }
 
