@@ -12,87 +12,49 @@ A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under a
 A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega(\log {u\choose n})
 \approx \Omega(n \log u)$ bits, whereas a filter  takes space at least  lower bound of $\opt + \Omega(n)$
 bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound w.h.p., including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21}, XOR
-filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}.  Bloom filters do not meet this lower bound, nor do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p. grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
+filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}.  Bloom filters~\cite{Bloom70} do not meet this lower bound, nor, strictly speaking, do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p. grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
 %
 For typical values of $\varepsilon$, the best filters takes one or two bytes per item.
 
-The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafLe20m,DillingerWalzer21}.  Some filters, such as Bloom filters, allow insertions but no deletions. ~\cite{Bloom70}
+The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafLe20m,DillingerWalzer21}.  Some filters, such as Bloom filters, allow insertions but no deletions.  Quotient and cuckoo filters are fully dynamic.  Futhermore, quotient filters are \defn{mergable}, in that, under the right conditions, two filters can be merged into a single filter, perhaps increasing the false-positive rate, depending on how the filters are configured.  Mergeability turns out to be critical in some applications~\cite{conway2020splinterdb}.  
 
-Filter data structures can be broadly classified into \emph{static} and
-\emph{dynamic}.  Static filters approximately represent a set of items that must
-be known before building the filter. Examples of these filters include XOR
-filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}. Static
-filters have recently seen more advancement due their use in storage
-applications, such as LSM-trees.
+Finally, it is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \mfc{Prashant, please add applications for maplets}
 
 
-In this paper, we consider dynamic filters as they have wide-spread applications
-in data analytics.  Dynamic filters approximately represent a set of items that
-does not need to be known before the construction. Dynamic filters have seen
-much more advancement in the last few decades as applications often do not know
-the set of items in advance. Examples of dynamic filters are Bloom
-filters~\cite{Bloom70}, quotient filters~\cite{BenderFaJo12,
-PandeyBJP17b,DillingerMa09,PaghPaRa05,EinzigerFr16}, and cuckoo
-filters~\cite{FanAnKa14,BreslowJ18}.
 
-\textbf{Bloom filters} consume $\log(e)\, \opt$ space, which is roughly
-$\log(e)\approx 1.44$ times more than the lower bound of $\opt + \Omega(n)$
-bits~\cite{CarterFG78}. In contrast, for a set $S$ taken from a universe $U$,
-where $|U|=u$, an error-free dictionary requires $\Omega(\log {u\choose n})
-\approx \Omega(n \log u)$ bits. Bloom filters also incur $\errbits$ cache-line
-misses on inserts and positive queries, giving them poor insertion and query
-performance.
 
-\textbf{Blocked Bloom filters}~\cite{putze2007cache} overcome the poor cache
-locality of Bloom filters by constructing a series of smaller Bloom filters each
-of which is small enough to fit inside a small number of cache lines. The first
-hash function is used to select a block and rest of the hash functions are used
-to set/test bits inside the block. However, the cache efficiency comes at the
-cost of higher false-positive rate. Blocked Bloom filters have theoretically and
-empirically higher (up to $5\times$) false positive rates compared to Bloom
-filters. See \Cref{tab:merged_fp_space} for the empirical calculations of FP
-rate.
+% \textbf{Quotient
+% filters}~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21}
+% represent a set approximately by compactly storing small fingerprints of the
+% items in the set via Robin Hood hashing~\cite{CelisLaMu85}. The quotient filter
+% uses $1.053 (2.125 + \log_21/\epsilon)$ bits per element, which is less than the
+% Bloom filter whenever $\epsilon \leq 1/64$, which is the case in almost all
+% applications. It supports insertion, deletion, lookups, resizing, and merging.
+% The counting quotient filter (CQF)~\cite{PandeyBJP17}, improves upon the
+% performance of the quotient filter and adds variable-sized counters to count
+% items using asymptotically optimal space, even in large and skewed datasets. In
+% the counting quotient filter, we can also associate small values with items
+% either by re-purposing the variable-sized counters~\cite{PandeyABFJP18Cell} to
+% store values or by explicitly storing small values with the remainders in the
+% table~\cite{PandeySMB20}.
 
-\textbf{Quotient
-filters}~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21}
-represent a set approximately by compactly storing small fingerprints of the
-items in the set via Robin Hood hashing~\cite{CelisLaMu85}. The quotient filter
-uses $1.053 (2.125 + \log_21/\epsilon)$ bits per element, which is less than the
-Bloom filter whenever $\epsilon \leq 1/64$, which is the case in almost all
-applications. It supports insertion, deletion, lookups, resizing, and merging.
-The counting quotient filter (CQF)~\cite{PandeyBJP17}, improves upon the
-performance of the quotient filter and adds variable-sized counters to count
-items using asymptotically optimal space, even in large and skewed datasets. In
-the counting quotient filter, we can also associate small values with items
-either by re-purposing the variable-sized counters~\cite{PandeyABFJP18Cell} to
-store values or by explicitly storing small values with the remainders in the
-table~\cite{PandeySMB20}.
 
-\textbf{Cuckoo filters}~\cite{FanAnKa14,BreslowJ18} also store small
-fingerprints compactly in a table. However, unlike the quotient filter that uses
-Robin Hood hashing, the cuckoo filter uses cuckoo hashing to resolve collisions
-among fingerprints. Cuckoo hashing uses kicking (or cuckooing) to find an empty
-slot for the new item when all the slots in a bucket are occupied. This results
-in a cascading sequence of kicks until the filter converges on a new stable
-state. Inserts become slower as the structure becomes full, and in fact inserts
-may fail if the number of kicks during a single insert exceeds a specified
-threshold (500 in the author's reference implementation).
 
-\textbf{Two-Choice filters}~\cite{pandeySigmod21} organize fingerprints
-compactly in blocks similar to the cuckoo filter. However, unlike the cuckoo
-filter, there is no kicking. The blocks in the two-choice filter are larger in
-size ($\approx \log{n}$, where $n$ is the number of items which is usually the
-size of the cache line on most machines) than the cuckoo filter and
-power-of-two-choice hashing is used to reduce the variance across the blocks and
-achieve a high load factor. During insertions if both blocks corresponding to a
-fingerprint are full then the data structure is declared full. The
-power-of-two-choice hashing enables the filter to probe exactly two cache lines
-during inserts and queries and write to a single cache line during inserts.
-Given the larger block sizes the vector quotient filter~\cite{pandeySigmod21}
-uses quotienting (similar to the quotient filter) to organize fingerprints
-inside blocks. It divides the fingerprints into a quotient and remainder part
-and only stores the remainder in the slot given by the quotient. It uses two
-additional metadata bits to resolve collisions among quotients.
+% \textbf{Two-Choice filters}~\cite{pandeySigmod21} organize fingerprints
+% compactly in blocks similar to the cuckoo filter. However, unlike the cuckoo
+% filter, there is no kicking. The blocks in the two-choice filter are larger in
+% size ($\approx \log{n}$, where $n$ is the number of items which is usually the
+% size of the cache line on most machines) than the cuckoo filter and
+% power-of-two-choice hashing is used to reduce the variance across the blocks and
+% achieve a high load factor. During insertions if both blocks corresponding to a
+% fingerprint are full then the data structure is declared full. The
+% power-of-two-choice hashing enables the filter to probe exactly two cache lines
+% during inserts and queries and write to a single cache line during inserts.
+% Given the larger block sizes the vector quotient filter~\cite{pandeySigmod21}
+% uses quotienting (similar to the quotient filter) to organize fingerprints
+% inside blocks. It divides the fingerprints into a quotient and remainder part
+% and only stores the remainder in the slot given by the quotient. It uses two
+% additional metadata bits to resolve collisions among quotients.
 
 
 \subsection{Analysis of filter designs}
