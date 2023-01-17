@@ -1,0 +1,128 @@
+\section{Hash tables}
+\label{sec:hash-tables}
+
+\prashant{Notes for Martin/John.}
+
+\prashant{Scale up: We need hash tables with: fine-grained resizing on GPUs. Applications often do not know the number of items in advance. If they under size the hash table they fail at run time and if they oversize they waste memory.}
+
+\prashant{Scale out: We need hash table that can be distributed across multiple nodes in HPC clusters. However, when partitioning data across multiple nodes there are two challenges: First, we need to reduce the load variance across nodes. Second, we need to reduce the communication volume to while constructing the hash table and also to perform operations on the hash table. Operations can include: performing a join/intersection across two distributed hash tables.}
+
+\prashant{Forward and backward extensions of the \kmer and the counts of those
+extensions are also maintained in the hash table along with the \kmer.
+Information regarding the extensions and their counts is critical to identifying
+correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on
+$k$) to store each \kmer.}
+
+\prashant{HT is built for multiple values of $k$ across different iterations of the contig mapping. The HT is required to support variable-length keys ranging from 32-bits to 200 bits.}
+
+
+\prashant{HT use case in MetaHipMer}
+
+\prashant{In the approach used by MetaHipMer, the reads are first divided into overlapping substrings of fixed length-$k$, called \kmers, which are then used
+to form a de Bruijn graph. In a de Bruijn graph, the
+vertices are \kmers and edges connect any two \kmers that have an overlap of
+$k-1$ bases. These vertices are stored in a hash table that is distributed
+across all the compute processes.  The size of the hash table is dependent on
+the number of unique \kmers which is not known in advance. Currently, an approximation of the number of unique \kmers is used to size the HT. If it is an over approximation GPU device memory is wasted and if it is an under approximation then \kmers are arbitrarily dropped when HT becomes full resulting in dropped quality of the final result.}
+
+Hash tables are a core data structure in many applications, including key-value
+stores, databases, and big-data-analysis engines, and are included in most
+standard libraries.  Hash-table performance can be a substantial bottleneck for
+many applications~\cite{NealZu21,FanAn13,MetreveliZe12}.
+
+
+We argue that two stricter criteria, \emph{referential stability} and \emph{low
+associativity} should be optimized to yield high performance on PMEM.  As we
+will see, these two goals seem to be at odds with each other, and part of the
+innovation  of our hash table design is that it simultaneously achieves both.
+Naturally, the third design goal for a high-performance hash table is
+\emph{compactness}, but compactness also seems at odds with referential
+stability and low associativity.
+
+A hash table is said to be \defn{stable} if the position where an element is
+stored is guaranteed not to change until either the element is deleted or the
+table is resized~\cite{sandersstability,originalstability,KnuthVol3}.
+Stability offers a number of desirable properties.  For example, stability
+enables simpler concurrency-control mechanisms and thus reduces the performance
+impact of locking.  Moreover, since elements are not moved, writing is
+minimized, which improves PMEM performance.
+expensive than reads~\cite{pmem-measurements}.
+
+The \defn{associativity} of a hash table is the number of locations where an
+element is allowed to be stored.\footnote{Associativity is often associated with
+caches that restrict the locations an item may be stored in.  Here we refer to
+\emph{data structural associativity}, which is a restriction on how many
+locations a data structure may choose from to put an item in, even on fully
+associative hardware.} The best known low-associative (DRAM) hash table is the
+cuckoo hash table~\cite{Pagh:CuckooHash,PaghRo01}.  In the original design, each
+element has exactly two locations in the table where it is allowed to be stored,
+meaning that the associativity is two.  Low associativity yields a different set
+of desirable properties---most importantly, it helps search costs. For example,
+searching for an element in a cuckoo hash table is fast because there are only
+two locations in the table to check.  In addition, low associativity can enable
+us to further improve query performance by keeping a small amount of metadata;
+see \Cref{sec:iceberght}.
+
+
+In combination, stability can be used to achieve high insertion throughput in
+PMEM, where writes are expensive, and low associativity can be use to achieve
+high query  performance.  Furthermore, we also show how stability enables
+locking and concurrency-control mechanisms to be simplified, leading to better
+multithreaded scaling and simpler designs for crash consistency.
+
+Unfortunately, there is a tension between stability and low associativity.  If a
+hash table has associativity $\alpha$, and elements cannot move once they are
+inserted, then an unlucky choice of $\alpha$ locations for $\alpha$ elements can
+block a $(\alpha+1)$st element from being inserted.  As $\alpha$ decreases, the
+probability of such an unlucky event increases.  Cuckoo hashing reduces the
+probability of these bad events by giving up stability via \defn{kickout
+chains}, which are chains of elements that displace each other from one location
+to another. Practical implementations~\cite{LiAn14} generally increase the
+number of elements that can be stored in a given location---and thus the
+associativity---to reduce the kickout-chain length and increase the
+maximum-allowed \defn{load factor}, i.e, the ratio of the total number of keys
+in the table to the overall capacity of the table.
+
+
+Similarly, there is a three-way tension between space efficiency, associativity,
+and stability.  For example, cuckoo hash tables can be made stable if they are
+overprovisioned so much that the kickout-chain length reaches 0.  Such
+overprovisioning directly decreases space efficiency, but it also increases
+associativity.  Linear probing hash tables are stable (assuming they use
+tombstones to implement delete) but, as the load factor approaches 1, the
+average probe length for queries goes up, increasing associativity.  Other
+open-addressing hash tables have a similar space/associativity trade-off.
+Chaining hash tables are stable, but they have large associativity and
+significant space overheads.  CLHT~\cite{david2015asynchronized} improves query
+performance despite high associativity by storing multiple items in each node,
+but this further reduces space efficiency.
+
+\iffalse
+\subsection{B-trees}
+
+The \btree(or B$^+$-tree\footnote{A \bplustree is a scan-optimized variant of
+\btrees that stores all data records in the leaves and only pivot keys in the
+internal nodes. The \bplustree is the widely implemented variant of the \btree
+in real-world applications as it supports faster range
+scans~\cite{mongodb,couchdb,scylladb,conway2020splinterdb,postgresql}. In this
+paper, we refer to \bplustree as the \btree.})~\cite{BayerMc72} has been the
+fundamental access path structure in databases and storage systems for over five
+decades~\cite{Comer79,graefe2010survey}. \btrees are an extension of
+self-balancing binary search trees to arbitrary fanouts (with more than two
+children per node). They store elements in each node in a sorted array.  Given a
+cache-line size $Z$~\cite{AggarwalVi88}, a \btree with $N$ elements and node
+size $B = \Theta(Z)$ supports the point operations \proc{insert} and \proc{find}
+in $O(\log_B(N))$ cache-line transfers in the I/O model~\cite{AggarwalVi88}.
+\btrees are one of the top choices for in-memory indexing~\cite{ZhangChOo15} due
+to their cache efficiency though they were initially introduced for indexing
+data stored on disk~\cite{BayerMc72}. In this paper, we study and improve the
+performance of in-memory \btrees.
+
+\btrees are especially popular in databases and file systems because they
+support logarithmic point operations (inserts and finds) and efficient range
+operations (range queries and scans) that read blocks of
+data~\cite{Knuth98,rodeh2013btrfs}.  They are also extensively used as the
+in-memory index in many popular databases such as MongoDB~\cite{mongodb},
+CouchDB~\cite{couchdb}, ScyllaDB~\cite{scylladb}, PostgreSQL~\cite{postgresql},
+and SplinterDB~\cite{conway2020splinterdb}.
+\fi
