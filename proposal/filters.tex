@@ -6,16 +6,16 @@ A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under a
 
 A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega(\log {u\choose n})
 \approx \Omega(n \log u)$ bits, whereas a filter  takes space at least  lower bound of $\opt + \Omega(n)$
-bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound w.h.p., including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12a,PandeyBJP17,pandeySigmod21}, XOR
-filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}.  Bloom filters~\cite{Bloom70} do not meet this lower bound, nor, strictly speaking, do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p. grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
+bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound w.h.p., including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerM09,BenderFaJo12a,PandeyBJP17,PandeyCDBFJ21}, XOR
+filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerW21}.  Bloom filters~\cite{Bloom70} do not meet this lower bound, nor, strictly speaking, do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p. grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
 %
 For typical values of $\varepsilon$, the best filters takes one or two bytes per item.
 
-The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafLe20m,DillingerWalzer21}.  Some filters, such as Bloom filters, allow insertions but no deletions.  Quotient and cuckoo filters are fully dynamic.  Futhermore, quotient filters are \defn{mergable}, in that, under the right conditions, two filters can be merged into a single filter, perhaps increasing the false-positive rate, depending on how the filters are configured.  Mergeability turns out to be critical in some applications~\cite{conway2020splinterdb}.  Mergeability is closely related to \defn{resizability}.  
+The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafL19,DillingerW21}.  Some filters, such as Bloom filters, allow insertions but no deletions.  Quotient and cuckoo filters are fully dynamic.  Futhermore, quotient filters are \defn{mergable}, in that, under the right conditions, two filters can be merged into a single filter, perhaps increasing the false-positive rate, depending on how the filters are configured.  Mergeability turns out to be critical in some applications~\cite{conway2020splinterdb}.  Mergeability is closely related to \defn{resizability}.  
 
-It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{mccoy2022high}. \mfc{I don't know hwat that means}  To date, all maplets are based on the quotient filter~\cite{conway2020splinterdb,others}
+It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{mccoy2022high}. \mfc{I don't know hwat that means}  To date, all maplets are based on the quotient filter~\cite{conway2020splinterdb,mccoy2022high}.
 
-Finally, some filters, most notably the quotient filter, can be made \defn{adaptive}~\cite{focs-adaptive}.  A filter is adaptive if its false-positive probability is at most $\varepsilon$ for every $x\notin S$, even if $x$ is repeatedly queries.  In a standard filter, every time $x$ is queried, the filter returns the same answer.  In an adaptive filter, if $x$ is queired and determined to be a false positive, the filter has the option of 
+Finally, some filters, most notably the quotient filter, can be made \defn{adaptive}~\cite{BenderFaGo18}.  A filter is adaptive if its false-positive probability is at most $\varepsilon$ for every $x\notin S$, even if $x$ is repeatedly queries.  In a standard filter, every time $x$ is queried, the filter returns the same answer.  In an adaptive filter, if $x$ is queried and determined to be a false positive, the filter has the option of 
 
 
 
@@ -59,6 +59,7 @@ Finally, some filters, most notably the quotient filter, can be made \defn{adapt
 % and only stores the remainder in the slot given by the quotient. It uses two
 % additional metadata bits to resolve collisions among quotients.
 
+\iffalse
 
 \subsection{Analysis of filter designs}
 
@@ -126,3 +127,4 @@ atomic operations to read or write fingerprints inside blocks. It is a
 challenging task to implement a two choice filter on the GPU using atomic
 operations to achieve high throughput.
 
+\fi
