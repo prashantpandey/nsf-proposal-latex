@@ -2,11 +2,6 @@
 
 \section{Filters}
 
-
-\prashant{Comp bio applications require Maplets on GPUs that support dynamic resizing and deletes.}
-
-\prashant{Adaptive filters can be really useful for comp bio application as they can be used to construct MPH (minimal perfect hash) on GPUs.}
-
 A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under approximate membership queries.  Specifically, $\texttt{Member}(x)$ returns \textsc{True} if $x\in S$, and returns \textsc{True} with probability at most $\varepsilon$ for $x\notin S$, where $\varepsilon$ is a parameter of the filter specified at initialization.  When a filter returns \textsc{True} erroneously, we say that it has experienced a \defn{false positive}.
 
 A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega(\log {u\choose n})
@@ -16,11 +11,19 @@ filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerWalzer21}.  Bloom filt
 %
 For typical values of $\varepsilon$, the best filters takes one or two bytes per item.
 
-The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafLe20m,DillingerWalzer21}.  Some filters, such as Bloom filters, allow insertions but no deletions.  Quotient and cuckoo filters are fully dynamic.  Futhermore, quotient filters are \defn{mergable}, in that, under the right conditions, two filters can be merged into a single filter, perhaps increasing the false-positive rate, depending on how the filters are configured.  Mergeability turns out to be critical in some applications~\cite{conway2020splinterdb}.
+The other way in which filters differ is their functionality. Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafLe20m,DillingerWalzer21}.  Some filters, such as Bloom filters, allow insertions but no deletions.  Quotient and cuckoo filters are fully dynamic.  Futhermore, quotient filters are \defn{mergable}, in that, under the right conditions, two filters can be merged into a single filter, perhaps increasing the false-positive rate, depending on how the filters are configured.  Mergeability turns out to be critical in some applications~\cite{conway2020splinterdb}.  Mergeability is closely related to \defn{resizability}.  
 
-Finally, it is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain the prefix-suffix extensions along with \kmers~\cite{mccoy2022high}.
+It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{mccoy2022high}. \mfc{I don't know hwat that means}  To date, all maplets are based on the quotient filter~\cite{conway2020splinterdb,others}
+
+Finally, some filters, most notably the quotient filter, can be made \defn{adaptive}~\cite{focs-adaptive}.  A filter is adaptive if its false-positive probability is at most $\varepsilon$ for every $x\notin S$, even if $x$ is repeatedly queries.  In a standard filter, every time $x$ is queried, the filter returns the same answer.  In an adaptive filter, if $x$ is queired and determined to be a false positive, the filter has the option of 
 
 
+
+\mfc{Prashant, please turn this into a pitch for why we need this functionality.  Or maybe I've lost track and we can have a backwards pointer?}
+
+\prashant{Comp bio applications require Maplets on GPUs that support dynamic resizing and deletes.}
+
+\prashant{Adaptive filters can be really useful for comp bio application as they can be used to construct MPH (minimal perfect hash) on GPUs.}
 
 
 % \textbf{Quotient
