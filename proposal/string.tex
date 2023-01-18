@@ -1,27 +1,18 @@
 \section{String data structures}
 
- Let $\sum$ be a finite alphabet consisting of a set of characters (or symbols). 
- The cardinality of the alphabet denoted by $|\sum|$ expresses
-the number of distinct characters in the alphabet. 
-A string or word is an ordered list of zero or more characters drawn from the alphabet. A word or string $w$ of length $n$ is
-represented by $w[1 \ldots n] = w[1],w[2], \ldots ,w[n]$, where $w[i] \in \sum for 1 \leq i \leq n$ and
-$|w|$ denotes the length of $w$. The empty word is the empty sequence (of zero length) and is denoted by $\epsilon$. A list of characters of $w$, appearing in consecutive positions, is called a substring of $w$, denoted by $w[i \ldots j]$, where $i$ and $j$ are the starting and
-ending positions, respectively. If the substring starts at position 1, then it is called
-a prefix, whereas if it ends at position $n$, then it is called a suffix of $w$. However,
-an ordered list of characters of $w$ that are not necessarily consecutive is called a subsequence of $w$.
+Let $\sum$ be a finite alphabet consisting of a set of characters (or symbols).  The cardinality of the alphabet denoted by $|\sum|$ expresses the number of distinct characters in the alphabet.  A string or word is an ordered list of zero or more characters drawn from the alphabet. A word or string $w$ of length $n$ is represented by $w[1 \ldots n] = w[1],w[2], \ldots ,w[n]$, where $w[i] \in \sum for 1 \leq i \leq n$ and $|w|$ denotes the length of $w$. The empty word is the empty sequence (of zero length) and is denoted by $\epsilon$. A list of characters of $w$, appearing in consecutive positions, is called a substring of $w$, denoted by $w[i \ldots j]$, where $i$ and $j$ are the starting and ending positions, respectively. If the substring starts at position 1, then it is called a prefix, whereas if it ends at position $n$, then it is called a suffix of $w$. However, an ordered list of characters of $w$ that are not necessarily consecutive is called a subsequence of $w$.
 
-Strings and subsequences appear in a plethora of computational molecular biology
-problems because the basic types of DNA, RNA, and protein molecules can be represented as strings—pieces of DNA as strings over the alphabet {A,C, G, T } (representing the four bases adenine, cytosine, guanine, and thymine, respectively), pieces of RNA as strings over the alphabet {A,C, G, U} (with uracil replacing thymine) and proteins as strings over an alphabet of 20, corresponding to the 20 amino acid
+String pattern matching is the problem of counting or locating occurrences of a query text pattern $P$ within a large database text $T$. While not limited to the analysis of biological sequences, string pattern matching is integral to many tasks in computational biology, including mapping sequence reads to a reference genome~\cite{li2009fast,langmead2009ultrafast}, taxonomic classification~\cite{menzel2016fast,kim2016centrifuge}, sequencing error correction~\cite{huang2017efficient}, and seeding for sequence alignments~\cite{buchfink2015fast,altschul1990basic,steinegger2017mmseqs2}.
+
+Strings and subsequences appear in a plethora of computational molecular biology problems because the basic types of DNA, RNA, and protein molecules can be represented as strings—pieces of DNA as strings over the alphabet {A,C, G, T } (representing the four bases adenine, cytosine, guanine, and thymine, respectively), pieces of RNA as strings over the alphabet {A,C, G, U} (with uracil replacing thymine) and proteins as strings over an alphabet of 20, corresponding to the 20 amino acid
 residues.
 
-\noindent
-The basic string algorithmic problems that develop in computational molecular
-biology are:
-\begin{description}
-    \item [Exact pattern matching] given a pattern $P$ and a text $T$ to locate the occurrences of $P$ into $T$.
-    \item [Approximate pattern matching] given a pattern $P$, a text $T$ , a similarity metric distance function $d()$, and a threshold parameter $k$ to locate all positions $i$ and $j$ such that $d(P, T_{i \ldots j}) \leq k$.
-    % \item [Multiple approximate and exact pattern matching in which more than two strings are involved into the computation.
-    \item [Sequence alignment] given two string sequences, $T_1$ and $T_2$, try to find the best alignment between the two sequences according to various criteria. The alignment can be either local or global. A special case of this problem, which has great biological significance, is the longest common subsequence problem in which we try to locate the longest subsequence that is common to both sequences.
-    \item [String clustering] given a set of stings, cluster them into a set of clusters according to the distance between the involved strings; this problem has great biological significance because DNA sequence clustering and assembling overlapping DNA sequences are critical operations when extracting useful biological knowledge.
-    % \item Efficient implementation of indexing techniques for storing and retrieving information from biological databases.
-\end{description}
+The need for high-throughput pattern matching in computational biology has motivated numerous approaches including hashing, lookup tables, suffix arrays~\cite{manber1993suffix}, and compressed suffix array data structures such as the FM-index~\cite{ferragina2000opportunistic}. 
+FM-index is based on Burrows-Wheeler transform~\cite{burrows1994block}. The Burrows-Wheeler transform (BWT) is a reversible text transform that was originally proposed for lossless data compression.
+
+Use of the FM-index across applications is due to its fast performance and low memory footprint. Unfortunately, its adoption is likely limited by the lack of an optimized and lightweight FM-index library; the only robust, currently maintained FM-index implementations are SeqAn3 library~\cite{reinert2017seqan} and AWFM-index~\cite{anderson2021optimized}.
+
+
+
+
+
