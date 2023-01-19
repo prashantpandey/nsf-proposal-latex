@@ -765,14 +765,21 @@
 }
 
 @article{PandeyABFJP18Cell,
-	author = {Pandey, Prashant and Almodaresi, Fatemeh and Bender, Michael A and Ferdman, Michael and Johnson, Rob and Patro, Rob},
-	journal = {Cell systems},
-	number = {2},
-	pages = {201--207},
-	publisher = {Elsevier},
-	title = {Mantis: A fast, small, and exact large-scale sequence-search index},
-	volume = {7},
-	year = {2018}}
+  author       = {Pandey, Prashant and Almodaresi, Fatemeh and Bender,
+                  Michael A. and Ferdman, Michael and Johnson, Rob and
+                  Patro, Rob},
+  title	       = {Mantis: A Fast, Small, and Exact Large-Scale
+                  Sequence-Search Index},
+  journal      = {Cell Systems},
+  year	       = 2018,
+  volume       = 7,
+  number       = 2,
+  month	       = aug,
+  pages	       = {201--207.e4},
+  issn_	       = {2405-4712},
+  doi	       = {10.1016/j.cels.2018.05.021},
+  publisher    = {Elsevier BV}
+}
 
 @article{PandeyBJP17a,
 	author = {Pandey, Prashant and Bender, Michael A and Johnson, Rob and Patro, Rob},
@@ -21652,10 +21659,13 @@
 
 @inproceedings{PaghPaRa05,
 	author = {Pagh, Anna and Pagh, Rasmus and Rao, S Srinivasa},
-	booktitle = {Proceedings of the Sixteenth Annual ACM-SIAM Symposium on Discrete Algorithms (SODA)},
+	booktitle = {Proceedings of the Sixteenth Annual ACM-SIAM Symposium on Discrete Algorithms},
+	series = {SODA '05},
+	month = jan,
 	pages = {823--829},
 	title = {An optimal {Bloom} filter replacement},
-	year = {2005}}
+	year = {2005},
+	url="http://dl.acm.org/citation.cfm?id=1070432.1070548",}
 
 @article{CormodeMu05,
 	author = {Cormode, Graham and Muthukrishnan, S},
@@ -21893,13 +21903,20 @@
 
 @article{MarccaisKi11,
 	author = {Mar{\c{c}}ais, Guillaume and Kingsford, Carl},
-	journal = {Bioinformatics},
-	number = {6},
-	pages = {764--770},
-	publisher = {Oxford Univ Press},
-	title = {A fast, lock-free approach for efficient parallel counting of occurrences of k-mers},
-	volume = {27},
-	year = {2011}}
+  title	       = {A fast, lock-free approach for efficient parallel
+                  counting of occurrences of $k$-mers},
+  journal      = {Bioinformatics},
+  year	       = 2011,
+  volume       = 27,
+  number       = 6,
+  month	       = jan,
+  pages	       = {764--770},
+  issn	       = {1367-4803},
+  doi	       = {10.1093/bioinformatics/btr011},
+  publisher    = {Oxford University Press (OUP)}
+}
+
+
 
 @article{CompeauPeTe11,
 	author = {Compeau, Phillip EC and Pevzner, Pavel A and Tesler, Glenn},
@@ -25601,11 +25618,21 @@
 	year = {2021}}
 
 @inproceedings{LiAn14,
-	author = {Li, Xiaozhou and Andersen, David G and Kaminsky, Michael and Freedman, Michael J},
-	booktitle = {Proceedings of the Ninth European Conference on Computer Systems},
-	pages = {1--14},
-	title = {Algorithmic improvements for fast concurrent cuckoo hashing},
-	year = {2014}}
+  author       = {Li, Xiaozhou and Andersen, David G. and Kaminsky,
+                  Michael and Freedman, Michael J.},
+  title	       = {Algorithmic Improvements for Fast Concurrent Cuckoo
+                  Hashing},
+  booktitle      = {Proceedings of the Ninth European Conference on
+                  Computer Systems},
+  year	       = 2014,
+  series = {EuroSys '14},
+  month	       = apr,
+  pages = {27:1--27:14},
+  doi	       = {10.1145/2592798.2592820},
+  publisher    = {ACM}
+}
+
+
 
 @article{Pheatt08,
 	author = {Pheatt, Chuck},
@@ -26260,45 +26287,19 @@ publisher = {USENIX Association},
 month = apr,
 }
 
-@article{10.1145/2370036.2145874,
-author = {Metreveli, Zviad and Zeldovich, Nickolai and Kaashoek, M. Frans},
-title = {CPHASH: A Cache-Partitioned Hash Table},
-year = {2012},
-issue_date = {August 2012},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-volume = {47},
-number = {8},
-issn = {0362-1340},
-url = {https://doi.org/10.1145/2370036.2145874},
-doi = {10.1145/2370036.2145874},
-abstract = {CPHash is a concurrent hash table for multicore processors. CPHash partitions its table across the caches of cores and uses message passing to transfer lookups/inserts to a partition. CPHash's message passing avoids the need for locks, pipelines batches of asynchronous messages, and packs multiple messages into a single cache line transfer. Experiments on a 80-core machine with 2 hardware threads per core show that CPHash has ~1.6x higher throughput than a hash table implemented using fine-grained locks. An analysis shows that CPHash wins because it experiences fewer cache misses and its cache misses are less expensive, because of less contention for the on-chip interconnect and DRAM. CPServer, a key/value cache server using CPHash, achieves ~5% higher throughput than a key/value cache server that uses a hash table with fine-grained locks, but both achieve better throughput and scalability than memcached. The throughput of CPHash and CPServer also scale near-linearly with the number of cores.},
-journal = {SIGPLAN Not.},
-month = {feb},
-pages = {319–320},
-numpages = {2},
-keywords = {message-passing}
-}
-
-
 @inproceedings{MetreveliZe12,
-author = {Metreveli, Zviad and Zeldovich, Nickolai and Kaashoek, M. Frans},
-title = {CPHASH: A Cache-Partitioned Hash Table},
-year = {2012},
-isbn = {9781450311601},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-url = {https://doi.org/10.1145/2145816.2145874},
-doi = {10.1145/2145816.2145874},
-abstract = {CPHash is a concurrent hash table for multicore processors. CPHash partitions its table across the caches of cores and uses message passing to transfer lookups/inserts to a partition. CPHash's message passing avoids the need for locks, pipelines batches of asynchronous messages, and packs multiple messages into a single cache line transfer. Experiments on a 80-core machine with 2 hardware threads per core show that CPHash has ~1.6x higher throughput than a hash table implemented using fine-grained locks. An analysis shows that CPHash wins because it experiences fewer cache misses and its cache misses are less expensive, because of less contention for the on-chip interconnect and DRAM. CPServer, a key/value cache server using CPHash, achieves ~5% higher throughput than a key/value cache server that uses a hash table with fine-grained locks, but both achieve better throughput and scalability than memcached. The throughput of CPHash and CPServer also scale near-linearly with the number of cores.},
-booktitle = {Proceedings of the 17th ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming},
-pages = {319–320},
-numpages = {2},
-keywords = {message-passing},
-location = {New Orleans, Louisiana, USA},
-series = {PPoPP '12}
+  author       = {Metreveli, Zviad and Zeldovich, Nickolai and
+                  Kaashoek, M. Frans},
+  title	       = {{CPHASH}: A Cache-Partitioned Hash Table},
+  journal      = {Proceedings of the 17th ACM SIGPLAN symposium on
+                  Principles and Practice of Parallel Programming},
+		  series = {PPoPP '12},
+  year	       = 2012,
+  month	       = feb,
+pages = {319--320},
+  doi	       = {10.1145/2145816.2145874},
+  publisher    = {ACM}
 }
-
 
 @inproceedings{DBLP:conf/soda/BenderCCFJT19,
   author    = {Michael A. Bender and
