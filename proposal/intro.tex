@@ -33,6 +33,7 @@ build high-performance and scalable data analysis-pipelines for computational-bi
 Specifically, we aim to develop new massively-parallel and distributed data structures and algorithms for core computational biology data processing tasks.
 
 
+
 We aim to develop new data structures and algorithms that will have wide applicability in computation biology and beyond. For concreteness, we consider the following tools that are used throughout computational biology.
 
 \begin{itemize}[leftmargin=*]
@@ -116,17 +117,12 @@ These existing tools are limited by the single-node compute and shared-memory pa
 %
 \prashant{I don't like the above paragraph much...}
 
-% \begin{wrapfigure}{r}{0.4\textwidth}
-% \centering
-% \includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
-% \caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
-% \label{fig:sra_data}
-% \end{wrapfigure}
 
 \label{sec:we-need-performance-and-scalability}
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
 Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is is likely to double in size every $1.5$ years~\cite{kodama2012sequence}.
+See~\Cref{fig:sra_data}.
 Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible on single-node shared-memory systems.
 
 As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post Moore’s law period the performance gains will come from software, algorithms, and hardware (referred as the top of the computing stack) rather than the semiconductor (referred as the bottom). We can achieve massive scalability by, first designing data structures and algorithms to scale up using modern accelerators such as GPUs and second scaling out by using distributed memory in an high-performance computing (HPC) environment.
@@ -154,6 +150,12 @@ These limitations are critical for building scalable computational-biology appli
 Similarly, the local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to perform contig (contiguous strand of DNA) extension walks. The CPU implementation of local assembly relies heavily on dynamic
 structures like hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing this module on GPUs a very challenging problem.
 
+\begin{wrapfigure}{r}{0.5\textwidth}
+\centering
+\includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
+\caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
+\label{fig:sra_data}
+\end{wrapfigure}
 
 
 % GPUs have not seen widespread adoption in computational biology applications. For example, they are used in taxonomic classification of metagenomic data, indexing and searching through terabytes of raw sequencing data, constructing and querying pangenomic graphs.
