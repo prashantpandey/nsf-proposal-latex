@@ -719,9 +719,13 @@ FUNCTION {inproceedings}
     }
   if$
   new.block
-  format.doi output
   note output
-  format.url output
+  doi empty$
+    { format.url output
+    }
+    { format.doi output
+    }
+  if$
   fin.entry
 }
 
