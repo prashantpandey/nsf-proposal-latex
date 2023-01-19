@@ -19,12 +19,11 @@ Finally, some filters, most notably the quotient filter, can be made \defn{adapt
 
 \prashant{Adaptive filters can be really useful for comp bio application as they can be used to construct MPH (minimal perfect hash) on GPUs.}
 
-There are currently no maplets implemented for the GPU.  Our first presearch problem is thus:
+There are currently no maplets implemented for the GPU.  Our first research problem is thus:
 
 \begin{rproblem}
 Design and build a high performance maplet for the GPU.  
 \end{rproblem}
-
 
 \mfc{Not sure what the challenges are here}
 
@@ -38,7 +37,24 @@ The naive way to resize a maplet is to double its size and move items (perhaps i
 
 \prashant{Adaptive filters can be really useful for comp bio application as they can be used to construct MPH (minimal perfect hash) on GPUs.}
 
+\para{De Bruijn graph traversal.}  In computational biology, de Bruijn graphs (dbg) are at the heart of numerous sequence analysis pipelines~\cite{PandeyBJP17a, PandeyBJP17b}. In a de Bruijn graph, each node is a $k$-length subsequence from the underlying biological samples and two nodes are connected via an edge if they share a $(k-1)$-length subsequence.  Traversing long non-branching paths in the de Bruijn graphs help in building long continuous sequences (contigs) as an intermediate step in the assembly process. de Bruijn graphs are also used to weed out erroneous sequences in the underlying datasets. In the graph, each node can have at most four neighbors by extending the sequence using the four nucleotides (A, C, T, G). Therefore, the set of queries needed to traverse the whole graph is known in advance. 
 
+de Bruijn graphs are often large enough that they do not fit in the memory. They also change over time to support adding \kmers from new sequences and removing existing \kmers to weed out erroneous sequences.
+Therefore, several approaches have been proposed to minimize the space usage of representing a de Bruijn graph by representing them using a Bloom filter~\cite{chikhi2013space}. They can support dbg traversal by querying all four possible extensions from a given node in the Bloom filter and building the neighbor list based on positive queries. However, due to false positives there can be some erroneous edges in the graph.
+To avoid the false edges, Chikhi and Rizk~\cite{chikhi2013space} proposed to store the de Bruijn graph in a cascading Bloom filter as the set of queries is known in advance. Each Bloom filter stores the false positives from querying the earlier Bloom filter using all possible queries during the dbg traversal. 
+
+Existing Bloom filter-bases solutions are not space efficient and also do not support deletions. Quotient filter-based solutions showed how to build a compact representation of de Bruijn and weighted de Bruijn graphs~\cite{PandeyBJP17b}. However, quotient filters do not adapt during queries and require domain-specific mechanisms and graph invariants to fix approximation errors~\cite{PandeyBJP17b}.
+
+Dynamic adaptive filters can be used to build a compact, error-free, and fast representation for de Bruijn graphs. Adaptive filters takes smaller space compared to hash tables and they can adapt during queries to avoid any false positives. Adaptive filters are quite appropriate for representing and querying de Bruijn graphs as the set of queries of is known in advance. Furthermore, dynamic adaptive filters can support \kmer additions and deletions from the de Bruijn graph.
+
+
+\begin{rproblem}
+Prove the lower for space to support additions and deletions in a dynamic adaptive filter.
+\end{rproblem}
+
+\begin{rproblem}
+Design and build a dynamic adaptive filter to compactly represent de Bruijn graphs.
+\end{rproblem}
 
 
 
