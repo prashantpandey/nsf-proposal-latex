@@ -6,7 +6,7 @@
 \begin{description}
 \item [Year 1:] Develop theoretical models for GPU-based data structures. Build initial prototypes of filters, hash tables, sketches, and string data structures for single GPUs. [Task 1, Task 4]
 
-\item [Year 2:] Explore computational biology applications such as taxonomic classification for metagenomic data, raw sequence search, and pangenomics to develop a common data structure API. Build single GPU-enabled software tools for common data processing pipelines such as k-mer analysis and sequence alignment. [Task 5, Task 10]
+\item [Year 2:] Explore computational biology applications such as taxonomic classification for metagenomic data, raw sequence search, and pangenomics to develop a common data structure API\@. Build single GPU-enabled software tools for common data processing pipelines such as k-mer analysis and sequence alignment. [Task 5, Task 10]
 
 \item [Year 3:] Develop theoretical models for single-node-multi GPU data structures. Develop a single-node-multi-GPU compact and dynamic data structure library with strong theoretical guarantees. Integrate the data structure library in computational biology tools. [Task 2, Task 6, Task 11]
 
@@ -38,6 +38,6 @@ For each of our three applications (taxonomic classification, raw sequence searc
   \item We will scale each of these applications to process and perform complex data analyses on biggest datasets available. For example, we will scale taxonomic classification on terabyte-scale metagenomic datasets from WA, Rhizo, and Tymeflies~\cite{hofmeyr2020terabase}; index and query raw sequence search in real time on all of SRA at petabyte scale~\cite{kodama2012sequence}; build a pangenomic index at population scale (100,000 genomes project~\cite{1002021100}) and perform fast variant queries and sequence-to-graph alignment.
   \item For all of these applications we will build open-source software tools with an Apache 2.0 license, available via Github. Particularly with our widely cited and used computational biology tools~\cite{PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b,PandeyBJP17,pandey2020timely,pandey2021variantstore,pandey2021terrace,pandey2022iceberght}, we have extensive experience with building and deploying high-quality academic software.
   \item Best-in-class performance (vs.\ CPUs) on a single node.
-  \item Achieved strong and weak scalability across multiple GPUs and multiple nodes in an HPC environment. 
+  \item Achieved strong and weak scalability across multiple GPUs and multiple nodes in an HPC environment.
   \item Best-in-class performance (vs.\ CPUs) on multiple nodes.
 \end{itemize}

@@ -115,13 +115,13 @@ systems, security applications, etc.
 There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
 These existing tools are limited by the single-node compute and shared-memory parallelism. They are not designed to scale to thousands of core on modern accelerators and scale out to hundreds to nodes in a high-performance computing (HPC) environment.
 %
-\prashant{I don't like the above paragraph much...}
+\prashant{I don't like the above paragraph much \ldots}
 
 
 \label{sec:we-need-performance-and-scalability}
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
-Although CPUs are increasing at 2--25\%/year and single-node RAM sizes are increasing at 2-11\%/year, genomics data is is likely to double in size every $1.5$ years~\cite{kodama2012sequence}.
+Although CPUs performance is increasing at 2--25\%/year and single-node RAM sizes are increasing at 2--11\%/year, genomics data is is likely to double in size every 1.5 years~\cite{kodama2012sequence}.
 See~\Cref{fig:sra_data}.
 Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible on single-node shared-memory systems.
 
@@ -137,7 +137,7 @@ For example, GPUs are used in some computational-biology applications to speed u
 
 However, the penetration of GPUs into biology pipelines is limited by how the limitations of GPUs have translated so far into data structures.  These GPU limitations include:
 \begin{enumerate}[noitemsep,nolistsep]
-  \item GPU device RAM is much smaller than CPU RAM; this is especially
+  \item GPU device RAM is much smaller than CPU RAM\@; this is especially
     challenging given the data sizes in computational biology.
   \item GPUs have high contention due to thousands of threads and are
     inefficient when computations are irregular.
@@ -153,7 +153,7 @@ structures like hash tables, vectors and strings, which are a challenge to imple
 \begin{wrapfigure}{r}{0.45\textwidth}
 \centering
 \includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
-\caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
+\caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA\@. This renders what is otherwise an immensely valuable public resource largely inert.}
 \label{fig:sra_data}
 \end{wrapfigure}
 
@@ -177,9 +177,9 @@ Furthermore, to achieve fine-grained resizing and to keep the peak memory usage 
 
 We believe the answer to these challenges is a standalone library of memory-efficient, high-performance, dynamic, and scalable GPU data structures that can be directly used by computational biology applications that addresses the needs of emerging applications, allowing them to solve the problems described above.
 
-\paragraph{Our approach is four-pronged.}  We will develop new \textbf{algorithmic theory} to design scalable data structures; we will develop new \textbf{systems} that implement our solutions in a scale-up manner,  both on CPU and GPU; we will a develop new framework to distribute our solutions in an \textbf{HPC} environment, so they  scale out to clusters of GPUs; and finally we will validate out solutions on \textbf{computational biology} workloads.
+\paragraph{Our approach is four-pronged.}  We will develop new \textbf{algorithmic theory} to design scalable data structures; we will develop new \textbf{systems} that implement our solutions in a scale-up manner,  both on CPU and GPU\@; we will a develop new framework to distribute our solutions in an \textbf{HPC} environment, so they  scale out to clusters of GPUs; and finally we will validate out solutions on \textbf{computational biology} workloads.
 %
-Specifically, our data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxialiary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
+Specifically, our data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxiliary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
 
 If successful we will be able to perform complex data analyses to answer biological questions on terabyte and petabyte scale datasets available. For example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. Existing data structures and software tools fail to scale to the data sizes making a these publicly-available and highly-valuable data resources largely inert.
 
@@ -235,7 +235,7 @@ The cross-cutting concerns of particular interest to the PPoSS program are well-
     compact and dynamic.
 
   \item {\bf Module 2 [Systems]:} Develop GPU data structures that can scale out of
-      GPU device RAM to CPU host RAM. We will develop a memory allocator to
+      GPU device RAM to CPU host RAM\@. We will develop a memory allocator to
       seamlessly manage the GPU and CPU ram and efficiently move data across GPU
       and CPU RAMs.
 
@@ -260,13 +260,13 @@ Because many of these applications require the same set of data structures, we w
 
 The PIs and others have shown that recent data structure advances~\cite{cite-somethin} show that
 implementations that go beyond primitive data structures are possible on GPUs
-but this work has not had much practical impact to date. \mfc{this is a big turd in teh middle of our first page -- well maybe the end of the first page -- is it even true? My papers with John are wracking up citatoins}    \mfc{awkward transition.  this is not about what we are proposing.  this comes before what we are proposing $\rightarrow$} A pure GPU solution is
+but this work has not had much practical impact to date. \mfc{this is a big turd in the middle of our first page -- well maybe the end of the first page -- is it even true? My papers with John are wracking up citations}    \mfc{awkward transition.  this is not about what we are proposing.  this comes before what we are proposing $\rightarrow$} A pure GPU solution is
 desirable because transfer costs are high, and this is the direction being taken
 in other application domains (machine learning, data science).
 
 \paragraph{GPUs and other accelerators.}
 
-In this project we envision solving these problems with a combination of  scale-up (via better algorithms and accelerators) and scale-out (distributing data and compute across multiple nodes of large high-performance computing systems). \mfc{how do you scale out without better algorithms?  you make it sounds like scaleup needs algorithms but any old crap will work for scaleout.  I don't think taht's true.}
+In this project we envision solving these problems with a combination of  scale-up (via better algorithms and accelerators) and scale-out (distributing data and compute across multiple nodes of large high-performance computing systems). \mfc{how do you scale out without better algorithms?  you make it sounds like scaleup needs algorithms but any old crap will work for scaleout.  I don't think that's true.}
 
 % The rate of growth data is much higher than the growth of the CPU speeds and single-node storage capacities. CPU growth will not keep up with application demands.
 

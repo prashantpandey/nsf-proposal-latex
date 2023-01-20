@@ -5,7 +5,7 @@ String pattern matching is one of the most common and most computationally inten
 %
 String pattern matching is the problem of counting or locating occurrences of a query text pattern $P$ within a large database text $T$. While not limited to the analysis of biological sequences, string pattern matching is integral to many tasks in computational biology, including mapping sequence reads to a reference genome~\cite{li2009fast,langmead2009ultrafast}, sequence to graph alignment~\cite{Jain2020}, taxonomic classification~\cite{menzel2016fast,kim2016centrifuge}, sequencing error correction~\cite{huang2017efficient}, and seeding for sequence alignments~\cite{buchfink2015fast,altschul1990basic,steinegger2017mmseqs2}.
 
-The need for high-throughput pattern matching in computational biology has motivated numerous approaches including hashing, lookup tables, suffix arrays~\cite{manber1993suffix}, and compressed suffix array data structures such as the FM-index~\cite{ferragina2000opportunistic}. 
+The need for high-throughput pattern matching in computational biology has motivated numerous approaches including hashing, lookup tables, suffix arrays~\cite{manber1993suffix}, and compressed suffix array data structures such as the FM-index~\cite{ferragina2000opportunistic}.
 FM-index is based on Burrows-Wheeler transform~\cite{burrows1994block}. The Burrows-Wheeler transform (BWT) is a reversible text transform that was originally proposed for lossless data compression.
 
 % Strings and subsequences appear in a plethora of computational biology problems because the basic types of DNA, RNA, and protein molecules can be represented as strings—pieces over a given alphabet of DNA as strings over the alphabet {A,C, G, T } (representing the four bases adenine, cytosine, guanine, and thymine, respectively), pieces of RNA as strings over the alphabet {A,C, G, U} (with uracil replacing thymine) and proteins as strings over an alphabet of 20, corresponding to the 20 amino acid residues.
@@ -14,7 +14,7 @@ FM-index is based on Burrows-Wheeler transform~\cite{burrows1994block}. The Burr
 
 Use of the FM-index across applications is due to its fast performance and low memory footprint. Unfortunately, its adoption is likely limited by the lack of an optimized and lightweight FM-index library; the only robust, currently maintained FM-index implementations are SeqAn3 library~\cite{Reinert2017} and AWFM-index~\cite{Anderson2021}.
 %
-Furthermore, FM-index is a static data structure. It saves space at the cost of updability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updability. 
+Furthermore, FM-index is a static data structure. It saves space at the cost of updatability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updatability.
 %
 Finally, constructing compressed string indexes like BWT and FM-index is memory intensive. Existing tools like BOSS~\cite{Bowe2012} and VARI~\cite{Muggli2019} use disks to mitigate the high memory requirements to construct string index. They need to write out the intermediate results to disk and page them back and forth. This results in suboptimal construction speed.
 
@@ -35,8 +35,3 @@ Design and build a sequence to graph alignment library for GPUs.
 \begin{rproblem}
 Design and build a sequence to graph alignment library for GPUs in distributed-memory when the sequence graph is stored across multiple GPUs.
 \end{rproblem}
-
-
-
-
-
