@@ -44,5 +44,11 @@ Design and build a sequence to graph alignment library for GPUs in distributed-m
 \end{rproblem}
 
 \paragraph{Proposed approach.}
+
 We plan to extend FM-index and P-BWT data structures using the a new framework for dynamic data structures for string processing~\cite{Nicola17,Farzan2011}. Our plan is to make the underlying bit vector representation dynamic and support efficient rank and select queries on dynamic bit vectors~\cite{Raman2001}.
-To reduce the memory requirements during the construction of these data structures we will emplou
+To reduce the memory requirements during the construction of these data structures we plan to employ devise new memory-efficient algorithms to construct succinct string representations.
+
+\prashant{Martin, can we say something more concrete here for string data structures.}
+
+PI Pandey has showed to build a succinct data structure for storing colored de Bruijn graphs~\cite{almodaresi2017rainbowfish}. PI Martin has devised numerous string structures for computational biology.
+\prashant{Martin, please add your paper on string data structures.}
