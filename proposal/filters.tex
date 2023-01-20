@@ -32,7 +32,7 @@ Design and build a high performance incrementally resizable maplet.
 \end{rproblem}
 The naive way to resize a maplet is to double its size and move items (perhaps incrementally) from the old filter to the new.  This means that during during the transition, which can last quite a long time, both tables must be stored and both tables must be queried. 
 
-We propose to adapt an approach recently proposed by PIs Bender and Farach-Colton: waterfall addressing~\cite{all-purpose-hashing}.   Waterfall addressing is a method for addressing into an array (for example for a filter or hash table that uses open addressing) 
+We propose to adapt an approach recently proposed by PIs Bender and Farach-Colton: waterfall addressing~\cite{all-purpose-hashing}.   Waterfall addressing is a method for addressing into an array (for example for a filter or hash table that uses open addressing) so that the array can grow in small increment. 
 
 
 \prashant{Comp bio applications require Maplets on GPUs that support dynamic resizing and deletes.}

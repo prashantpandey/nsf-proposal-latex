@@ -14,7 +14,7 @@ FM-index is based on Burrows-Wheeler transform~\cite{burrows1994block}. The Burr
 
 Use of the FM-index across applications is due to its fast performance and low memory footprint. Unfortunately, its adoption is likely limited by the lack of an optimized and lightweight FM-index library; the only robust, currently maintained FM-index implementations are SeqAn3 library~\cite{Reinert2017} and AWFM-index~\cite{Anderson2021}.
 
-Furthermore, FM-index is a static data structure. It saves space at the cost of 
+Furthermore, FM-index is a static data structure. It saves space at the cost of updability. However, sequences are often added and deleted in computational biology s
 
 \begin{rproblem}
 Prove a lower-bound for space and run time to support updates in FM-index.
