@@ -58,7 +58,7 @@ The literature on adaptivity has focused on filters.  There are a few possible w
 Design and build a dynamic adaptive maplet to compactly represent de Bruijn graphs.
 \end{rproblem}
 
-In the algorithmic literature on adaptive filters, adativity is implemented by varying the number of bits stored in a fingerprint of each item.  When there is a false positive, enough bits are added that the fingerprint of the false-positive query no longer collides with the fingerprint of the item in the set.  Variable-length codes make memory accesses inefficient since the fingerprints are no longer byte aligned.  We propose to over-adapt by a full byte whever we have a false positive.  We believe that we can prove that over-adapting in this way does not blow up the space.  Such a scheme will substantially simplify the GPU implemena
+In the algorithmic literature on adaptive filters, adativity is implemented by varying the number of bits stored in a fingerprint of each item.  When there is a false positive, enough bits are added that the fingerprint of the false-positive query no longer collides with the fingerprint of the item in the set.  Variable-length codes make memory accesses inefficient since the fingerprints are no longer byte aligned.  We propose to over-adapt by a full byte whever we have a false positive.  We believe that we can prove that over-adapting in this way does not blow up the space.  Such a scheme will substantially simplify the GPU implementation of adaptive filters.  We believe that all these comments carry over directly to adaptive maplets.
 
 
 % \textbf{Quotient
