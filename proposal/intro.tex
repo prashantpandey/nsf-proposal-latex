@@ -150,7 +150,7 @@ These limitations are critical for building scalable computational-biology appli
 Similarly, the local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to perform contig (contiguous strand of DNA) extension walks. The CPU implementation of local assembly relies heavily on dynamic
 structures like hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing this module on GPUs a very challenging problem.
 
-\begin{wrapfigure}{r}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.45\textwidth}
 \centering
 \includegraphics[width=0.95\textwidth]{images/SRA_data_growth.png}
 \caption{Sequence read archive (SRA) data growth. SRA data contains a trove of biological diversity information. Existing computational-biology tools do not scale to support searching through all of SRA. This renders what is otherwise an immensely valuable public resource largely inert.}
