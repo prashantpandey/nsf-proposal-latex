@@ -574,7 +574,12 @@ FUNCTION {article}
     }
   if$
   new.block
-  format.doi output
+  doi empty$
+    { format.url output
+    }
+    { format.doi output
+    }
+  if$
   note output
   fin.entry
 }
