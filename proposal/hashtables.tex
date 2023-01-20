@@ -41,15 +41,44 @@ the number of unique \kmers which is not known in advance. Currently, an approxi
 
 While building static single-GPU fixed-key-size hash tables can be done efficiently and with high load factors~\cite{Awad:2023:AAI}, scaling and improving the functionality of GPU hash tables to support the bioinformatics workloads in this proposal presents several significant research challenges. In particular we must address three important and orthogonal problems:
 
-\begin{rproblem} Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values \end{rproblem}
+\begin{rproblem}
+  Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values
+\end{rproblem}
 
-\begin{rproblem} Extending hash-table support for \textbf{variable-length keys} (in particular, storing $k$-mer keys that may range in length from 32--200 bits) \end{rproblem}
+\begin{rproblem}
+  Extending hash-table support for \textbf{variable-length keys} (in particular, storing $k$-mer keys that may range in length from 32--200 bits)
+\end{rproblem}
 
-\begin{rproblem} \textbf{Distributing these hash tables across multiple GPUs} for both increased capacity and increased performance\end{rproblem}
+\begin{rproblem}
+  \textbf{Distributing these hash tables across multiple GPUs} for both increased capacity and increased performance
+\end{rproblem}
 
 \subsection{Dynamic hash tables}
 
-While a large body of research has addressed building and querying static GPU hash tables, work on dynamic hash tables~\cite{Ashkiani:2018:ADH,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (our work~\cite{Ashkiani:2018:ADH} uses 128-byte slabs as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be possible. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., $k$-mer storage) to vary widely over the runtime of one application.
+While a large body of research has addressed building and querying static GPU hash tables, work on dynamic GPU hash tables~\cite{Ashkiani:2018:ADH,Junger:2020:WAL,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (our work~\cite{Ashkiani:2018:ADH} uses buckets of linked lists, each made of warp-wide slabs, as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be acceptable. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., \kmer storage) to vary widely over the runtime of one application, and existing methods are likely to perform poorly. In the CPU world, such rebuilding is common, and handled in the background, but no such runtime capability is available in the GPU world. As well, existing work does not automatically reclaim memory on deletes, which is important in applications (such as \kmer analysis) that feature both insertions and deletes.
+
+\paragraph{Proposed approach}
+
+We propose to address these deficiencies (rebuilding for optimal sizing and reclaiming memory) by leveraging NVIDIA's MPS (``MultiProcessing Service'') capability to simultaneously run two applications. One application, and the one that will take most GPU resources, will be the hash table and its umbrella application. The second will be a small ``runtime'' application that uses modest resources and will rebuild and reclaim memory alongside the main application. This can be done without programmer intervention, without stopping the entire application to rebuild the data structure or reclaim memory, and most importantly, can reduce register usage for the main application by offloading its operations into the runtime and thus improve aggregate performance.
+
+\subsection{Variable-length keys}
+
+\Kmer analysis requires the storage of \kmer keys of variable length (32--200 bits). Existing dynamic hash tables only handle fixed-length, word-sized keys. Fortunately, the size of these keys is bounded, and this aids our proposed solution.
+
+\paragraph{Proposed approach}
+
+We anticipate two directions of research that will allow us to provide the necessary support:
+
+\begin{itemize}
+  \item The GPU's high computational capability likely makes it tractable to perform a large number of arithmetic operations on each key (as we noted in our 2011 static-hash-table work~\cite{Alcantara:2011:BAE}, ``we can run up to 1000 instructions per memory update and remain memory bound''). Thus we will investigate computing a hash function (e.g., MD5) on each key and store the (fixed-size) hash value.
+  \item We also will study the design of a cascade of hash tables, where keys in the first hash table are the first 32 or 64 bits of the \kmer and the value associated with each key is a second hash table, whose keys represent the next 32 or 64 bits, and so on. This strategy would be impractical for arbitrary-length keys but for \kmers, with their bounded lengths, it appears to be feasible.
+  % \item Finally, modern GPU memory managers (e.g., Ouroboros~\cite{Winter:2020:OVQ}) maintain multiple pools of memory, each of which satisfies requests of different sizes. Again because of the bounded size of \kmers, we believe we can specialize a memory manager to only a few pools and yet still maintain high memory usage. Then we can allocate strings via this pool, build a hash table between
+\end{itemize}
+
+\subsection{Distributed hash tables}
+
+\paragraph{Proposed approach}
+
 
 \noindent\john{\hrulefill{}
 I don't find anything under here relevant.
