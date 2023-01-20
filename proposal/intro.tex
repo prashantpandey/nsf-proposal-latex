@@ -141,7 +141,7 @@ However, the penetration of GPUs into biology pipelines is limited by how the li
     challenging given the data sizes in computational biology.
   \item GPUs have high contention due to thousands of threads and are
     inefficient when computations are irregular.
-  \item GPUs don't have a memory system; it is hard to perform dynamic memory management without involving the host CPU.
+  \item GPUs don't have a fully functional, high-performance suite of memory management tools; it is hard to perform dynamic memory management without involving the host CPU\@. \john{I'm not sure what the main point is here; dynamic memory management is not terrible on GPUs~\cite{Winter:2020:OVQ}, though it does have limitations. I softened this. But I don't get this point.}
 \end{enumerate}
 
 These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as string or vectors, which have variable lengths are not available; data structures do not scale out of GPU device RAM to host.
@@ -187,6 +187,21 @@ If successful we will be able to perform complex data analyses to answer biologi
 The project’s novelties are: a vertical-stack approach spanning theory and algorithms: highly-concurrent, dynamic, and distributed data structures, systems: scale up using GPU acceleration, high-performance computing: scale out using distributed data structures, and applications: computational biology applications; new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs applicable to other application domains; an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
 %
 Our team includes a highly interdisciplinary team of researchers across four focus areas: applications (computational biology), theory and algorithms, systems, and high-performance computing. The team is taking a holistic theory/systems/HPC/applications co-design approach to explore four tightly interconnected research modules. These research modules are structured from bottom-up across the computing stack.
+
+\subsection{Cross-cutting concerns}
+
+The cross-cutting concerns of particular interest to the PPoSS program are well-covered by this proposal.
+
+\begin{description}
+  \item[Scalability and performance] are the main drivers for our effort, as we describe in detail above, and the principal outcomes of the software we will build. Our explicit goals are to both increase the performance of our target applications on existing datasets and to increase the scale of datasets we can target beyond what is currently possible.
+
+  \item[Correctness and accuracy] are primary targets of our software development methodology (Section~\ref{sec:sw-methodology}), which describes our proposed use a suite of functional and performance tests; use of code-coverage tools together with these tests; and the use of continuous-integration and continuous-development tools and methodologies.
+
+  \item[The capabilities of heterogeneous architectures] are our chief motivation for our choice of single-GPU, multi-GPU, and multi-node-multi-GPU architectural targets for this work. We elaborate on this choice in Section~\ref{sec:gpu}.
+
+
+\end{description}
+
 
 
 % \paragraph{Roadmap.} Roadmap here. In Section
