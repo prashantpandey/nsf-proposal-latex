@@ -41,7 +41,7 @@ the number of unique \kmers which is not known in advance. Currently, an approxi
 
 While building static single-GPU fixed-key-size hash tables can be done efficiently and with high load factors~\cite{Awad:2023:AAI}, scaling and improving the functionality of GPU hash tables to support the bioinformatics workloads in this proposal presents several significant research challenges. In particular we must address three important and orthogonal problems:
 
-\begin{rproblem} Supporting \textbf{dynamic} hash tables that can incrementally add and delete keys and values \end{rproblem}
+\begin{rproblem} Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values \end{rproblem}
 
 \begin{rproblem} Extending hash-table support for \textbf{variable-length keys} (in particular, storing $k$-mer keys that may range in length from 32--200 bits) \end{rproblem}
 
@@ -49,7 +49,7 @@ While building static single-GPU fixed-key-size hash tables can be done efficien
 
 \subsection{Dynamic hash tables}
 
-\cite{Ashkiani:2018:ADH,Li:2021:DDH,Zhou:2021:DAD},
+While a large body of research has addressed building and querying static GPU hash tables, work on dynamic hash tables~\cite{Ashkiani:2018:ADH,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (our work~\cite{Ashkiani:2018:ADH} uses 128-byte slabs as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be possible. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., $k$-mer storage) to vary widely over the runtime of one application.
 
 \noindent\john{\hrulefill{}
 I don't find anything under here relevant.
