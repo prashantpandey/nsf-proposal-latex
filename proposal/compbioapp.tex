@@ -97,10 +97,10 @@ Furthermore, SBT-based indexes are approximate the search results include false 
 Mantis index is exact and has no false positives in the results. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using the~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA\@. These indexes are reaching the limits of single-node RAM and storage hardware.
 
 \begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
-Build a \kmer index over all the raw experiments present in SRA and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world.
-% Researchers can quickly ask biological questions and get answers.
-% For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant.
-\label{rprob:peppermint2}
+Build a \kmer index over all the raw experiments present in SRA and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world. 
+% Researchers can quickly ask biological questions and get answers. 
+% For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant. 
+\label{rprob:seq-search}
 \end{rproblem}
 
 \subsection{Pangenomics}
@@ -142,7 +142,7 @@ Finally, pangenomic indexes need to support fast variant queries and sequence-to
 
 \begin{rproblem}[\textbf{Building a pangenomic index at population-scale }]
  Build a pangenomic index that can perform fast variation queries and sequence-to-graph alignment at population-scale datasets available today. We further want to support adding new genomic samples to an existing index without rebuilding the index.
-\label{rprob:peppermint3}
+\label{rprob:pangenomics}
 \end{rproblem}
 
 \subsection{Metagenome assembly}
@@ -212,5 +212,5 @@ The size of the filter and hash table is dependent on the number of unique \kmer
 
 \begin{rproblem}[\textbf{Scale MetaHipMer to petabyte-scale metagenomic datasets on supercomputers}]
 Accelerate \kmer analysis phase in MetaHipMer using GPUs and reduce the peak RAM usage to support assembly of petabyte-scale metagenomic datasets from complex biological environments.
-\label{rprob:peppermint4}
+\label{rprob:metahipmer}
 \end{rproblem}
