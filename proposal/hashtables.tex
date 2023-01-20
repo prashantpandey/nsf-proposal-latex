@@ -37,7 +37,7 @@ the number of unique \kmers which is not known in advance. Currently, an approxi
 
 \prashant{All these points are great. Just to add one point.. we can say we will use locality-sensitive hashing and domain knowledge to smartly partition data to reduce communication volume.}
 
-\noindent\hrulefill{}
+\noindent\john{\hrulefill{}}
 
 While building static single-GPU fixed-key-size hash tables can be done efficiently and with high load factors~\cite{Awad:2023:AAI}, scaling and improving the functionality of GPU hash tables to support the bioinformatics workloads in this proposal presents several significant research challenges. In particular we must address three research problems:
 
@@ -45,11 +45,11 @@ While building static single-GPU fixed-key-size hash tables can be done efficien
 
 \begin{rproblem} Extending hash-table support for \textbf{variable-length keys} (in particular, storing $k$-mer keys that may range in length from 32--200 bits) \end{rproblem}
 
-\begin{rproblem} \textbf{Distributing these hash tables across multiple GPUs} for both capacity and performance reasons\end{rproblem}
+\begin{rproblem} \textbf{Distributing these hash tables across multiple GPUs} for both increased capacity and increased performance\end{rproblem}
 
-\noindent\hrulefill{}
+\noindent\john{\hrulefill{}
 I don't find anything under here relevant.
-\noindent\hrulefill
+\noindent\hrulefill}
 
 Hash tables are a core data structure in many applications, including key-value
 stores, databases, and big-data-analysis engines, and are included in most
