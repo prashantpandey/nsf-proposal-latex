@@ -1,15 +1,4 @@
 \section{Sketches}
-best distinct elements count sketch AFAIK:
-https://people.eecs.berkeley.edu/~minilek/publications/papers/f0.pdf
-this has likely been implemented, but i haven't verified. I will check if i have time.
-and for fun, a differentially private solution to the problem (which i have not read):
-https://arxiv.org/abs/2001.11932
-
-
-i am not super familiar with the work on sketching set similarity but this paper seems promising:
-https://www.itu.dk/people/pagh/papers/oddsketch.pdf
-there is also this implementation-focused paper that includes another sketch to solve the problem and mentions the prior paper:
-https://dl.acm.org/doi/abs/10.1145/3292500.3330825
 
 
 
@@ -20,37 +9,40 @@ The benefits of practical implementations of semi-streaming algorithms would be 
 
 While many dynamic semi-streaming graph algorithms\cite{Ahn2012, Ahn2012_2, AhnGM13, GuhaMT15, KapralovLMMS13, ChitnisCEHMMV16, AssadiKL16, McGregorVV16, pagh2012colorful, 10.1007/978-3-662-48054-0_39, clustering, 10.1007/978-3-319-21398-9_57, streamsetbounds, Chakrabarti2015IncidenceGA, kveton2016graphical, CrouchMS13} are known in the theory literature, prior to our Sept.\ 2021 prototype~\cite{graphzeppelin}, there were \emph{no} implementations of these algorithms in use in academia or industry.  One of the primary bottlenecks of these algorithms is the high computational cost of their linear sketching subroutines. This difficulty leads us to the GPU.
 
+\prashant{Add comp bio work in minhash for Jaccard similarity, edit distance, HyperlogLog.}
+
 
 \begin{rproblem}
 Can we develop algorithms that can replace hashing with batch sorting.
 \end{rproblem}
 
-\prashant{Notes for Martin.}
+% \prashant{Notes for Martin.}
 
-\prashant{Given a fastq file containing raw sequencing reads. Can we quickly and space-efficiently (maybe sublinear time and space?) estimate a frequency distribution for \kmers for a given $k$?
-Specifically, we are interested in estimating the total number of \kmers, the total number of distinct \kmers, the total number of \kmers with a given count C?}
-
-.....
-
-
+% \prashant{Given a fastq file containing raw sequencing reads. Can we quickly and space-efficiently (maybe sublinear time and space?) estimate a frequency distribution for \kmers for a given $k$?
+% Specifically, we are interested in estimating the total number of \kmers, the total number of distinct \kmers, the total number of \kmers with a given count C?}
 
 \begin{rproblem}
-Develop a cardinality estimator for raw sequeincg data 
-
-Prove the lower-bound for the amount of file required to be read to estimate the cardinality of \kmer in a raw sequence file.
+Develop data structures for indexing and searching low-dimensional embeddings (based on minhash) for raw genomic and metagenomic data.
 \end{rproblem}
 
-number of distinct items
 
 \begin{rproblem}
 Build a GPU-enabled cardinality estimator for \kmers in raw sequencing samples (genomic, transcriptomic, metageomic).
 \end{rproblem}
 
+% best distinct elements count sketch AFAIK: https://people.eecs.berkeley.edu/~minilek/publications/papers/f0.pdf this has likely been implemented, but i haven't verified. I will check if i have time. and for fun, a differentially private solution to the problem (which i have not read): https://arxiv.org/abs/2001.11932
+
+
 \begin{rproblem}
-Prove a communication lower bound to compute the similarity score for two set of \kmers in a distributed setting.
+Develop algorithms that are close to communication lower bound to compute the similarity score for two set of \kmers in a distributed setting.
 \end{rproblem}
+
 
 
 \begin{rproblem}
 Design and build a system to compute similarity score (Jaccard index) for \kmer sets in a distributed-setting.
 \end{rproblem}
+
+
+% i am not super familiar with the work on sketching set similarity but this paper seems promising: https://www.itu.dk/people/pagh/papers/oddsketch.pdf there is also this implementation-focused paper that includes another sketch to solve the problem and mentions the prior paper: https://dl.acm.org/doi/abs/10.1145/3292500.3330825
+
