@@ -68,8 +68,8 @@ We propose to address these deficiencies (rebuilding for optimal sizing and recl
 
 \Kmer analysis requires the storage of \kmer keys of variable length (32--200 bits). Existing dynamic hash tables only handle fixed-length, word-sized keys. Fortunately, the size of these keys is bounded, and this aids our proposed solution.
 
-\paragraph{Proposed approach}
-
+\noindent
+{\bf Proposed approach.}
 We anticipate two directions of research that will allow us to provide the necessary support:
 
 \begin{itemize}[noitemsep,nolistsep,leftmargin=*]
@@ -81,8 +81,8 @@ We anticipate two directions of research that will allow us to provide the neces
 
 GPU memory is modest in size and to scale up, rather than pay the high communication cost of communicating between CPUs and GPUs through the slow PCIe bus, the most common approach is to scale \emph{across} GPUs using faster technologies like NVLink and Infiniband. However, naively partitioning the hash table across GPUs and performing fine-grained, synchronous access to it is unlikely to permit competitive performance.
 
-\paragraph{Proposed approach}
-
+\noindent
+{\bf Proposed approach.}
 Thus we propose several directions that can help mitigate the potential performance issues of partitioning. First, we will build our application in a chunked and pipelined way so that we can simultaneously compute hash table keys for chunk $n+2$, use inter-GPU communication to be fetching values for chunk $n+1$, and process the results for chunk $n$. Such an approach is necessary to best use our computation and communication resources. Second, we will need to bundle up small-grained communications into larger packets and only send those packets when they are full to best use the full bandwidth of the communication resources. Finally, we will investigate distributed hash table strategies that allow us to trade off (i) better load-balance vs.\ the cost of that load balance and (ii) better locality vs.\ the penalty in hash table efficiency (for instance, locality-sensitive hashing techniques and domain-specific knowledge to place pieces of the hash table where they will most frequently be used).    Essentially, a random partition will give us excellent load balance and efficiency, but will result in a maximal amount of communication. We propose to relax (rather, explore the consequence of relaxing) ideal load balance and ideal efficiency to reduce overall communication volume.
 
 
