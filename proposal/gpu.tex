@@ -9,7 +9,7 @@ With power constraints continuing to be the main bottleneck in increased computi
 
 The most successful GPU applications have historically been focused on highly parallel, regular workloads (e.g., training deep neural networks). What has been more challenging, and the focus of significant research effort over the past decade, has been \emph{irregular} and/or \emph{sparse} workloads that are harder to parallelize effectively. These workloads include the powerful data structures that are the focus of this proposal. While these workloads may exhibit ample parallelism and thus are potentially a good fit for the GPU, they are challenging to implement efficiently because they do not naturally map well to key GPU software design guidelines:
 
-\begin{description}
+\begin{description}[noitemsep,nolistsep]
   \item[Thread divergence] GPUs run most efficiently when neighboring threads take the same path through the code.
   \item[Memory coherence] GPU memory systems are most efficient when neighboring threads access neighboring locations in memory.
   \item[Low contention] Because GPUs have hundreds of thousands of active threads at any time, avoiding memory contention and serialization is critical to allowing GPU threads to progress and thus enabling the GPU to run at maximum efficiency.
