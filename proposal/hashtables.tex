@@ -41,6 +41,8 @@
 
 While building static, space-efficient, single-GPU, fixed-key-size hash tables can be done efficiently~\cite{Awad:2023:AAI}, scaling and improving the functionality of GPU hash tables to support the application workloads in this proposal presents several significant research challenges. In particular, we must address three important and orthogonal problems:
 
+\john{There is no theory in this section at all.}
+
 \begin{rproblem}
   Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values on GPUs.
   \label{rprob:dynamic-gpu-hashtable}
@@ -58,7 +60,7 @@ While building static, space-efficient, single-GPU, fixed-key-size hash tables c
 
 \subsection{Dynamic hash tables}
 
-While a large body of research has addressed building and querying static GPU hash tables, work on dynamic GPU hash tables~\cite{Ashkiani:2018:ADH,Junger:2020:WAL,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (our work~\cite{Ashkiani:2018:ADH} uses buckets of linked lists, each made of warp-wide slabs, as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be acceptable. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., \kmer storage) to vary widely over the runtime of one application, and existing methods are likely to perform poorly. In the CPU world, such rebuilding is common, and handled in the background, but no such runtime capability is available in the GPU world. As well, existing work does not automatically reclaim memory on deletes, which is important in applications (such as \kmer analysis) that feature both insertions and deletes.
+While a large body of research has addressed building and querying static GPU hash tables, work on dynamic GPU hash tables~\cite{Ashkiani:2018:ADH,Junger:2020:WAL,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (our work~\cite{Ashkiani:2018:ADH} uses buckets of linked lists, each made of warp-wide slabs, as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be acceptable. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., \kmer storage) to vary widely over the runtime of one application, and existing methods are likely to perform poorly. In the CPU world, such rebuilding is common, and transparently handled in the background, but no such runtime capability is available in the GPU world. As well, existing work does not automatically reclaim memory on deletes, which is important in applications (such as \kmer analysis) that feature both insertions and deletes.
 
 \paragraph{Proposed approach}
 
