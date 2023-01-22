@@ -21,12 +21,12 @@ Our first research problem is thus:
 Design and build a high-performance maplet for the GPU\@.
 \end{rproblem}
 
-Building a space-efficient and high-performance maplet is challenging as associating variable-length values with fingerprints results in unaligned memory accesses which are especially expensive on GPUs. We will develop a quotient filter-based maplet on GPUs as the quotient filters offer compact fingerprint storage and value association. We plan to employ a bulk insertion approach using the sort and merge algorithm to achieve lock-free and high coherence on GPUs. We further plan to explore two-choice hashing based vector quotient filter~\cite{PandeyCDBFJ21} and cooperative groups on GPUs to achieve even higher performance.
+Building a space-efficient and high-performance maplet is challenging as associating variable-length values with fingerprints results in unaligned memory accesses which are especially expensive on GPUs. We will develop a quotient filter-based maplet on GPUs as the quotient filters offer compact fingerprint storage and value association. We plan to employ a bulk insertion approach using the sort and merge algorithm to achieve lock-free and high coherence on GPUs. We further plan to explore a two-choice hashing-based vector quotient filter~\cite{PandeyCDBFJ21} and CUDA's cooperative-groups programming model on GPUs to achieve even higher performance.
 
 \begin{rproblem}\label{rprob:resizable-maplet}
-Design and build a high performance incrementally resizable maplet.
+Design and build a high-performance incrementally resizable maplet.
 \end{rproblem}
-The naive way to resize a maplet is to double its size and move items (perhaps incrementally) from the old filter to the new.  This means that during during the transition, which can last quite a long time, both tables must be stored and both tables must be queried.
+The naive way to resize a maplet is to double its size and move items (perhaps incrementally) from the old filter to the new.  This means that during during the transition, which can last quite a long time, both tables must be stored and both tables must be queried. \john{Note there's a runtime proposal I made in hashing that could help address the idleness challenge of having to stop the whole application while the doubling is done. Doesn't help the size requirement.}
 
 We propose to adapt an approach recently proposed by PIs Bender and Farach-Colton: waterfall addressing~\cite{Bender2022}.   Waterfall addressing is a method for addressing into an array (for example for a filter or hash table that uses open addressing) so that the array can grow in small increments.  Each item hashes to a location based on the current size of the array, and when the array resizes, only those items that go into the new piece are moved.  The surprising thing is that this can be done efficiently, but it does require maintain metadata.  The theoretical version of this result uses pointer-intensive metadata, so this research problem requires developing a new, GPU-friendly metadata scheme and algorithms for distributing the filter.
 
