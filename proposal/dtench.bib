@@ -106,26 +106,58 @@
 @InProceedings{   AhnGM12b,
   author       = {Ahn, Kook Jin and Guha, Sudipto and McGregor,
                   Andrew},
-  title	       = {Graph sketches: sparsification, spanners, and subgraphs},
+  title	       = {Graph Sketches: Sparsification, Spanners, and Subgraphs},
   year	       = 2012,
   month        = may,
   doi	       = {10.1145/2213556.2213560},
   pages        = {5--14},
-  journal      = {Proceedings of the 31st Symposium on Principles of
+  booktitle    = {Proceedings of the 31st Symposium on Principles of
                   Database Systems},
   series       = {PODS ’12},
   publisher    = {ACM Press}
 }
 
 @InProceedings{   AhnGM13,
-  author =	 {Kook Jin Ahn and Sudipto Guha and Andrew McGregor},
-  booktitle =	 {{APPROX-RANDOM}},
-  pages =	 {1--10},
-  publisher =	 {Springer},
-  series =	 {Lecture Notes in Computer Science},
-  title =	 {Spectral Sparsification in Dynamic Graph Streams},
-  volume =	 8096,
-  year =	 2013
+  author =	 "Ahn, Kook Jin and Guha, Sudipto and McGregor,
+                  Andrew",
+  editor =	 "Raghavendra, Prasad and Raskhodnikova, Sofya and
+                  Jansen, Klaus and Rolim, Jos{\'e} D. P.",
+  title =	 "Spectral Sparsification in Dynamic Graph Streams",
+  booktitle =	 "Approximation, Randomization, and Combinatorial
+                  Optimization: Algorithms and Techniques",
+  year =	 2013,
+  publisher =	 "Springer Berlin Heidelberg",
+  address =	 "Berlin, Heidelberg",
+  doi =		 {10.1007/978-3-642-40328-6\_1},
+  pages =	 "1--10",
+  abstract =	 "We present a new bound relating edge connectivity in
+                  a simple, unweighted graph with effective resistance
+                  in the corresponding electrical network. The bound
+                  is tight. While we believe the bound is of
+                  independent interest, our work is motivated by the
+                  problem of constructing combinatorial and spectral
+                  sparsifiers of a graph, i.e., sparse, weighted
+                  sub-graphs that preserve cut information (in the
+                  case of combinatorial sparsifiers) and additional
+                  spectral information (in the case of spectral
+                  sparsifiers). Recent results by Fung et al. (STOC
+                  2011) and Spielman and Srivastava (SICOMP 2011) show
+                  that sampling edges with probability based on
+                  edge-connectivity gives rise to a combinatorial
+                  sparsifier whereas sampling edges with probability
+                  based on effective resistance gives rise to a
+                  spectral sparsifier. Our result implies that by
+                  simply increasing the sampling probability by a
+                  O(n2/3) factor in the combinatorial sparsifier
+                  construction, we also preserve the spectral
+                  properties of the graph. Combining this with the
+                  algorithms of Ahn et al. (SODA 2012, PODS 2012)
+                  gives rise to the first data stream algorithm for
+                  the construction of spectral sparsifiers in the
+                  dynamic setting where edges can be added or removed
+                  from the stream. This was posed as an open question
+                  by Kelner and Levin (STACS 2011).",
+  isbn =	 "978-3-642-40328-6"
 }
 
 @Article{         AkraBa98,
@@ -1560,19 +1592,21 @@
 }
 
 @InProceedings{   clustering,
-  author =	 {Ahn, Kook Jin and Cormode, Graham and Guha, Sudipto
-                  and McGregor, Andrew and Wirth, Anthony},
-  booktitle =	 {Proceedings of the 32nd International Conference on
-                  International Conference on Machine Learning -
-                  Volume 37},
-  location =	 {Lille, France},
-  numpages =	 10,
-  pages =	 {2237--2246},
-  publisher =	 {JMLR.org},
-  series =	 {ICML'15},
-  title =	 {Correlation Clustering in Data Streams},
-  year =	 2015
+  title = 	 {Correlation Clustering in Data Streams},
+  author = 	 {Ahn, KookJin and Cormode, Graham and Guha, Sudipto and McGregor, Andrew and Wirth, Anthony},
+  booktitle = 	 {Proceedings of the 32nd International Conference on Machine Learning},
+  pages = 	 {2237--2246},
+  year = 	 {2015},
+  editor = 	 {Bach, Francis and Blei, David},
+  volume = 	 {37},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Lille, France},
+  month         = "7--9~" # jul,
+  publisher =    {PMLR},
+  url = 	 {https://proceedings.mlr.press/v37/ahn15.html},
+  abstract = 	 {In this paper, we address the problem of \emphcorrelation clustering in the dynamic data stream model. The stream consists of updates to the edge weights of a graph on&nbsp;n nodes and the goal is to find a node-partition such that the end-points of negative-weight edges are typically in different clusters whereas the end-points of positive-weight edges are typically in the same cluster. We present polynomial-time, O(n⋅\textpolylog n)-space approximation algorithms for natural problems that arise. We first develop data structures based on linear sketches that allow the “quality” of a given node-partition to be measured. We then combine these data structures with convex programming and sampling techniques to solve the relevant approximation problem. However the standard LP and SDP formulations are not obviously solvable in O(n⋅\textpolylog n)-space. Our work presents space-efficient algorithms for the convex programming required, as well as approaches to reduce the adaptivity of the sampling. Note that the improved space and running-time bounds achieved from streaming algorithms are also useful for offline settings such as MapReduce models.}
 }
+
 
 @InProceedings{   clustering1,
   author =	 {Martin Ester and Hans-Peter Kriegel and J{\"o}rg

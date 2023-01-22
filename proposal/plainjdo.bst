@@ -815,6 +815,7 @@ FUNCTION {phdthesis}
   format.date "year" output.check
   new.block
   format.doi output
+  format.url output
   note output
   fin.entry
 }
