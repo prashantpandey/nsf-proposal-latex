@@ -97,9 +97,9 @@ Furthermore, SBT-based indexes are approximate the search results include false 
 Mantis index is exact and has no false positives in the results. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using the~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA\@. These indexes are reaching the limits of single-node RAM and storage hardware.
 
 \begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
-Build a \kmer index over all the raw experiments present in SRA and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world. 
-% Researchers can quickly ask biological questions and get answers. 
-% For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant. 
+Build a \kmer index over all the raw experiments present in SRA and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world.
+% Researchers can quickly ask biological questions and get answers.
+% For example: what if researchers wants to determine: if a new putative disease-related transcript appeared in other samples, if a new fusion event is common among samples with a given subtype, which samples contain a new unexpected bacterial contaminant.
 \label{rprob:seq-search}
 \end{rproblem}
 
@@ -194,7 +194,7 @@ Furthermore, high-throughput sequencing technology is producing large-amount of 
 
 \noindent
 \textbf{State of the art.}
-MetaHipMer~\cite{GeorganasEHG18,HofmeyrEGC20} is the first exascale metagenome assembler.
+MetaHipMer~\cite{GeorganasEHG18,hofmeyr2020terabase} is the first exascale metagenome assembler.
 In the approach used by MetaHipMer, the reads are first divided into overlapping substrings of fixed length \emph{k}, called \emph{\kmers}, which are then used to form a de Bruijn graph~\cite{CompeauPeTe11}.
 \Kmer counting is the very first step. During \kmer counting, forward and backward extensions of the \kmer and the counts of those extensions are also maintained in the hash table along with the \kmer. Information regarding the extensions and their counts is critical to identifying correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on $k$) to store each \kmer.
 MetaHipmer uses GPUs to speed up \kmer analysis phase.
