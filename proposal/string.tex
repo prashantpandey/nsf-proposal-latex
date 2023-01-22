@@ -21,7 +21,7 @@ Constructing compressed string indexes like the BWT and FM-index is memory-inten
 Furthermore, so far GPUs are not utilized to scale up sequence-to-sequence alignment and sequence-to-graph alignment. Existing data structures are designed for single-node CPUs. Also, sequence-to-graph alignment algorithms do not scale out to distributed memory to support large-scale pangenomics graphs.
 
 \begin{rproblem}
-Build theoretical algorithms to support adding and deleting strings in an FM-index.
+Develop an algorithm to efficiently support adding and deleting strings in an FM-index.
 \label{rpob:dynamic-fmindex}
 \end{rproblem}
 
@@ -45,8 +45,9 @@ Design and build a sequence to graph alignment library for GPUs in distributed-m
 \paragraph{Proposed approach.}
 
 We plan to extend FM-index and P-BWT data structures using a new framework for dynamic data structures for string processing~\cite{Nicola17,Farzan2011}. Our plan is to make the underlying bit vector representation dynamic and support efficient rank and select queries on dynamic bit vectors~\cite{Raman2001}.
-To reduce the memory requirements during the construction of these data structures we plan to employ devise new memory-efficient algorithms to construct succinct string representations.
+To reduce the memory requirements during the construction of these data structures we plan to employ devise new memory-efficient algorithms to construct succinct string representations. Specifially, a recent results from PI Farach-Colton~\cite{Assadi2023} shows how to build a monotone minimal perfect hash (MMPH) in $\theta(n \log{\log{\log u}})$ space, where $u$ is the universe size.
 
 \prashant{Martin, can we say something more concrete here for string data structures.}
 
-PI Martin devised the first linear-time algorithm to construct the suffix array and it serves as the basis for all modern suffix array data structures and Burrows-Wheeler transform (BWT) data structures~\cite{Farach97,Ambainis97}. PI Owens's work is the fastest suffix array construction on GPUs~\cite{Wang:2016:FPS}. PI Pandey showed how to build a succinct data structure for storing colored de Bruijn graphs~\cite{almodaresi2017rainbowfish}.
+PI Farach-Colton devised the first linear-time algorithm to construct the suffix array and it serves as the basis for all modern suffix array data structures and Burrows-Wheeler transform (BWT) data structures~\cite{Farach97,Ambainis97}. Furthermore, a recent result from PI Bender and Farach-Colton shows how to build a tiny pointer using $o(\log{n})$-bits for a dynamic set~\cite{Bender2023}. Our plan is build dynamic succinct string dictionaries using the tiny pointer techqniue.
+Owens's work is the fastest suffix array construction on GPUs~\cite{Wang:2016:FPS}. PI Pandey showed how to build a succinct data structure for storing colored de Bruijn graphs~\cite{almodaresi2017rainbowfish}.

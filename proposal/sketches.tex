@@ -26,7 +26,7 @@ Develop algorithms that are close to communication lower bound to compute the si
 Design and build a system to compute similarity score (Jaccard index) for \kmer sets in a distributed-setting.
 \end{rproblem}
 
-We plan to develop algorithms that can get close to the communication lower bound to estimate sequence similarities in a distributed setting. Effectively, all linear sketching algorithms~\cite{li2014sketchuniversal}, are highly parallelizable, easy to distribute, robust to arbitrarily ordered input streams, and have good data locality. In a nutshell, they trade more computation for a smaller space requirement. Our approach is to develop techniques to compute minhash sketches in a distributed setting without communicating sequences across nodes but rather only communicating the hash sketches.
+We plan to develop algorithms that are close to the communication lower bound to estimate sequence similarities in a distributed setting. Effectively, all linear sketching algorithms~\cite{li2014sketchuniversal}, are highly parallelizable, easy to distribute, robust to arbitrarily ordered input streams, and have good data locality. In a nutshell, they trade more computation for a smaller space requirement. Our approach is to develop techniques to compute sketches in a distributed setting without communicating sequences across nodes but rather only communicating the hash sketches.
 
 Another challenge in computational biology is to quickly and efficiently estimate the cardinality of the \kmer multiset from the sequence files. This requires computing the summary of \kmer multiset by only looking at a small fraction of the sequence file and in limited memory.
 %

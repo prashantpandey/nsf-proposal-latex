@@ -39,20 +39,20 @@
 
 % \noindent\john{\hrulefill{}}
 
-While building static single-GPU fixed-key-size hash tables can be done efficiently and with high load factors~\cite{Awad:2023:AAI}, scaling and improving the functionality of GPU hash tables to support the bioinformatics workloads in this proposal presents several significant research challenges. In particular, we must address three important and orthogonal problems:
+While building static, space-efficient, single-GPU, fixed-key-size hash tables can be done efficiently~\cite{Awad:2023:AAI}, scaling and improving the functionality of GPU hash tables to support the application workloads in this proposal presents several significant research challenges. In particular, we must address three important and orthogonal problems:
 
 \begin{rproblem}
-  Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values
+  Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values on GPUs.
   \label{rprob:dynamic-gpu-hashtable}
 \end{rproblem}
 
 \begin{rproblem}
-  Extending hash-table support for \textbf{variable-length keys}
+  Extending hash-table support for \textbf{variable-length keys}.
   \label{rprob:variable-hashtable}
 \end{rproblem}
 
 \begin{rproblem}
-  \textbf{Distributing these hash tables across multiple GPUs} for both increased capacity and increased performance
+  \textbf{Distributing these hash tables across multiple GPUs} for both increased capacity and increased performance.
   \label{rprob:dist-hashtable}
 \end{rproblem}
 
