@@ -13,13 +13,16 @@ Michael A. Bender (SBU), Martin Farach-Colton (Rutgers), John Owens (UC Davis),
 Prashant Pandey (Utah)
 \end{center}
 
-
 \noindent \textbf{\large Overview:}\\
-Raw sequencing data in computational biology is increasing faster than ever due to high-throughput sequencing technology (HTS), which is already producing petabyte-scale datasets. Many applications in computational biology (\kmer analysis, raw sequence search, taxonomic classification, and pangenomics) require processing raw sequencing data at petabyte scales. This project aims to build high-performance and scalable data analysis-pipelines for computational-biology applications. Specifically, we aim to develop new massively parallel and distributed data structures and algorithms for core computational biology data processing tasks. These new data structures and algorithms will have wide applicability in computational biology applications and beyond.
+Raw sequencing data in computational biology is increasing faster than ever due to high-throughput sequencing technology (HTS), which is already producing petabyte-scale datasets. Many applications in computational biology (\kmer analysis, raw sequence search, taxonomic classification, and pangenomics) require processing raw sequencing data at petabyte scales.
+
+These computational-biology applications (and numerous others) use a set of common data structures to perform data-analysis tasks, and their performance is bottlenecked by  the data-structure performance.
+%
+This project aims to build high-performance and scalable data analysis-pipelines for computational-biology applications. Specifically, we aim to develop new massively parallel and distributed data structures and algorithms for core computational biology data processing tasks. These new data structures and algorithms will have wide applicability in computational biology applications and beyond.
 
 We will develop new \textbf{algorithmic theory} to design scalable data structures; we will develop new \textbf{systems} that implement our solutions in a scale-up manner,  both on CPUs as a prototype and GPUs for massive parallelism; we will develop a new framework to distribute our solutions in an \textbf{HPC} environment, so they  scale out to clusters of GPUs; and finally we will validate out solutions on \textbf{computational biology} workloads.
 %
-Specifically, our data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxiliary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
+Specifically, the data structures we propose to study are: \textbf{filters}, \textbf{sketches}, \textbf{hash tables}, \textbf{string indexes}, and related auxiliary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
 
 
 \noindent \textbf{\large Keywords:} Data structures, algorithms, computational biology, GPUs, high-performance computing (HPC).
