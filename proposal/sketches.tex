@@ -2,7 +2,7 @@
 
 Measuring sequence similarity is the core of many algorithms in computational biology~\cite{Myers2000, Langmead2012,Li2010}. Computing sequence similarity is computational intensive and requires an $O(n^2)$ solution in the length of the sequences. However, due to the shear size of datasets available today in metagenomics and raw sequences in SRA computing sequence similarities using traditional algorithms is not feasible.
 
-Recently, researchers have employed dimensionality-reduction techniques such as Minhash, ordered-min hash, and hyper log log, to include a pairwise mutation distance and P value significance test, enabling the efficient clustering and search of massive sequence collections~\cite{Mitzenmacher2014,ondov2016mash,Marais2019,Baker2019}. PI Pandey developed a new locality sentitive hashing (LSH) method, called Order Min Hash (OMH)~\cite{Marais2019}, for the edit distance. This method is a refinement of the minHash LSH used to approximate the Jaccard similarity, in that OMH is sensitive not only to the k-mer contents of the sequences but also to the relative order of the k-mers in the sequences. We present theoretical guarantees of the OMH as a gapped LSH.
+Recently, researchers have employed dimensionality-reduction techniques such as Minhash, ordered-min hash, and hyper log log, to include a pairwise mutation distance and P value significance test, enabling the efficient clustering and search of massive sequence collections~\cite{Mitzenmacher2014,ondov2016mash,Marais2019,Baker2019}. PI Pandey developed a new locality sentitive hashing (LSH) method, called Order Min Hash (OMH)~\cite{Marais2019}, for the edit distance. This method is a refinement of the minHash LSH used to approximate the Jaccard similarity, in that OMH is sensitive not only to the k-mer contents of the sequences but also to the relative order of the k-mers in the sequences. We present theoretical guarantees of the OMH as a gapped LSH\@.
 
 One of the primary bottlenecks of these algorithms is the high computational cost of their linear sketching subroutines. Existing sketching techniques~\cite{ondov2016mash,Marais2019} are based on hashing and offer very poor locality. This makes them harder to scale up using GPUs.
 
@@ -30,7 +30,7 @@ We plan to develop algorithms that can get close to the communication lower boun
 
 Another challenge in computational biology is to quickly and efficiently estimate the cardinality of the \kmer multiset from the sequence files. This requires computing the summary of \kmer multiset by only looking at a small fraction of the sequence file and in limited memory.
 %
-The challenge of computing properties of massive data streams in limited space has inspired a deep and beautiful literature on streaming algorithms and database systems. In the dynamic streaming model, the input is defined by a sequence of items of length $N$ and only $O(\polylog N)$ {RAM} is available for computation. 
+The challenge of computing properties of massive data streams in limited space has inspired a deep and beautiful literature on streaming algorithms and database systems. In the dynamic streaming model, the input is defined by a sequence of items of length $N$ and only $O(\polylog N)$ {RAM} is available for computation.
 
 
 \begin{rproblem}
@@ -38,4 +38,4 @@ Build a GPU-enabled cardinality estimator for \kmers in raw sequencing samples (
 \end{rproblem}
 
 
-Our approach is to build a GPU-accelerated solution for cardinality estimation using known algorithms that are proven to be optimal. There is an optimal algorithm to compute the cardinality of the set~\cite{Kane2010}. 
+Our approach is to build a GPU-accelerated solution for cardinality estimation using known algorithms that are proven to be optimal. There is an optimal algorithm to compute the cardinality of the set~\cite{Kane2010}.
