@@ -13,7 +13,7 @@ For typical values of $\varepsilon$, the best filters takes one or two bytes per
 
 % \mfc{Prashant: why do we need this feature?}  \mfc{We know of no existing filters are incrementally resizable.}
 
-It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has a small, associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{mccoy2022high}.  To date, all maplets that we know of are based on the quotient filter~\cite{conway2020splinterdb,mccoy2022high}, and we know of no implementation of maplets on the GPU\@.
+It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has a small, associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{GeorganasEHG18}.  To date, all maplets that we know of are based on the quotient filter~\cite{conway2020splinterdb,PandeyBJP17}, and we know of no implementation of maplets on the GPU\@.
 
 Our first research problem is thus:
 
@@ -21,7 +21,7 @@ Our first research problem is thus:
 Design and build a high-performance maplet for the GPU\@.
 \end{rproblem}
 
-\mfc{Not sure what the challenges are here}
+Building a space-efficient and high-performance maplet is challenging as associating variable-length values with fingerprints results in unaligned memory accesses which are especially expensive on GPUs. We will develop a quotient filter-based maplet on GPUs as the quotient filters offer compact fingerprint storage and value association. We plan to employ a bulk insertion approach using the sort and merge algorithm to achieve lock-free and high coherence on GPUs. We further plan to explore two-choice hashing based vector quotient filter~\cite{PandeyCDBFJ21} and cooperative groups on GPUs to achieve even higher performance.
 
 \begin{rproblem}\label{rprob:resizable-maplet}
 Design and build a high performance incrementally resizable maplet.

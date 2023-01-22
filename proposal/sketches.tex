@@ -1,49 +1,41 @@
 \section{Sketches}
 
+Measuring sequence similarity is the core of many algorithms in computational biology~\cite{Myers2000, Langmead2012,Li2010}. Computing sequence similarity is computational intensive and requires an $O(n^2)$ solution in the length of the sequences. However, due to the shear size of datasets available today in metagenomics and raw sequences in SRA computing sequence similarities using traditional algorithms is not feasible.
 
+Recently, researchers have employed dimensionality-reduction techniques such as Minhash, ordered-min hash, and hyper log log, to include a pairwise mutation distance and P value significance test, enabling the efficient clustering and search of massive sequence collections~\cite{Mitzenmacher2014,ondov2016mash,Marais2019,Baker2019}. PI Pandey developed a new locality sentitive hashing (LSH) method, called Order Min Hash (OMH)~\cite{Marais2019}, for the edit distance. This method is a refinement of the minHash LSH used to approximate the Jaccard similarity, in that OMH is sensitive not only to the k-mer contents of the sequences but also to the relative order of the k-mers in the sequences. We present theoretical guarantees of the OMH as a gapped LSH.
 
-The challenge of computing properties of massive data streams in limited space has inspired a deep and beautiful literature on streaming algorithms and database systems. In the dynamic streaming model, the input is defined by a sequence of items of length $N$ and only $O(\polylog N)$ {RAM} is available for computation. For most interesting graph problems, such as matchings or spanning forests, this is not enough space to even represent a solution. Algorithms for these problems instead use the dynamic semi-streaming model~\cite{insertonlysemistreaming}, which allows more space (specifically, $O(n \; \polylog n)$ \acro{RAM} is available for a graph of $n$ nodes and $m$ edges). Note that this is still not enough space to store the graph explicitly, unless the graph is sparse: any lossless representation requires $\Omega(m))$ space, which can be $\Omega(n^2)$ for the densest graphs. In this model, the input graph is defined by a stream of edge insertions and deletions, and this stream is delivered to the algorithm a small number of times (typically once).
-
-Semi-streaming algorithms have several advantages that, in theory, make them powerful tools for computing on graphs at scale.  Since these algorithms require an up to $\Theta(n)$-factor less space than an explicit representation of a dense graph, they are able to process much larger graphs given a fixed amount of memory. Effectively, all dynamic semi-streaming algorithms are equivalent to linear sketching algorithms~\cite{li2014sketchuniversal}, which are highly parallelizable, easy to distribute, robust to arbitrarily ordered input streams, and have good data locality. In a nutshell, they trade more computation for a smaller space requirement. %\jdo{Is the previous sentence correct?}
-The benefits of practical implementations of semi-streaming algorithms would be significant, vastly increasing the scale of graphs which can be processed even when these graphs are too large for fast memory, change over time, or even are generated in real time (for example, from sensors measuring large-scale real-world phenomena, or from dynamic connections or interactions in a large network).
-
-While many dynamic semi-streaming graph algorithms\cite{Ahn2012, AhnGM12b, AhnGM13, GuhaMT15, KapralovLMMS13, ChitnisCEHMMV16, AssadiKL16, McGregorVV16, pagh2012colorful, 10.1007/978-3-662-48054-0_39, clustering, 10.1007/978-3-319-21398-9_57, streamsetbounds, Chakrabarti2015IncidenceGA, kveton2016graphical, CrouchMS13} are known in the theory literature, prior to our Sept.\ 2021 prototype~\cite{graphzeppelin}, there were \emph{no} implementations of these algorithms in use in academia or industry.  One of the primary bottlenecks of these algorithms is the high computational cost of their linear sketching subroutines. This difficulty leads us to the GPU.
-
-\prashant{Add comp bio work in minhash for Jaccard similarity, edit distance, HyperlogLog.}
-
+One of the primary bottlenecks of these algorithms is the high computational cost of their linear sketching subroutines. Existing sketching techniques~\cite{ondov2016mash,Marais2019} are based on hashing and offer very poor locality. This makes them harder to scale up using GPUs.
 
 \begin{rproblem}
-Can we develop algorithms that can replace hashing with batch sorting.
+Develop sketching algorithms that can replace hashing with batch sorting and achieve high-performance on GPUs.
 \end{rproblem}
 
-\prashant{Efficient sketching on GPUs.}
-
-% \prashant{Notes for Martin.}
-
-% \prashant{Given a fastq file containing raw sequencing reads. Can we quickly and space-efficiently (maybe sublinear time and space?) estimate a frequency distribution for \kmers for a given $k$?
-% Specifically, we are interested in estimating the total number of \kmers, the total number of distinct \kmers, the total number of \kmers with a given count C?}
+Our approach is to develop algorithmic techniques where we can compute sketches by pre-computing and sorting the \kmers in a hash order. Doing this will help preserve locality and help achieve massive parallelism on GPUs. PI Pandey has explored similar techniques in the past to preserve the order to \kmers in the sequence~\cite{Marais2019}.
 
 \begin{rproblem}
 Develop data structures for indexing and searching low-dimensional embeddings (based on minhash) for raw genomic and metagenomic data.
 \end{rproblem}
+
+The ability to perform an approximate nearest neighbor (ANN) search on the vector space (minhash) enables researchers to quickly prune down the search space of millions of samples to find the sample of interest. PI Pandey has developed Mantis which is an inverted index on \kmers to perform sequence-level searches. Our goal is to further reduce the index space by orders of magnitude by indexing sequences using sketches and scale up the construction and query using GPUs.
+
+\begin{rproblem}
+Develop algorithms that are close to communication lower bound to compute the similarity score for two set of \kmers in a distributed setting.
+\end{rproblem}
+
+\begin{rproblem}
+Design and build a system to compute similarity score (Jaccard index) for \kmer sets in a distributed-setting.
+\end{rproblem}
+
+We plan to develop algorithms that can get close to the communication lower bound to estimate sequence similarities in a distributed setting. Effectively, all linear sketching algorithms~\cite{li2014sketchuniversal}, are highly parallelizable, easy to distribute, robust to arbitrarily ordered input streams, and have good data locality. In a nutshell, they trade more computation for a smaller space requirement. Our approach is to develop techniques to compute minhash sketches in a distributed setting without communicating sequences across nodes but rather only communicating the hash sketches.
+
+Another challenge in computational biology is to quickly and efficiently estimate the cardinality of the \kmer multiset from the sequence files. This requires computing the summary of \kmer multiset by only looking at a small fraction of the sequence file and in limited memory.
+%
+The challenge of computing properties of massive data streams in limited space has inspired a deep and beautiful literature on streaming algorithms and database systems. In the dynamic streaming model, the input is defined by a sequence of items of length $N$ and only $O(\polylog N)$ {RAM} is available for computation. 
 
 
 \begin{rproblem}
 Build a GPU-enabled cardinality estimator for \kmers in raw sequencing samples (genomic, transcriptomic, metageomic).
 \end{rproblem}
 
-% best distinct elements count sketch AFAIK: https://people.eecs.berkeley.edu/~minilek/publications/papers/f0.pdf this has likely been implemented, but i haven't verified. I will check if i have time. and for fun, a differentially private solution to the problem (which i have not read): https://arxiv.org/abs/2001.11932
 
-
-\begin{rproblem}
-Develop algorithms that are close to communication lower bound to compute the similarity score for two set of \kmers in a distributed setting.
-\end{rproblem}
-
-
-
-\begin{rproblem}
-Design and build a system to compute similarity score (Jaccard index) for \kmer sets in a distributed-setting.
-\end{rproblem}
-
-
-% i am not super familiar with the work on sketching set similarity but this paper seems promising: https://www.itu.dk/people/pagh/papers/oddsketch.pdf there is also this implementation-focused paper that includes another sketch to solve the problem and mentions the prior paper: https://dl.acm.org/doi/abs/10.1145/3292500.3330825
+Our approach is to build a GPU-accelerated solution for cardinality estimation using known algorithms that are proven to be optimal. There is an optimal algorithm to compute the cardinality of the set~\cite{Kane2010}. 
