@@ -14,7 +14,7 @@ The FM-index is based on Burrows-Wheeler transform~\cite{burrows1994block}. The 
 
 Use of the FM-index across applications is due to its fast performance and low memory footprint. Unfortunately, its adoption is likely limited by the lack of an optimized and lightweight FM-index library; the only robust, currently maintained FM-index implementations are the SeqAn3 library~\cite{Reinert2017} and the AWFM-index~\cite{Anderson2021}.
 
-The FM-index is a static data structure. It saves space at the cost of updability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updability.
+The FM-index is a static data structure. It saves space at the cost of updatability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updatability.
 %
 Constructing compressed string indexes like the BWT and FM-index is memory-intensive. Existing tools like BOSS~\cite{Bowe2012} and VARI~\cite{Muggli2019} use disks to mitigate the high memory requirements to construct string index. They need to write out the intermediate results to disk and page them back and forth. This results in suboptimal construction speed.
 %
