@@ -14,7 +14,7 @@ For typical values of $\varepsilon$, the best filters takes one or two bytes per
 % \mfc{Prashant: why do we need this feature?}  \mfc{We know of no existing filters are incrementally resizable.}
 
 It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has a small, associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets are critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{GeorganasEHG18}.  To date, all maplets that we know of are based on the quotient filter~\cite{conway2020splinterdb,PandeyBJP17}, and we know of no implementation of maplets on the GPU\@.
-
+%
 Our first research problem is thus:
 
 \begin{rproblem}

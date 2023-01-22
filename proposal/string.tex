@@ -13,7 +13,7 @@ The FM-index is based on Burrows-Wheeler transform~\cite{burrows1994block}. The 
 % Let $A$ be a finite alphabet consisting of a set of characters (or symbols).  The cardinality of the alphabet denoted by $|A|$ expresses the number of distinct characters in the alphabet.  A string or word is an ordered list of zero or more characters drawn from the alphabet. A word or string $w$ of length $n$ is represented by $w[1 \ldots n] = w[1],w[2], \ldots ,w[n]$, where $w[i] \in A \; for \; 1 \leq i \leq n$ and $|w|$ denotes the length of $w$. The empty word is the empty sequence (of zero length) and is denoted by $\phi$.  A list of characters of $w$, appearing in consecutive positions, is called a \emph{substring} of $w$, denoted by $w[i \ldots j]$, where $i$ and $j$ are the starting and ending positions, respectively. If the substring starts at position 1, then it is called a \emph{prefix}, whereas if it ends at position $n$, then it is called a \emph{suffix} of $w$. However, an ordered list of characters of $w$ that are not necessarily consecutive is called a \emph{subsequence} of $w$.
 
 Use of the FM-index across applications is due to its fast performance and low memory footprint. Unfortunately, its adoption is likely limited by the lack of an optimized and lightweight FM-index library; the only robust, currently maintained FM-index implementations are the SeqAn3 library~\cite{Reinert2017} and the AWFM-index~\cite{Anderson2021}.
-
+%
 The FM-index is a static data structure. It saves space at the cost of updatability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updatability.
 %
 Constructing compressed string indexes like the BWT and FM-index is memory-intensive. Existing tools like BOSS~\cite{Bowe2012} and VARI~\cite{Muggli2019} use disks to mitigate the high memory requirements to construct string index. They need to write out the intermediate results to disk and page them back and forth. This results in suboptimal construction speed.
@@ -35,7 +35,7 @@ Build a GPU-implementation of the dynamic FM-index.
 % \end{rproblem}
 
 \begin{rproblem}
-Design and build a sequence-to-sequence and sequence-to-graph alignment library for GPUs.
+Build a sequence-to-sequence and sequence-to-graph alignment library for GPUs.
 \end{rproblem}
 
 \begin{rproblem}
@@ -46,8 +46,6 @@ Design and build a sequence to graph alignment library for GPUs in distributed-m
 
 We plan to extend FM-index and P-BWT data structures using a new framework for dynamic data structures for string processing~\cite{Nicola17,Farzan2011}. Our plan is to make the underlying bit vector representation dynamic and support efficient rank and select queries on dynamic bit vectors~\cite{Raman2001}.
 To reduce the memory requirements during the construction of these data structures we plan to employ devise new memory-efficient algorithms to construct succinct string representations. Specifically, a recent results from PI Farach-Colton~\cite{Assadi2023} shows how to build a monotone minimal perfect hash (MMPH) in $\theta(n \log{\log{\log u}})$ space, where $u$ is the universe size.
-
-\prashant{Martin, can we say something more concrete here for string data structures.}
-
+%
 PI Farach-Colton devised the first linear-time algorithm to construct the suffix array and it serves as the basis for all modern suffix array data structures and Burrows-Wheeler transform (BWT) data structures~\cite{Farach97,Ambainis97}. Furthermore, a recent result from PIs Bender and Farach-Colton shows how to build a tiny pointer using $o(\log{n})$-bits for a dynamic set~\cite{Bender2023}. Our plan is build dynamic succinct string dictionaries using the tiny pointer technique.
 Owens's work is the fastest suffix array construction on GPUs~\cite{Wang:2016:FPS}. PI Pandey showed how to build a succinct data structure for storing colored de Bruijn graphs~\cite{almodaresi2017rainbowfish}.
