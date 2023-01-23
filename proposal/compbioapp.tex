@@ -146,7 +146,6 @@ Finally, pangenomic indexes need to support fast variant queries and sequence-to
 \end{rproblem}
 
 \subsection{Metagenome assembly}
-\prashant{Revisit this subsection \ldots}
 
 % \begin{figure}
 % \begin{wrapfigure}{R}{0.7\textwidth}
@@ -203,7 +202,7 @@ Traversal of the de Bruijn graph enables the construction of the contigs (longer
 
 \noindent
 \textbf{Gap and requirements.}
-\Kmer counting and analysis is the very first and the most memory-intensive step in the metagenome assembly. The \kmers that occur only once (singletons) are treated as sequencing errors and dropped. In a typical set of metagenome reads, 70--80\% of unique \kmers are singletons, but they still need to be stored and counted in the distributed hash table~\Cref{tab:kmer-dist}.
+\Kmer counting and analysis is the very first and the most memory-intensive step in the metagenome assembly. The \kmers that occur only once (singletons) are treated as sequencing errors and dropped. In a typical set of metagenome reads, 70--80\% of unique \kmers are singletons, but they still need to be stored and counted in the distributed hash table (see~\Cref{tab:kmer-dist}).
 In the default MetaHipMer implementation, storing the unique \kmers is the most memory-intensive part of the computation and can be roughly an order of magnitude larger than the input data.  The space required to store the \kmers can be much larger than the size of the original raw dataset (up to $10\times$ larger) as \kmers contain a lot of redundant information due to their overlaps.
 Weeding out singleton \kmers before inserting them in the hash table to count is critical in any \kmer analysis phase to reduce the memory usage of the counting phase. These singleton \kmers can also be pruned from the hash table after the counting phase. However, that results in the high peak memory usage and much slower running time. MetaHipMer uses filers to weed out singleton \kmers.
 
