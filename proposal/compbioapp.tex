@@ -14,7 +14,7 @@ Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial t
 
 \noindent
 \textbf{Importance.}
-Metagenomic sequencing produces genomic data from a set of species instead of a pure species isolate, one of the primary challenges in the field is the development of computational methods for identifying all of the species contained in these samples.
+Metagenomic sequencing produces genomic data from a set of species instead of a pure species isolate. One of the primary challenges in the field is the development of computational methods for identifying all of the species contained in these samples.
 %
 Taxonomic classification of reads is a critical first computational step in any metagenomic analysis pipeline.
 For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step~\cite{venter2004environmental,brady2009phymm,brady2011phymmbl,rosen2008metagenome,segata2012metagenomic}.
@@ -22,7 +22,7 @@ For example, read classification is critical for \emph{de novo} metagenomics ass
 \noindent
 \textbf{Challenges.}
 The task of read classification is far from straightforward.
-A metagenomic sample can contain thousands of genomes with varying level of similarity and often occurring at vastly different abundances. Furthermore, due to high-throughput sequencing, metagenomic samples contain millions of sequencing reads making traditional, string-matching-based tools like BLAST~\cite{altschul1990basic} infeasible to perform classification. Metagenomic datasets today easily range from hundreds of GBs to TBs~\cite{hofmeyr2020terabase}, e.g., WA dataset contains a collection of marine microbial communities from the Western Arctic Ocean and consists of 822 GB of 2.5 billion reads in 12 samples~\cite{hofmeyr2020terabase}.
+A metagenomic sample can contain thousands of genomes with varying level of similarities and often occurring at vastly different abundances. Furthermore, due to high-throughput sequencing, metagenomic samples contain millions of sequencing reads making traditional, string-matching-based tools like BLAST~\cite{altschul1990basic} infeasible to perform classification. Metagenomic datasets today easily range from hundreds of GBs to TBs~\cite{hofmeyr2020terabase}, e.g., the WA dataset contains a collection of marine microbial communities from the Western Arctic Ocean and consists of 822~GB of 2.5 billion reads in 12 samples~\cite{hofmeyr2020terabase}.
 %
 Although BLAST is one of the most sensitive metagenomics alignment methods, it is computationally intensive, making it infeasible to run on the millions of reads present in metagenomic sequencing studies.
 
@@ -38,12 +38,12 @@ During the classification phase, the input reads are decomposed into \kmers and 
 The sheer size of sequenced microbial genetic sequences presents a considerable computational and memory challenge.
 % Building the database of known genomes is often quite memory intensive.
 The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species as well as the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ million sequences.
-Kraken's~\cite{wood2014kraken} memory requirements can easily exceed 100GB~\cite{simon2019benchmarking}, especially when the reference data includes large eukaryotic genomes~\cite{meiser2017sequencing, knutson2017porcine}.
+Kraken's~\cite{wood2014kraken} memory requirements can easily exceed 100~GB~\cite{simon2019benchmarking}, especially when the reference data includes large eukaryotic genomes~\cite{meiser2017sequencing, knutson2017porcine}.
 %
 The universe of microbial sequences is large and diverse. The vast search space often results in false positives as sequences can be matched against multiple taxa. Also, a large number of undiscovered microbial species can result in false negatives as these species are not present in the database.
 
-Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, classification operation is computationally intensive and makes it infeasible to scale to terabyte-scale metagenomic datasets.
-Second, this challenge is compounded by the exponential growth in recent years of the number of sequenced microbial genomes, meaning that the number of comparisons that need to be performed for new sequencing reads is huge and ever increasing.
+Existing taxonomic classification tools are memory intensive to build the database of known genomes and often require more memory than available on single-node machines. Furthermore, the classification operation is computationally intensive, making it infeasible to scale to terabyte-scale metagenomic datasets.
+Second, this challenge is compounded by the exponential growth in recent years of the number of sequenced microbial genomes, meaning that the number of comparisons that need to be performed for new sequencing reads is huge and ever-increasing.
 %
 Finally, existing reference database indexes give up updatability to save space. However, the ability to add new assembled genomes to an existing database is a critical feature to avoid rebuilding the databases.
 
@@ -58,7 +58,7 @@ Build a software tool to perform reference-based taxonomic classification of met
 
 \subsection{Large-scale raw sequence search}
 
-\textbf{Problem statement.} Raw sequence search involves identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence,KatzSLKBO22} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single sequencing sample do not have the power to address.
+\textbf{Problem statement.} Raw sequence search involves identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence,KatzSLKBO22} that contain a given query sequence. A query is an arbitrary sequence, such as a transcript. Raw sequencing datasets contain a ton of biological diversity information that can be used to answer biological questions that single-sequencing samples do not have the power to address.
 
 \noindent
 \textbf{Importance.}
@@ -68,13 +68,13 @@ The vast majority of publicly available sequencing data (e.g., the data deposite
 %
 Enabling scientists to analyze existing sequence data will provide insight into ecology, medicine, and industrial applications~\cite{LeviRAE18}.
 %
-The genomics community established this database to enable sharing of the data, but the computational barrier to searching this data leaves the it separated from the people most qualified to analyze it.
+The genomics community established this database to enable sharing of the data, but the computational barrier to searching this data leaves it separated from the people most qualified to analyze it.
 
 \noindent
 \textbf{Challenges.}
-There have been multiple tools such as BLAST~\cite{altschul1990basic} and its variants that are designed to perform sequence level searches over publicly available databases of assembled genomes and known proteins. %Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. \mfc{This previous sentence is a jolt. what does that have to do with raw sequence data?}
+There have been multiple tools such as BLAST~\cite{altschul1990basic} and its variants that are designed to perform sequence-level searches over publicly available databases of assembled genomes and known proteins. %Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. \mfc{This previous sentence is a jolt. what does that have to do with raw sequence data?}
 However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences which is much smaller in size compared to the SRA\@.
-Using BLAST (or other BLAST-based tools) to perform searches over SRA is computational not feasible.
+Using BLAST (or other BLAST-based tools) to perform searches over SRA is computationally infeasible.
 %
 There are a number of reasons that typical reference-database-based search techniques cannot easily be applied in the context of searching raw, unassembled sequences. One major reason is that most current techniques do not scale well as the amount of data grows to the size of the SRA (which today is $\approx4$ petabytes of sequence information). A second reason is that searching unassembled sequences means that relatively long queries (e.g., genes) are unlikely to be present in their entirety as an approximate substring of the input.
 As such, these data have mostly been rendered impervious to sequence-level search, which substantially reduces the utility of such publicly available data.
@@ -84,17 +84,17 @@ As such, these data have mostly been rendered impervious to sequence-level searc
 \textbf{State of the art.}
 Recently, new computational schemes have been proposed that hold the potential to allow searching raw SRA while overcoming these challenges. Solomon and Kingsford~\cite{solomon2016fast} introduced the sequence Bloom tree (SBT) data structure and an associated algorithm that enables an efficient search over thousands of sequencing experiments. Specifically, they re-phrase the query in terms of \kmer set membership in a way that is robust to the fact that the target sequences have not been assembled. The resulting problem is coined as the \emph{experiment discovery problem}, where the goal is to return all experiments that contain at least some user-defined $q$ fraction of the \kmers present in the query string.
 %
-Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and Bender that showed how solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments they appear in. Mantis uses the counting quotient filter~\cite{PandeyBJP17} developed by PI Pandey as a space-efficient and exact map to map \kmers. Mantis's index is smaller in size, faster to index and query, and has no false positives compared to the SBT (and other SBT-based tools~\cite{SolomonK17,HarrisM20,BingmannBGI19}).
+Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey and Bender that showed how to solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments in which they appear. Mantis uses the counting quotient filter~\cite{PandeyBJP17} developed by PI Pandey as a space-efficient and exact map to map \kmers. Mantis's index is smaller in size, faster to index and query, and has no false positives compared to the SBT (and other SBT-based tools~\cite{SolomonK17,HarrisM20,BingmannBGI19}).
 %
 PI Pandey further continued this effort to compress the Mantis index in order to reduce memory requirements and scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} out of RAM to storage devices.
 
 
 \noindent
 \textbf{Gaps and requirement.}
-Existing raw sequence search indexes suffer from the scalability challenge. Indexing \kmers from the SRA samples is memory intensive and indexes often take hundreds of GBs. For example, the SBT index size for 2652 experiments consisting of short-read RNA sequencing runs of human blood, brain, and breast tissues is 97~GB\@. Scaling SBT-based indexes to 100K experiments in SRA is not feasible on single-node machines.
-Furthermore, SBT-based indexes are approximate the search results include false positives which can quickly become problem even if 1\% results are false positives due to the shear size of the search space.
+Existing raw sequence search indexes suffer from the scalability challenge. Indexing \kmers from the SRA samples is memory-intensive and indexes often take hundreds of GBs. For example, the SBT index size for 2652 experiments consisting of short-read RNA sequencing runs of human blood, brain, and breast tissues is 97~GB\@. Scaling SBT-based indexes to 100K experiments in SRA is not feasible on single-node machines.
+Furthermore, SBT-based indexes are approximate; the search results include false positives, which can quickly become problematic even if only 1\% of results are false positives, due to the sheer size of the search space.
 
-Mantis index is exact and has no false positives in the results. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using the~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA\@. These indexes are reaching the limits of single-node RAM and storage hardware.
+Mantis's index is exact and has no false positives in the results. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using Bentley/Saxe's transformation~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA\@. These indexes are reaching the limits of single-node RAM and storage hardware.
 
 \begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
 Build a \kmer index over all the raw experiments present in SRA and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world.
@@ -112,7 +112,7 @@ Pangenomics~\cite{sherman2020pan} involves cataloging the DNA of multiple indivi
 \noindent
 \textbf{Importance.}
 Much of the field of genomics revolves around the existence of reference genomes, which are roadmaps for a ‘typical’ individual of each species.  However, as the number and scope of sequencing experiments have grown dramatically, scientists have begun to realize the many limitations that a single reference genome imposes upon the community. To better capture the variation missed by using one reference, we can create and utilize a ‘pan-genome’, a collection of all the DNA sequences that occur in a species.
-A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
+A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population. \john{Choose ``pangenome'' or ``pan-genome'' but not both.}
 The first pan-genomes were developed for small, easy-to-sequence bacteria, but, even in that context, pan-genomes provided novel scientific insights. The consideration of genetic diversity within bacterial species has contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance and can even help predict how pathogenic a new strain will be~\cite{sherman2020pan}.
 
 \noindent
@@ -129,7 +129,7 @@ Pangenomic studies are performed by storing the genomes of multiple individuals 
 % Efficiently indexing and storing a genome graph is a computationally and memory/space intensive process due to the presence of thousands of coordinate systems corresponding to the individuals.
 Existing applications that index genome graphs~\cite{pandey2021variantstore,garrison2018variation} are designed to use compressed string indexes and off-the-shelf graph indexes. VG toolkit~\cite{garrison2018variation} is one of the most widely used tools to represent genomic variation data, and it also supports multiple coordinate systems. VG toolkit stores each sample path as a list of nodes in the graph and maintains a separate index corresponding to the coordinates of the reference and samples.
 %
-VariantStore~\cite{pandey2021variantstore}  encodes genomic variation in a directed, acyclic variation graph and build a position index (a mapping of node positions to node identifiers) on the graph to quickly access a node in the graph corresponding to a queried position. It builds an inverted index from variants to the nodes in the graph to achieve space-efficiency due to repeated variants and fast variant queries.
+VariantStore~\cite{pandey2021variantstore}  encodes genomic variation in a directed, acyclic variation graph and build a position index (a mapping of node positions to node identifiers) on the graph to quickly access a node in the graph corresponding to a queried position. It builds an inverted index from variants to the nodes in the graph to achieve space efficiency due to repeated variants and fast variant queries.
 
 \noindent
 \textbf{Gaps and requirement.}
@@ -190,24 +190,24 @@ Metagenomic sequencing provides a culture-independent avenue to investigate the 
 \textbf{Challenges.}
 Metagenome assembly is challenging due to sequencing error, repetitive content, and library and sequencing bias. In addition, a metagenome sample can contain many thousands of different genomes with varying degrees of similarity, sometimes sharing genetic material, and occurring at vastly different abundances.
 %
-Furthermore, high-throughput sequencing technology is producing large-amount of metagenomic datasets ranging in TB and PB scales~\cite{hofmeyr2020terabase}. Metagenomic assembly is a complex process consisting of multiple phases and scaling all these phases to terabyte scale comes with myriad of challenges.
+Furthermore, high-throughput sequencing technology is producing large-amount of metagenomic datasets ranging to TB and PB scales~\cite{hofmeyr2020terabase}. Metagenomic assembly is a complex process consisting of multiple phases and scaling all these phases to terabyte scale comes with a myriad of challenges.
 
 \noindent
 \textbf{State of the art.}
 MetaHipMer~\cite{GeorganasEHG18,hofmeyr2020terabase} is the first exascale metagenome assembler.
 In the approach used by MetaHipMer, the reads are first divided into overlapping substrings of fixed length \emph{k}, called \emph{\kmers}, which are then used to form a de Bruijn graph~\cite{CompeauPeTe11}.
 \Kmer counting is the very first step. During \kmer counting, forward and backward extensions of the \kmer and the counts of those extensions are also maintained in the hash table along with the \kmer. Information regarding the extensions and their counts is critical to identifying correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on $k$) to store each \kmer.
-MetaHipmer uses GPUs to speed up \kmer analysis phase.
-In a de Bruijn graph, the vertices are \kmers and edges connect any two \kmers that have an overlap of $k-1$ bases. These vertices are stored in a hash table that is distributed across all the compute nodes in a supercomputer like Perlmutter~\cite{perlmutter} and Summit~\cite{summit}.
+MetaHipmer uses GPUs to speed up the \kmer analysis phase.
+In a de Bruijn graph, the vertices are \kmers and edges connect any two \kmers that have an overlap of $k-1$ bases. These vertices are stored in a hash table that is distributed across all the compute nodes in a supercomputer like Perlmutter~\cite{perlmutter} or Summit~\cite{summit}.
 Traversal of the de Bruijn graph enables the construction of the contigs (longer sequences).  This approach is more efficient than an all-to-all alignment of the reads, which would be prohibitive for the size of typical metagenome datasets (up to billions of reads).
 
 \noindent
 \textbf{Gap and requirements.}
-\Kmer counting and analysis is the very first and the most memory intensive step in the metagenome assembly. The \kmers that occur only once (singletons) are treated as sequencing errors and dropped. In a typical set of metagenome reads, 70--80\% of unique \kmers are singletons, but they still need to be stored and counted in the distributed hash table~\Cref{tab:kmer-dist}.
-In the default MetaHipMer implementation, storing the unique \kmers is the most memory intensive part of the computation and can be roughly an order of magnitude larger than the input data.  The space required to store the \kmers can be much larger than the size of the original raw dataset (up to $10\times$ larger) as \kmers contain a lot of redundant information due to their overlaps.
+\Kmer counting and analysis is the very first and the most memory-intensive step in the metagenome assembly. The \kmers that occur only once (singletons) are treated as sequencing errors and dropped. In a typical set of metagenome reads, 70--80\% of unique \kmers are singletons, but they still need to be stored and counted in the distributed hash table~\Cref{tab:kmer-dist}.
+In the default MetaHipMer implementation, storing the unique \kmers is the most memory-intensive part of the computation and can be roughly an order of magnitude larger than the input data.  The space required to store the \kmers can be much larger than the size of the original raw dataset (up to $10\times$ larger) as \kmers contain a lot of redundant information due to their overlaps.
 Weeding out singleton \kmers before inserting them in the hash table to count is critical in any \kmer analysis phase to reduce the memory usage of the counting phase. These singleton \kmers can also be pruned from the hash table after the counting phase. However, that results in the high peak memory usage and much slower running time. MetaHipMer uses filers to weed out singleton \kmers.
 
-The size of the filter and hash table is dependent on the number of unique \kmers. Given that the distribution of \kmers is highly skewed and not known in advance, it is challenging to size the filter and the hash table in order to efficiently utilize the limited memory. Filter and hash tables that can be efficiently resized at run time will enable efficient memory utilization.
+The size of the filter and hash table is dependent on the number of unique \kmers. Given that the distribution of \kmers is highly skewed and not known in advance, it is challenging to size the filter and the hash table in order to efficiently utilize the limited memory. Filter and hash tables that can be efficiently resized at runtime will enable efficient memory utilization.
 
 
 \begin{rproblem}[\textbf{Scale MetaHipMer to petabyte-scale metagenomic datasets on supercomputers}]
