@@ -117,7 +117,6 @@ systems, and security applications.
 There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
 These existing tools are limited by single-node compute and shared-memory parallelism. They are not designed to scale to thousands of cores on modern accelerators nor scale out to hundreds to nodes in a high-performance computing (HPC) environment.
 %
-\prashant{I don't like the above paragraph much \ldots}
 
 
 \label{sec:we-need-performance-and-scalability}
@@ -135,7 +134,6 @@ As with other high-performance computing (HPC) domains,
 GPUs are increasingly used in large-scale computational biology because they offer a substantial jump in terms of low-cost parallelism, as long as data structure and algorithms can be designed and implemented to match the memory and parallelism requirements of GPUs.
 %
 For example, GPUs are already used in some recent computational-biology applications to speed up \kmer counting~\cite{nisa2021distributed} and local assembly~\cite{awan2021accelerating}.
-\prashant{Check if there are more examples.}
 
 However, the penetration of GPUs into biology pipelines is limited by how the limitations of GPUs have translated so far into data structures.  These GPU limitations include:
 \begin{enumerate}[leftmargin=*,noitemsep,nolistsep]
@@ -143,7 +141,8 @@ However, the penetration of GPUs into biology pipelines is limited by how the li
     challenging given the data sizes in computational biology.
   \item GPUs have high contention due to thousands of threads and are
     inefficient when computations are irregular.
-  \item GPUs don't have a fully functional, high-performance suite of memory management tools; it is hard to perform dynamic memory management without involving the host CPU\@. \john{I'm not sure what the main point is here; dynamic memory management is not terrible on GPUs~\cite{Winter:2020:OVQ}, though it does have limitations. I softened this. But I don't get this point.}
+  \item GPUs don't have a fully functional, high-performance suite of memory management tools; it is hard to perform dynamic memory management without involving the host CPU\@. 
+  % \john{I'm not sure what the main point is here; dynamic memory management is not terrible on GPUs~\cite{Winter:2020:OVQ}, though it does have limitations. I softened this. But I don't get this point.}
 \end{enumerate}
 
 These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as strings or vectors, which have variable lengths are not available; and GPU data structures do not scale out of the GPU's device RAM to host.
