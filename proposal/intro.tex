@@ -138,7 +138,7 @@ For example, GPUs are already used in some recent computational-biology applicat
 \prashant{Check if there are more examples.}
 
 However, the penetration of GPUs into biology pipelines is limited by how the limitations of GPUs have translated so far into data structures.  These GPU limitations include:
-\begin{enumerate}[noitemsep,nolistsep]
+\begin{enumerate}[leftmargin=*,noitemsep,nolistsep]
   \item GPU device RAM is much smaller than CPU RAM\@; this is especially
     challenging given the data sizes in computational biology.
   \item GPUs have high contention due to thousands of threads and are
@@ -183,7 +183,7 @@ We believe the answer to these challenges is a collection of  memory-efficient, 
 %
 Specifically, our data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxiliary data structures.  We will validate our solutions on \textbf{large-scale raw sequence search}, \textbf{taxonomic classification for metagenomic data}, \textbf{pangenomic indexing and analysis}, and others.
 
-If successful we will be able to perform complex data analyses to answer biological questions on available terabyte- and petabyte-scale datasets, for example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. \john{These cites / this argument is also made a page earlier; consider deleting this.} Existing data structures and software tools fail to scale to these data sizes, making these publicly available and highly valuable data resources largely inert.
+% If successful we will be able to perform complex data analyses to answer biological questions on available terabyte- and petabyte-scale datasets, for example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. \john{These cites / this argument is also made a page earlier; consider deleting this.} Existing data structures and software tools fail to scale to these data sizes, making these publicly available and highly valuable data resources largely inert.
 
 The project’s novelties are: a vertical-stack approach spanning theory and algorithms (highly concurrent, dynamic, and distributed data structures); systems (scaling up using GPU acceleration); high-performance computing (scaling out using distributed data structures); and applications (computational biology applications); new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs that can be applicable to other application domains; and an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
 %
