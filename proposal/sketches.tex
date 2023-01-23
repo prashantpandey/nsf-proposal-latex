@@ -16,7 +16,7 @@ Our approach is to develop algorithmic techniques where we can compute sketches 
 Develop data structures for indexing and searching low-dimensional embeddings (based on minhash) for raw genomic and metagenomic data.
 \end{rproblem}
 
-The ability to perform an approximate nearest neighbor (ANN) search on the vector space (minhash) enables researchers to quickly prune down the search space of millions of samples to find the sample of interest. PI Pandey has developed Mantis, an inverted index on \kmers, to perform sequence-level searches. Our goal is to further reduce the index space by orders of magnitude by indexing sequences using sketches and scale up the construction and query using GPUs.
+The ability to perform an approximate nearest neighbor (ANN) search on the vector space (minhash sketch) enables researchers to quickly prune down the search space of millions of samples to find the sample of interest. PI Pandey has developed Mantis, an inverted index on \kmers, to perform sequence-level searches. Our goal is to further reduce the index space by indexing sequences using sketches instead of \kmers and speed up the construction and query using GPUs on larger datasets.
 
 \begin{rproblem}
 Develop algorithms that are close to communication lower bound to compute the similarity score for two set of \kmers in a distributed setting.
