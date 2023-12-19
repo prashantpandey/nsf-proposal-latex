@@ -24,16 +24,14 @@
 
 % MAB: the problem
 
-Raw sequencing data in computational biology is increasing faster than ever
-due to high-throughput sequencing technology (HTS), which is already producing
-petabyte-scale datasets~\cite{kodama2012sequence}. Many applications in computational biology (\kmer
-analysis~\cite{MarccaisKi11}, raw sequence search~\cite{solomon2016fast}, taxonomic classification~\cite{wood2014kraken}, and pangenomics~\cite{computational2018computational})
+Both the volume and variety of genomic sequencing data has been increasing at an ever faster rate, driven by new and improved massively parallel high-throughput sequencing (HTS) technologies.  Thse technologies are already producing
+petabyte-scale datasets~\cite{kodama2012sequence}, and the NIH estimates that ``genomics research will generate between 2 and 40 exabytes of data within the next decade''~\cite{NHGRIDataScience}. Many applications in computational biology (\kmer
+analysis~\cite{MarccaisKi11}, single-cell analysis~\cite{he2022alevin}, raw sequence search~\cite{solomon2016fast}, taxonomic classification~\cite{wood2014kraken}, and pangenomics~\cite{computational2018computational})
 require processing raw sequencing data at petabyte scales~\cite{kodama2012sequence}. 
 %
 These applications are bottlenecked by the performance of an underlying core set of data structures. 
 %
-This project aims to
-build high-performance and scalable data-analysis pipelines for computational-biology applications.
+This project aims to build high-performance and scalable data-analysis pipelines for computational-biology applications.
 To do so, we aim to develop new massively parallel and distributed data structures and algorithms for core computational biology data processing tasks.
 
 
@@ -42,9 +40,9 @@ We aim to develop new data structures and algorithms that will have wide applica
 \begin{itemize}[leftmargin=*]
 
 \item \textbf{\Kmer analysis.}
-\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence and frequency of \kmers in the data sets; the objective is to answer questions about their genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational-biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc.~\cite{wood2014kraken,GeorganasEHG18,hofmeyr2020terabase,solomon2016fast,PatroSailfish:2014,PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b}.
+\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence, frequency (and sometimes locations) of \kmers in the data sets; the objective is to answer questions about their genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational-biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc.~\cite{wood2014kraken,GeorganasEHG18,hofmeyr2020terabase,solomon2016fast,PatroSailfish:2014,PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b}.
 
-Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as approximate if they only have false positives and lossy if they have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \Kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc.) about the \kmers~\cite{hofmeyr2020terabase}.
+Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as approximate if they only have false positives and lossy if they have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \Kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc.) about the \kmers~\cite{hofmeyr2020terabase}. When the metadata is coherent, this can often be exploited to allow much more space-efficient indexing, at least in the static case~\cite{}.
 
 As we will see, \kmer analysis is a key part of several of the specific applications we will be addressing.
 
