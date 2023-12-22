@@ -81,6 +81,8 @@ Pangenomics~\cite{garrison2018variation} involves representing the biological va
 
 Existing tools for constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{garrison2018variation}), space-efficient, dynamic hash tables, and string data structures~\cite{pandey2021variantstore}.
 
+\prashant{Talk about Metahipmer here.}
+
 \end{itemize}
 
 Our goal is to build tools to perform complex biological analyses at terabyte and petabyte scale to explore datasets available today and expected to be available in future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from the 100,000 Genome Project~\cite{1002021100} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (e.g., NVIDIA's Tesla V100 and A100) and also the distributed computing infrastructure of supercomputers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}).
@@ -179,6 +181,8 @@ Specifically, our data structures are: \textbf{filters}, \textbf{hash tables}, \
 The project’s novelties are: a vertical-stack approach spanning theory and algorithms (highly concurrent, dynamic, and distributed data structures); systems (scaling up using GPU acceleration); high-performance computing (scaling out using distributed data structures); and applications (computational biology applications); new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs that can be applicable to other application domains; and an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
 %
 Our team includes a highly interdisciplinary team of researchers across four focus areas: applications (computational biology), theory and algorithms, systems, and high-performance computing. The team is taking a holistic theory/systems/HPC/applications co-design approach to explore four tightly interconnected research modules. These research modules are structured from bottom-up across the computing stack.
+
+\prashant{Add a brief application about Single cell as another application of the library.}
 
 \subsection{Cross-cutting concerns}
 
