@@ -95,6 +95,8 @@ Furthermore, SBT-based indexes are approximate; the search results include false
 
 Mantis's index is exact and has no false positives in the results. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using Bentley/Saxe's transformation~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA\@. These indexes are reaching the limits of single-node RAM and storage hardware.
 
+\prashant{Add a discussion about representing color-classes.}
+
 \begin{rproblem}[\textbf{Build a raw sequence search index over all of SRA}]
 Build a \kmer index over all the raw experiments present in SRA and enable sequence-level searches in real-time. Furthermore, host the index publicly to make it available for researchers around the world.
 % Researchers can quickly ask biological questions and get answers.
