@@ -3,21 +3,20 @@
 \section{Computational biology applications}
 
 
-\subsection{Taxonomic classification of metagenomic data}
+\subsection{Taxonomic classification and abundance estimation of metagenomic data}
 
 \textbf{Problem definition.}
 The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
 The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
-Metagenomic datasets contain sequencing reads from multiple species that are present in the biological environment.
+Metagenomic datasets contain sequencing reads from multiple species (and strains) that are present in the biological environment from which the sample was drawn.
 %
-Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxon or taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads is an important part of many computational genomics pipelines for metagenomics projects.
+Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads, and the related challenge of quantifying the associated abundances of these taxa, are important steps in many computational genomics pipelines for metagenomics projects.
 
 \noindent
 \textbf{Importance.}
-Metagenomic sequencing produces genomic data from a set of species instead of a pure species isolate. One of the primary challenges in the field is the development of computational methods for identifying all of the species contained in these samples.
+Metagenomic sequencing produces genomic data from a collection of species instead of an individual isolate. One of the primary challenges in the field is the development of computational methods for identifying the species contained in these samples, and accurately estimating their associated abundances.
 %
-Taxonomic classification of reads is a critical first computational step in any metagenomic analysis pipeline.
-For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step~\cite{venter2004environmental,brady2009phymm,brady2011phymmbl,rosen2008metagenome,segata2012metagenomic}.
+Taxonomic classification of reads is a critical first computational step in any metagenomic analysis pipeline. For example, read classification is critical for \emph{de novo} metagenomics assembly, which attempts to reconstruct the DNA sequence of each organism present in the metagenomic sample without using a reference database before performing the actual assembly step~\cite{venter2004environmental,brady2009phymm,brady2011phymmbl,rosen2008metagenome,segata2012metagenomic}.  Likewise, the related task of taxonomic abundance estimation is a critical step in understanding how micriobial abundances change over time, between conditions of interest, or in response to a stimulus or treatment~\cite{Kaehler2019,wei2022kmcp,skoufos2022agamemnon,BlancoMguez2023}. While these tasks are highly-related, they represent distinct challenges, as taxonomic read assignment asks for a deterministic assignment of each read to some taxon (perhaps at some aggregated taxonomic level), while taxonomic abundance estimation asks for an estimate of the abundance of the different taxa in a sample, allowing the probabilistic or proportional allocation of individual sequencing reads.
 
 \noindent
 \textbf{Challenges.}
