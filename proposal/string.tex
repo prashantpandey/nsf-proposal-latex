@@ -6,13 +6,13 @@ String pattern matching is one of the most common and most computationally inten
 String pattern matching is the problem of counting or locating occurrences of a query text pattern $P$ within a large database text $T$. While not limited to the analysis of biological sequences, string pattern matching is integral to many tasks in computational biology, including mapping sequence reads to a reference genome~\cite{li2009fast,langmead2009ultrafast}, sequence to graph alignment~\cite{Jain2020}, taxonomic classification~\cite{menzel2016fast,kim2016centrifuge}, sequencing error correction~\cite{huang2017efficient}, and seeding for sequence alignments~\cite{buchfink2015fast,altschul1990basic,steinegger2017mmseqs2}.
 
 The need for high-throughput pattern matching in computational biology has motivated numerous approaches including hashing, lookup tables, suffix arrays~\cite{manber1993suffix}, and compressed suffix array data structures such as the FM-index~\cite{ferragina2000opportunistic}, BOSS~\cite{Muggli2019} and positional-BWT~\cite{Durbin2014}.
-The FM-index is based on the Burrows-Wheeler transform (BWT)~\cite{burrows1994block}, a reversible text transform that was originally proposed for lossless data compression.
+The FM-index is based on the Burrows-Wheeler transform (BWT)~\cite{burrows1994block}, a reversible text transform that was originally proposed for lossless data compression.   Recently, the spectral BWT~\cite{alanko2023small} (SBWT) was introduced as a succinct representation of \kmer sets (and hence, the de Bruijn graph) while being substantially faster to query than prior representations~\cite{Muggli2019}.
 
 % Strings and subsequences appear in a plethora of computational biology problems because the basic types of DNA, RNA, and protein molecules can be represented as strings—pieces over a given alphabet of DNA as strings over the alphabet {A,C, G, T } (representing the four bases adenine, cytosine, guanine, and thymine, respectively), pieces of RNA as strings over the alphabet {A,C, G, U} (with uracil replacing thymine) and proteins as strings over an alphabet of 20, corresponding to the 20 amino acid residues.
 
 % Let $A$ be a finite alphabet consisting of a set of characters (or symbols).  The cardinality of the alphabet denoted by $|A|$ expresses the number of distinct characters in the alphabet.  A string or word is an ordered list of zero or more characters drawn from the alphabet. A word or string $w$ of length $n$ is represented by $w[1 \ldots n] = w[1],w[2], \ldots ,w[n]$, where $w[i] \in A \; for \; 1 \leq i \leq n$ and $|w|$ denotes the length of $w$. The empty word is the empty sequence (of zero length) and is denoted by $\phi$.  A list of characters of $w$, appearing in consecutive positions, is called a \emph{substring} of $w$, denoted by $w[i \ldots j]$, where $i$ and $j$ are the starting and ending positions, respectively. If the substring starts at position 1, then it is called a \emph{prefix}, whereas if it ends at position $n$, then it is called a \emph{suffix} of $w$. However, an ordered list of characters of $w$ that are not necessarily consecutive is called a \emph{subsequence} of $w$.
 
-The use of the FM-index across applications is due to its fast performance and low memory footprint. Unfortunately, its adoption is likely limited by the lack of an optimized and lightweight FM-index library; the only robust, currently maintained FM-index implementations are the SeqAn3 library~\cite{Reinert2017} and the AWFM-index~\cite{Anderson2021}.
+The use of the FM-index across applications is due to its fast performance and low memory footprint. Unfortunately, its adoption is likely limited by the lack of an optimized and lightweight FM-index library; the only robust, currently maintained FM-index implementations are the SeqAn3 library~\cite{Reinert2017} and the AWFM-index~\cite{Anderson2021}. 
 %
 The FM-index is a static data structure. It saves space at the cost of updatability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updatability.
 %
@@ -23,6 +23,11 @@ Furthermore, so far GPUs are not utilized to scale up sequence-to-sequence align
 \begin{rproblem}
 Develop an algorithm to efficiently support adding and deleting strings in an FM-index.
 \label{rpob:dynamic-fmindex}
+\end{rproblem}
+
+\begin{rproblem}
+Develop an analogous algorithm to efficiently support adding and deleting \kmers from a SBWT, providing a dynamic succinct de Bruijn graph representation.
+\label{rpob:dynamic-sbwt}
 \end{rproblem}
 
 \begin{rproblem}
@@ -48,4 +53,4 @@ We plan to extend FM-index and P-BWT data structures using a new framework for d
 To reduce the memory requirements during the construction of these data structures, we plan to employ new memory-efficient algorithms to construct succinct string representations. Specifically, a recent result from PI Farach-Colton~\cite{Assadi2023} shows how to build a monotone minimal perfect hash (MMPH) in $\theta(n \log{\log{\log u}})$ space, where $u$ is the universe size.
 %
 PI Farach-Colton devised the first linear-time algorithm to construct the suffix array and it serves as the basis for all modern suffix array data structures and Burrows-Wheeler transform (BWT) data structures~\cite{Farach97,Ambainis97}. Furthermore, a recent result from PIs Bender and Farach-Colton shows how to build a tiny pointer using $o(\log{n})$-bits for a dynamic set~\cite{Bender2023}. Our plan is to build dynamic succinct string dictionaries using the tiny pointer technique. Our other PIs also have experience in this space:
-Owens's work is the fastest suffix array construction on GPUs~\cite{Wang:2016:FPS}, and PI Pandey showed how to build a succinct data structure for storing colored de Bruijn graphs~\cite{almodaresi2017rainbowfish}.
+Owens's work is the fastest suffix array construction on GPUs~\cite{Wang:2016:FPS}, and PI Patro recently introduced the fastest parallel CPU-based algorithm for suffix array construction~\cite{Khan2023CapsSA}. PI Pandey and Patro showed how to build a succinct data structure for storing colored de Bruijn graphs~\cite{almodaresi2017rainbowfish}, and PI Patro has developed tools that use these colored (compacted) de Bruijn graphs for alignment and mapping~\cite{Almodaresi2018Pufferfish,Almodaresi2021,fan2023fulgor,Pibiri2023MacDBG,he2022alevin}.
