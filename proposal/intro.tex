@@ -24,17 +24,24 @@
 
 % MAB: the problem
 
+\mfc{we don't explain which data structures are the bottleneck.  We don't calculate how much faster they can potentially get -- for example, if we use GPUs -- , nor translate that into a concrete biological win.  We don't say what the challenge is to realizing this upside.}
+
+\mfc{in short, some things are great, but some things are missing.  And some things are strange -- like the very late mention of GPUs.}
+
 Both the volume and variety of genomic sequencing data has been increasing at an ever faster rate, driven by new and improved massively parallel high-throughput sequencing (HTS) technologies.  These technologies are already producing
 petabyte-scale datasets~\cite{kodama2012sequence}, and the NIH estimates that ``genomics research will generate between 2 and 40 exabytes of data within the next decade''~\cite{NHGRIDataScience}. Many applications in computational biology (\kmer
 analysis~\cite{MarccaisKi11}, single-cell analysis~\cite{he2022alevin}, raw sequence search~\cite{solomon2016fast}, taxonomic classification~\cite{wood2014kraken}, and pangenomics~\cite{computational2018computational})
 require processing raw sequencing data at petabyte scales~\cite{kodama2012sequence}. 
 %
-These applications are bottlenecked by the performance of an underlying core set of data structures, including filters~\cite{cite-place-where-bottleneck}, hash tables~\cite{same}, \mfc{fill in the rest from the remainder of intro, once we've read it.}.
+These applications are bottlenecked by the performance of an underlying core set of data structures, including filters~\cite{cite-place-where-bottleneck}, hash tables~\cite{same}, locality sensitive hashing, compressed string indexes \mfc{fill in the rest from the remainder of intro, once we've read it.}.
 %
 
 In this project, we aim to build high-performance and scalable data-analysis pipelines for computational biology applications.  To do so, we will address the main computational bottleneck of existing systems by developing new massively parallel and distributed data structures and algorithms for core computational biology data-processing tasks.
-For concreteness, we consider the following two tools that are used throughout computational biology.
+For concreteness, we consider the following two tools
+\mab{Replace tools with more specific word. Are these tools?}
+that are used throughout computational biology.
 
+\mab{say, explicitly, and or provide evidence that these are actually bottlenecks.  maybe here or maybe in the applications}
 \begin{itemize}[leftmargin=*]
 
 \item \textbf{\Kmer analysis.}
@@ -53,6 +60,7 @@ Sequence alignment is used extensively in reference-based analyses, in which seq
 Existing tools use compressed and succinct string indexes such as the BWT~\cite{burrows1994block} and FM-index~\cite{ferragina2000opportunistic}, the r-index~\cite{gagie2018optimal}, compressed suffix arrays~\cite{grossi2000compressed}, and several hashing-based schemes based on \kmers, minimizers, or other types of designed ``seeds''~\cite{li2018minimap2,pibiri2022sparse,sahlin2022strobealign}, as well as dynamic programming algorithms for sequence alignment.
 Compressed and succinct indexes support efficient ``seed'' lookup, which vastly reduces the set of candidate locations where a high-quality alignment might occur, and help to perform sequence alignment in a memory-efficient manner and enable these tool to scale to large volumes of data.
 One of the most widely used tools across computational biology, BLAST~\cite{altschul1990basic}, performs fast and efficient sequence alignment using such string indexes.
+\mab{Shorten, or just improve writing on bullets}
 %Given the large sizes of sequencing datasets, these tools also use hash-based \kmer indexes to seed the sequence alignment to achieve speedups.
 \end{itemize}
 
@@ -61,18 +69,21 @@ This toolbox is used, for example, to solve the following problems.
 
 \begin{itemize}[leftmargin=*]
 
-\item \textbf{Taxonomic classification.} Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxa present in large-scale metagenomic and microbiome datasets coming from complex biological and environmental samples by assigning a taxonomic label to each sequencing read. This plays an important role of many computational genomics pipelines for metagenomics projects, and is closely tied to the related problem of taxonomic abundance estimation (determining the taxonomic composition of a sequencing sample)~\cite{truong2015metaphlan2,skoufos2022agamemnon,wei2022kmcp}.
+\item \textbf{Taxonomic classification.} Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial \mfc{only microbial?} taxa present in large-scale metagenomic and microbiome datasets coming from complex biological and environmental samples by assigning a taxonomic label to each sequencing read. This plays an important role of many computational genomics pipelines for metagenomics projects, and is closely tied to the related problem of taxonomic abundance estimation (determining the taxonomic composition of a sequencing sample)~\cite{truong2015metaphlan2,skoufos2022agamemnon,wei2022kmcp}.
 
 Methods for taxonomic classification of metagenomic data~\cite{wood2014kraken} often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
 Furthermore, to save space, many solutions~\cite{wood2019improved} also employ approximate sketches (e.g., locality sensitive hashing (LSH)~\cite{roberts2004reducing}) to represent metagenomic data and perform similarity computations over sketches or reduced representations of the data~\cite{Shaw2023}.
-Some approaches~\cite{kim2016centrifuge} employ compact string indexes such as the FM-index~\cite{ferragina2000opportunistic} to perform sequence comparison to determine exact matches among the pruned-down samples.
+Some approaches~\cite{kim2016centrifuge} employ compact string indexes such as the FM-index~\cite{ferragina2000opportunistic} to perform sequence comparison to determine exact matches among the pruned-down samples. \mfc{which of these are bottlenecks?}
 
-\item \textbf{Raw sequence search.} Raw sequence search involves identifying all sequencing samples in a database of raw sequencing data such as SRA~\cite{kodama2012sequence} that contain a given query sequence. A query is an arbitrary sequence, such as a gene transcript, or viral genome. Though common genomics processing pipelines extract and condense useful information (e.g. genomic variants, transcript abundance, etc.) from raw sequencing data, they often, by construction, eliminate unexpected signal or diversity (e.g. specific viral or microbial reads that might be present across many samples~\cite{Edgar2022}).
+\item \textbf{Raw sequence search.} Raw sequence search involves identifying all sequencing samples that contain a given query sequence in a database of raw sequencing data, such as SRA~\cite{kodama2012sequence}. A query is an arbitrary sequence, such as a gene transcript, or viral genome. Though common genomics processing pipelines extract and condense useful information (e.g., genomic variants, transcript abundance, etc.) from raw sequencing data, current solutions often eliminate unexpected signal or diversity (e.g., specific viral or microbial reads that might be present across many samples~\cite{Edgar2022}). \mfc{to be clear: this is a false-negative issue, not a performance issue}
 
-Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples where the \kmer is present. Tools like SSBT~\cite{solomon2016fast} build a tree of approximate \kmer indexes to quickly prune down the search space of samples. Other tools build an exact inverted index, like Mantis~\cite{PandeyABFJP18Cell}, which uses compact hash table or Metagraph~\cite{Karasikov2020}, which uses a \kmer-index based on a succinct representation of the de Bruijn Graph~\cite{bowe2012succinct}.
+Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples where the \kmer is present. Tools such as SSBT~\cite{solomon2016fast} build a tree of approximate \kmer indexes to quickly prune down the search space of samples. Other tools include:  Mantis~\cite{PandeyABFJP18Cell}, which builds an exact inverted index that uses compact hash tables; or Metagraph~\cite{Karasikov2020}, which uses a \kmer-index based on a succinct representation of the de Bruijn Graph~\cite{bowe2012succinct}.
 
 In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers.
 
+\mfc{I still don't know what the bottleneck is.}
+
+\mab{So far, the proposal does a great job of convincing people that we are experts. And that requires most of the real estate. What still needs to happen is (1) we need to convince the reader that actual pain is experienced, and (2) we need to convince the reader that we have a solution to this pain. Only a small number of additional sentences, but necessary ones. We haven't even mentioned GPUs as a possible solution.}
 
 \item \textbf{Pangenomics.}
 Pangenomics~\cite{garrison2018variation} involves representing the biological variation represented within and across populations of individual organisms belonging to a species or group.  The most popular approaches to pangenomics store the genome of a species as a sequence graph consisting of genomes of multiple individuals (or multiple major haplotype groups) instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
@@ -83,7 +94,10 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-Our goal is to build tools to perform complex biological analyses at terabyte and petabyte scale to explore datasets available today and expected to be available in future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from the 100,000 Genome Project~\cite{1002021100} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (e.g., NVIDIA's Tesla V100 and A100) and also the distributed computing infrastructure of supercomputers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}).
+\mfc{this sounds like software engineering.  why is there a technical problem?   are we just having them pay for us to build stuff that no one has gotten around to building?  Still no discussion of what the challenges are.}
+
+Our goal 
+is to build tools for performing complex biological analyses at the scale of terabytes and petabytes, for datasets that are available today, and beyond, for the datasets of the future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from the 100,000 Genome Project~\cite{1002021100} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (e.g., NVIDIA's Tesla V100 and A100) and also the distributed computing infrastructure of supercomputers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}).
 
 The computational biology applications described above (and numerous others)  use a set of common data structures to perform data-analysis tasks.
 Compact and exact data structures include: hash tables and succinct bit vectors, compressed string indexes, and trees.
