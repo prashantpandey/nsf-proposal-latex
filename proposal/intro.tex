@@ -42,8 +42,10 @@ For concreteness, we consider the following two tools
 that are used throughout computational biology.
 
 \mab{say, explicitly, and or provide evidence that these are actually bottlenecks.  maybe here or maybe in the applications}
-\begin{itemize}[leftmargin=*]
 
+\prashant{1. We need to be faster and bigger. 2. There's a relatively small set of data structure that are bottleneck for multiple applications. 3. If we make these data structures faster and smaller it will have widespread impact. 4. We have additional source of computational power (GPU) that PIs already have experience with. 5. GPUs are fast but are constrained in space. 6. Therefore, we need new data structures and algorithms that are space efficient and scalable to the CPU RAM to speed up these applications. 7. We are the perfect team to this. We already have experience with GPUs, core algorithms and data structures, computational biology, and everyone in the team has worked together for years.}
+
+\begin{itemize}[leftmargin=*]
 \item \textbf{\Kmer analysis.}
 \Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence, frequency (and sometimes locations) of \kmers in the data sets; the objective is to answer questions about their genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc.~\cite{wood2014kraken,GeorganasEHG18,hofmeyr2020terabase,solomon2016fast,PatroSailfish:2014,PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b}.
 
