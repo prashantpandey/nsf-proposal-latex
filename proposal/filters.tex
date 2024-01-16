@@ -41,11 +41,14 @@ In the graph, each node can have at most four successors by extending the sequen
 %
 de Bruijn graphs are often large enough that they do not fit in main memory. They must also support adding \kmers from new sequences and removing existing \kmers to weed out erroneous sequences.
 Therefore, several approaches have been proposed to minimize the space usage of representing a de Bruijn graph by representing it using a  filter~\cite{chikhi2013space}. They can support dbg traversal by querying all four possible extensions from a given node in the filter and building the neighbor list based on positive queries. However, due to false positives there can be some erroneous edges in the graph.
-To avoid the false edges, Chikhi and Rizk~\cite{chikhi2013space} proposed to store the de Bruijn graph in a cascading Bloom filter, which is possible because the set of queries is known in advance. Each Bloom filter stores the false positives from querying the earlier Bloom filter using all possible queries during the dbg traversal.
+To avoid the false edges, Chikhi and Rizk~\cite{chikhi2013space} proposed to store the de Bruijn graph in a cascading Bloom filter, which is possible because the set of traversal queries is known in advance. Each Bloom filter stores the false positives from querying the earlier Bloom filter using all possible queries during the dbg traversal.
 
 Existing Bloom filter-based solutions are not space-efficient and also do not support deletions. PIs Bender, Patro and Pandey showed how to use quotient filter-based solutions to build a compact representation of de Bruijn and weighted de Bruijn graphs~\cite{PandeyBJP17b}. However, the quotient filters used in that solution do not adapt during queries and require domain-specific mechanisms and graph invariants to fix approximation errors~\cite{PandeyBJP17b}.
 
-Dynamic adaptive maplets can be used to build a compact, error-free, and fast representation for de Bruijn graphs. Adaptive maplets would, in theory, take smaller space compared to hash tables and they can adapt during queries to avoid any false positives. Adaptive filters are quite appropriate for representing and querying de Bruijn graphs as the set of queries is known in advance. Furthermore, dynamic adaptive filters can support \kmer additions and deletions from the de Bruijn graph. \rob{Two thoughts about this. First: We keep saying that the set of queries is known in advance.  This is true, but only in the case of a navigational representation.  That is, if someone wishes to use our representation for membership queries, we don't know the set of queries in advance, only if they start at some valid \kmer and are then allowed to navigate the graph. Second: There is some work on dynamic succinct de Bruijn graphs e.g. \url{https://academic.oup.com/bioinformatics/article/37/14/1946/5848003}.  Should we address this? Also, we should think if there is a good reason to approach this particular problem (dBG representation) using dynamic adaptive filters rather than trying to create dynamic versions of existing succinct representations (which are membership representations and not just navigational)}
+
+Dynamic adaptive maplets can be used to build a compact, error-free, and fast representation for de Bruijn graphs. Adaptive maplets can be updated and  would, in theory, take less space than hash tables. Thus, adaptive filters are a good choice for representing and querying de Bruijn graphs, though how they would perform compared to other dynamic succinct de Bruijn graph representations~\cite{DBLP:journals/bioinformatics/AlipanahiKPSB21} remains an open question.
+
+
 
 \begin{rproblem}\label{rprob:adaptive-maplet}
 Define and prove bounds on adaptive maplets.
@@ -53,7 +56,7 @@ Define and prove bounds on adaptive maplets.
 The literature on adaptivity has focused on filters.  There are a few possible ways to extend the notion of adaptivity to maplets.  We will explore which of these makes the most sense for our applications and prove bounds on their size and time complexity.
 
 \begin{rproblem}\label{rprob:dyn-apt-filter}
-Design and build a dynamic adaptive maplet to compactly represent de Bruijn graphs.
+Design and build a dynamic adaptive maplet to compactly represent de Bruijn graphs.  Compare them to other dynamic succinct de Bruijn graph representations.
 \end{rproblem}
 
 In the algorithmic literature on adaptive filters, adaptivity is implemented by varying the number of bits stored in a fingerprint of each item.  When there is a false positive, enough bits are added that the fingerprint of the false-positive query no longer collides with the fingerprint of the item in the set.  Variable-length codes make memory accesses inefficient since the fingerprints are no longer byte-aligned.  We propose to over-adapt by a full byte whenever we have a false positive.  We believe that we can prove that over-adapting in this way does not blow up the space.  Such a scheme will substantially simplify the GPU implementation of adaptive filters.  We believe that all these comments carry over directly to adaptive maplets.
