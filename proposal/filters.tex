@@ -2,7 +2,16 @@
 
 \section{Filters}
 
-A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under approximate membership queries. Specifically, $\texttt{Member}(x)$ returns \textsc{True} if $x\in S$, and returns \textsc{True} with probability at most $\varepsilon$ for $x\notin S$, where $\varepsilon$ is a configurable parameter of the filter.  When a filter returns \textsc{True} erroneously, we say that it has experienced a \defn{false positive}.
+Filters are a key data structure for compactly representing sets, and they are extensively used in computational biology applications.  The PIs have extensive experience in designing best-in-class filters, both theoretically~\cite{BenderFaGo18,focs,BenderDaFa21,stoc} and for computational biology~\cite{prashant,rob} and for general high-performance computation~\cite{DBLP:conf/usenix/ConwayGCFSTJ20,sigmod,other-sigmod, vldb}.
+In this section, we articulate the computational challenges in implementing filters in computational-biology applications. 
+In particular, filters in HPC settings are compute intensive while being small, making them perfect candidates for GPU implementations.  
+However, not all filters have the same functionality, and we will propose algorithm work to create filters than are GPU-friendly, e.g. concurrent, small space, high locality, that will serving the needs of comp. bio. applications.
+
+%==
+
+%Vision of section: different filters have different capabilities. Most famous filter, the Bloom filter, is 
+
+\noindent\textbf{What is a filter?} A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under approximate membership queries. Specifically, $\texttt{Member}(x)$ returns \textsc{True} if $x\in S$, and returns \textsc{True} with probability at most $\varepsilon$ for $x\notin S$, where $\varepsilon$ is a configurable parameter of the filter.  When a filter returns \textsc{True} erroneously, we say that it has experienced a \defn{false positive}.
 
 A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega(\log {u\choose n}) = \Omega(n \log (u/n))$ bits, whereas a filter  takes space at least  lower bound of $\opt + \Omega(n)$ bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound with high probability (w.h.p.), including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerM09,BenderFaJo12,PandeyBJP17,PandeyCDBFJ21}, XOR filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerW21}.  Bloom filters~\cite{Bloom70} do not meet this lower bound, nor, technically speaking, do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p.\ grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
 %
