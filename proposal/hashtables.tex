@@ -1,48 +1,9 @@
 \section{Hash tables}
 \label{sec:hash-tables}
 
-% \prashant{Notes for Martin/John.}
-
-% \prashant{Scale up: We need hash tables with: fine-grained resizing on GPUs. Applications often do not know the number of items in advance. If they under size the hash table they fail at run time and if they oversize they waste memory.}
-
-% \prashant{Scale out: We need hash table that can be distributed across multiple nodes in HPC clusters. However, when partitioning data across multiple nodes there are two challenges: First, we need to reduce the load variance across nodes. Second, we need to reduce the communication volume to while constructing the hash table and also to perform operations on the hash table. Operations can include: performing a join/intersection across two distributed hash tables.}
-
-% \prashant{Forward and backward extensions of the \kmer and the counts of those
-% extensions are also maintained in the hash table along with the \kmer.
-% Information regarding the extensions and their counts is critical to identifying
-% correct paths in the de Bruijn graph and requires 28 to 52 bytes (depending on
-% $k$) to store each \kmer.}
-
-% \prashant{HT is built for multiple values of $k$ across different iterations of the contig mapping. The HT is required to support variable-length keys ranging from 32-bits to 200 bits.}
-
-
-% \prashant{HT use case in MetaHipMer}
-
-% \prashant{In the approach used by MetaHipMer, the reads are first divided into overlapping substrings of fixed length-$k$, called \kmers, which are then used
-% to form a de Bruijn graph. In a de Bruijn graph, the
-% vertices are \kmers and edges connect any two \kmers that have an overlap of
-% $k-1$ bases. These vertices are stored in a hash table that is distributed
-% across all the compute processes.  The size of the hash table is dependent on
-% the number of unique \kmers which is not known in advance. Currently, an approximation of the number of unique \kmers is used to size the HT. If it is an over approximation GPU device memory is wasted and if it is an under approximation then \kmers are arbitrarily dropped when HT becomes full resulting in dropped quality of the final result.}
-
-% \john{I don't see any requirement here for stability. In fact I think stability is probably not what we want because we probably want to periodically load-balance, or at least explore the cost vs.\ benefit of load balancing as part of our work. So I don't think any stability stuff gets included.}
-
-% \prashant{I think we need stability for local, single-GPU hash tables. With stability we can avoid data movement and hence less contention. So, stability is important to achieve high concurrency. For the distributed setup, yes, we need to move items for load balancing.}
-
-% \john{Question for Prashant. Do we need to support deletes? If so we probably want to have a garbage collection effort.}
-
-% \prashant{Yes, we need deletes. Garbage collection could be an efficiency way to support deletes. We can enter tombstones during deletes and garbage collect in a lazy manner. Important to achieve high concurrency.}
-
-% \john{Here's the stuff I want to write up. (1) Build dynamic hash tables with variable-length keys. I don't know how to do that but I know it's not really been done on GPUs. One possibility: Hash the \kmers and use the hash as the key into the hash table. Of course we can also look to natively support variable-sized keys. (2) Overlapping communication and on-GPU-hash-table operations, so we don't have periods with all-compute-no-communicate and all-communicate-no-compute. (3) Explore tradeoff between better load balance and cost of load balance. (4) Explore tradeoff between more locality and reduced hash table efficiency (this is basically ``can we reduce overall communication by trying to keep/move hash table entries to their home nodes, and does that help overall performance''). (5) Communication management, in particular bundling up small communications into larger ones to achieve better bandwidth.}
-
-% \prashant{All these points are great. Just to add one point.. we can say we will use locality-sensitive hashing and domain knowledge to smartly partition data to reduce communication volume.}
-
-% \noindent\john{\hrulefill{}}
-
 There are work-efficient algorithms for building building static, space-efficient, single-GPU, fixed-key-size hash tables~\cite{Awad:2023:AAI}.  However, scaling and improving the functionality of GPU hash tables to support the application workloads in this proposal presents several significant research challenges. In particular, we must address three important and orthogonal problems:
 
-\john{There is no theory in this section at all.}
-\rob{It's \emph{not} dynamic, but we have a body of work that relies on minimal perfect hashing. It might be nice to add a MPHF (construction and query) as a research objective to this section.}
+%\john{There is no theory in this section at all.} \rob{It's \emph{not} dynamic, but we have a body of work that relies on minimal perfect hashing. It might be nice to add a MPHF (construction and query) as a research objective to this section.}
 
 \begin{rproblem}
   Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values on GPUs.
@@ -59,13 +20,19 @@ There are work-efficient algorithms for building building static, space-efficien
   \label{rprob:dist-hashtable}
 \end{rproblem}
 
+These research problem are tailored to address issues in scaling hash tables for computational biology, and the solutions will be evaluated in that context.
+
 \subsection{Dynamic hash tables}
 
-While a large body of research has addressed building and querying static GPU hash tables, work on dynamic GPU hash tables~\cite{Ashkiani:2018:ADH,Junger:2020:WAL,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (our work~\cite{Ashkiani:2018:ADH} uses buckets of linked lists, each made of warp-wide slabs, as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be acceptable. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., \kmer storage) to vary widely over the runtime of one application, and existing methods are likely to perform poorly. In the CPU world, such rebuilding is common, and transparently handled in the background, but no such runtime capability is available in the GPU world. As well, existing work does not automatically reclaim memory on deletes, which is important in applications (such as \kmer analysis) that feature both insertions and deletes.
+While a large body of research has addressed building and querying static GPU hash tables, work on dynamic GPU hash tables~\cite{Ashkiani:2018:ADH,Junger:2020:WAL,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (work~\cite{Ashkiani:2018:ADH} by PIs Farach-Colton and Owens uses buckets of linked lists, each made of warp-wide slabs, as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be acceptable. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., \kmer storage) to vary widely over the runtime of one application, and existing methods are likely to perform poorly. In the CPU world, such rebuilding is common, and transparently handled in the background, but no such runtime capability is available in the GPU world. As well, existing work does not automatically reclaim memory on deletes, which is important in applications (such as \kmer analysis) that feature both insertions and deletes.
 
-\paragraph{Proposed approach}
 
-We propose to address these deficiencies (rebuilding for optimal sizing and reclaiming memory) by leveraging NVIDIA's MPS (``MultiProcessing Service'') capability to simultaneously run two applications. One application, and the one that will take most GPU resources, will be the hash table and its umbrella application. The second will be a small ``runtime'' application that uses modest resources and will rebuild and reclaim memory alongside the main application. This can be done without programmer intervention, without stopping the entire application to rebuild the data structure or reclaim memory, and most importantly, can reduce register usage for the main application by offloading its operations into the runtime and thus improve aggregate performance.
+
+
+\noindent\textbf{Proposed approach.}
+One promising approach (for mitigating the effects of rebuilding for optimal sizing and to reclaim memory) is to leverage  NVIDIA's MPS (``MultiProcessing Service'') capability to simultaneously run two applications. One application, and the one that will take most GPU resources, will be the hash table and its umbrella application. The second will be a small ``runtime'' application that uses modest resources and will rebuild and reclaim memory alongside the main application. This can be done without programmer intervention, without stopping the entire application to rebuild the data structure or reclaim memory, and most importantly, can reduce register usage for the main application by offloading its operations into the runtime and thus improve aggregate performance.
+
+Work by PIs Bender and Farach-Colton~\cite{iceberg,partitionhashing} explore theoretical approaches to performing fine-grain resizing of hash tables while minimizing the number of memory allocations.  Such approaches are a promising complement to the above for building resizable hash tables on the GPU.
 
 \subsection{Variable-length keys}
 
@@ -76,7 +43,7 @@ We propose to address these deficiencies (rebuilding for optimal sizing and recl
 We anticipate two directions of research that will allow us to provide the necessary support:
 
 \begin{itemize}[noitemsep,nolistsep,leftmargin=*]
-  \item The GPU's high computational capability likely makes it tractable to perform a large number of arithmetic operations on each key (as we noted in our 2011 static-hash-table work~\cite{Alcantara:2011:BAE}, ``we can run up to 1000 instructions per memory update and remain memory bound''). Thus we will investigate computing a hash function (e.g., MD5) on each key and use the (fixed-size) hash value as the key. If necessary, we can also store the keys themselves: modern GPU memory managers (e.g., Ouroboros~\cite{Winter:2020:OVQ}) maintain multiple pools of memory, each of which satisfies requests of different sizes. Again because of the bounded size of \kmers, we believe we can specialize a memory manager to only a few pools and yet still maintain high memory load factors.
+  \item The GPU's high computational capability likely makes it tractable to perform a large number of arithmetic operations on each key (as PI Owens noted in his 2011 static-hash-table work~\cite{Alcantara:2011:BAE}, ``we can run up to 1000 instructions per memory update and remain memory bound''). Thus we will investigate computing a hash function (e.g., MD5) on each key and use the (fixed-size) hash value as the key. If necessary, we can also store the keys themselves: modern GPU memory managers (e.g., Ouroboros~\cite{Winter:2020:OVQ}) maintain multiple pools of memory, each of which satisfies requests of different sizes. Again because of the bounded size of \kmers, we believe we can specialize a memory manager to only a few pools and yet still maintain high memory load factors.
   \item We also will study the design of a cascade of hash tables, where keys in the first hash table are the first 32 or 64 bits of the \kmer and the value associated with each key is a second hash table, whose keys represent the next 32 or 64 bits, and so on. This strategy would be impractical for arbitrary-length keys but for \kmers, with their bounded lengths, it appears to be feasible.
 \end{itemize}
 
@@ -86,7 +53,9 @@ GPU memory is modest in size and to scale up, rather than pay the high communica
 
 \noindent
 {\bf Proposed approach.}
-Thus we propose several directions that can help mitigate the potential performance issues of partitioning. First, we will build our application in a chunked and pipelined way so that we can simultaneously compute hash table keys for chunk $n+2$, use inter-GPU communication to be fetching values for chunk $n+1$, and process the results for chunk $n$. Such an approach is necessary to best use our computation and communication resources. Second, we will need to bundle up small-grained communications into larger packets and only send those packets when they are full to best use the full bandwidth of the communication resources. Finally, we will investigate distributed hash table strategies that allow us to trade off (i) better load-balance vs.\ the cost of that load balance and (ii) better locality vs.\ the penalty in hash table efficiency (for instance, locality-sensitive hashing techniques and domain-specific knowledge to place pieces of the hash table where they will most frequently be used).    Essentially, a random partition will give us excellent load balance and efficiency, but will result in a maximal amount of communication. We propose to relax (rather, explore the consequence of relaxing) ideal load balance and ideal efficiency to reduce overall communication volume. \draft{For example, domain-specific knowledge --- like the fact that temporally proximate queries tend to be made for similar or overlapping sequences --- means that partitioning based on minimizer~\cite{roberts2004reducing} or other winnowing-related~\cite{Mar_ais_2018,DeBlasio_2019,Dutta_2022} schemes may work well for our purposes.}
+Thus we propose several directions that can help mitigate the potential performance issues of partitioning. First, we will build our application in a chunked and pipelined way so that we can simultaneously compute hash table keys for chunk $n+2$, use inter-GPU communication to be fetching values for chunk $n+1$, and process the results for chunk $n$. Such an approach is necessary to best use our computation and communication resources. Second, we will need to bundle up small-grained communications into larger packets and only send those packets when they are full to best use the full bandwidth of the communication resources. Finally, we will investigate distributed hash table strategies that allow us to trade off (i) better load-balance vs.\ the cost of that load balance and (ii) better locality vs.\ the penalty in hash table efficiency (for instance, locality-sensitive hashing techniques and domain-specific knowledge to place pieces of the hash table where they will most frequently be used).    
+%We propose to relax (rather, explore the consequence of relaxing) ideal load balance and ideal efficiency to reduce overall communication volume. 
+For example, domain-specific knowledge --- such as the fact that temporally proximate queries tend to be made for similar or overlapping sequences --- means that partitioning based on minimizer~\cite{roberts2004reducing} or other winnowing-related~\cite{Mar_ais_2018,DeBlasio_2019,Dutta_2022} schemes may work well for our purposes.It would seem that a random partition would give us excellent load balance and efficiency, but would result in a maximal amount of communication, though this has not been established, and we will study the exact shape of this tradeoff curve, both in theory and practice.
 
 % \noindent\john{\hrulefill{}
 % I don't find anything under here relevant.

@@ -1,9 +1,9 @@
 \section{String data structures}
 
 %
-String pattern matching is one of the most common and most computationally intensive problem in computational biology.
+Pattern matching in strings is one of the most common and most computationally intensive tasks in computational biology.
 %
-String pattern matching is the problem of counting or locating occurrences of a query text pattern $P$ within a large database text $T$. While not limited to the analysis of biological sequences, string pattern matching is integral to many tasks in computational biology, including mapping sequence reads to a reference genome~\cite{li2009fast,langmead2009ultrafast}, sequence to graph alignment~\cite{Jain2020}, taxonomic classification~\cite{menzel2016fast,kim2016centrifuge}, sequencing error correction~\cite{huang2017efficient}, and seeding for sequence alignments~\cite{buchfink2015fast,altschul1990basic,steinegger2017mmseqs2}.
+Pattern matching is the problem of counting or locating occurrences of a query text pattern $P$ within a large database text $T$. Pattern matching is integral to many tasks in computational biology, including mapping sequence reads to a reference genome~\cite{li2009fast,langmead2009ultrafast}, sequence to graph alignment~\cite{Jain2020}, taxonomic classification~\cite{menzel2016fast,kim2016centrifuge}, sequencing error correction~\cite{huang2017efficient}, and seeding for sequence alignments~\cite{buchfink2015fast,altschul1990basic,steinegger2017mmseqs2}.
 
 The need for high-throughput pattern matching in computational biology has motivated numerous approaches including hashing, lookup tables, suffix arrays~\cite{manber1993suffix}, and compressed suffix array data structures such as the FM-index~\cite{ferragina2000opportunistic}, BOSS~\cite{Muggli2019} and positional-BWT~\cite{Durbin2014}.
 The FM-index is based on the Burrows-Wheeler transform (BWT)~\cite{burrows1994block}, a reversible text transform that was originally proposed for lossless data compression.   Recently, the spectral BWT~\cite{alanko2023small} (SBWT) was introduced as a succinct representation of \kmer sets (and hence, the de Bruijn graph) while being substantially faster to query than prior representations~\cite{Muggli2019}.
@@ -16,9 +16,9 @@ The use of the FM-index across applications is due to its fast performance and l
 %
 The FM-index is a static data structure. It saves space at the cost of updatability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updatability.
 %
-Constructing compressed string indexes like the BWT and FM-index is memory-intensive. Existing tools like BOSS~\cite{Bowe2012} and VARI~\cite{Muggli2019} use disks to mitigate the high memory requirements to construct a string index. They need to write out the intermediate results to disk and page them back and forth. This results in suboptimal construction speed.
+Constructing compressed string indexes such as the BWT and FM-index is memory-intensive. Existing tools such as BOSS~\cite{Bowe2012} and VARI~\cite{Muggli2019} use disks to mitigate the high memory requirements to construct a string index. They need to write out the intermediate results to disk and page them back and forth. This results in suboptimal construction speed.
 %
-Furthermore, so far GPUs are not utilized to scale up sequence-to-sequence alignment and sequence-to-graph alignment. Existing data structures are designed for single-node CPUs. Also, sequence-to-graph alignment algorithms do not scale out to distributed memory to support large-scale pangenomics graphs. \rob{This last paragraph sort of comes out of nowhere. We are talking about string indexes, and then all of a sudden we are talking about alignment and graph alignment. I think we need to make this fit better if we want to keep it.}
+
 
 \begin{rproblem}
 Develop an algorithm to efficiently support adding and deleting strings in an FM-index.
@@ -39,6 +39,8 @@ Build a GPU-implementation of the dynamic FM-index.
 % Extend FM-index and P-BWT to GPUs to accelerate sequence alignment.
 % \end{rproblem}
 
+Furthermore, so far GPUs are not utilized to scale up sequence-to-sequence alignment and sequence-to-graph alignment. Existing data structures are designed for single-node CPUs. Also, sequence-to-graph alignment algorithms do not scale out to distributed memory to support large-scale pangenomics graphs. 
+
 \begin{rproblem}
 Build a sequence-to-sequence and sequence-to-graph alignment library for GPUs.
 \end{rproblem}
@@ -49,7 +51,7 @@ Design and build a sequence to graph alignment library for GPUs in distributed-m
 
 \paragraph{Proposed approach.}
 
-We plan to extend FM-index, P-BWT\draft{, and SBWT} data structures using a new framework for dynamic data structures for string processing~\cite{Nicola17,Farzan2011}. Our plan is to make the underlying bit vector representation dynamic and support efficient rank and select queries on dynamic bit vectors~\cite{Raman2001}.
+We plan to extend FM-index, P-BWT, and SBWT data structures using a new framework for dynamic data structures for string processing~\cite{Nicola17,Farzan2011}. Our plan is to make the underlying bit vector representation dynamic and support efficient rank and select queries on dynamic bit vectors~\cite{Raman2001}.
 To reduce the memory requirements during the construction of these data structures, we plan to employ new memory-efficient algorithms to construct succinct string representations. Specifically, a recent result from PI Farach-Colton~\cite{Assadi2023} shows how to build a monotone minimal perfect hash (MMPH) in $\theta(n \log{\log{\log u}})$ space, where $u$ is the universe size.
 %
 PI Farach-Colton devised the first linear-time algorithm to construct the suffix array and it serves as the basis for all modern suffix array data structures and Burrows-Wheeler transform (BWT) data structures~\cite{Farach97,Ambainis97}. Furthermore, a recent result from PIs Bender and Farach-Colton shows how to build a tiny pointer using $o(\log{n})$-bits for a dynamic set~\cite{Bender2023}. Our plan is to build dynamic succinct string dictionaries using the tiny pointer technique. Our other PIs also have experience in this space:

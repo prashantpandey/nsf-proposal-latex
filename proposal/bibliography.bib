@@ -25885,13 +25885,31 @@ Biasing, Compression, and Decoupled Logical Sparsity},
 	title = {BF-tree: approximate tree indexing},
 	year = {2014}}
 
-@misc{iceberg,
-	archiveprefix = {arXiv},
-	author = {Michael A. Bender and Alex Conway and Mart{\'\i}n Farach-Colton and William Kuszmaul and Guido Tagliavini},
-	eprint = {2109.04548},
-	primaryclass = {cs.DS},
-	title = {All-Purpose Hashing},
-	year = {2021}}
+@article{iceberg,
+  author       = {Michael A. Bender and
+                  Alex Conway and
+                  Martin Farach{-}Colton and
+                  William Kuszmaul and
+                  Guido Tagliavini},
+  title        = {Iceberg Hashing: Optimizing Many Hash-Table Criteria at Once},
+  journal      = {J. {ACM}},
+  volume       = {70},
+  number       = {6},
+  pages        = {40:1--40:51},
+  year         = {2023}
+}
+
+@inbook{partitionhashing,
+author = {Michael A. Bender and Martín Farach-Colton and John Kuszmaul and William Kuszmaul},
+title = {Modern Hashing Made Simple},
+booktitle = {2024 Symposium on Simplicity in Algorithms (SOSA)},
+chapter = {},
+pages = {363-373},
+doi = {10.1137/1.9781611977936.33},
+URL = {https://epubs.siam.org/doi/abs/10.1137/1.9781611977936.33},
+eprint = {https://epubs.siam.org/doi/pdf/10.1137/1.9781611977936.33},
+    abstract = { Abstract Modern work on hashing has led to hash tables with extraordinary guarantees. However, these data structures are too complex to be taught in (even an advanced) data structures course. In this paper, we show that this need not be the case: using standard machinery that we already teach, one can construct a simple hash table that offers guarantees much stronger than what are classically taught: • Operations are O(1)-time with high probability; • The hash table stores n k-bit items in nk + O(n log log n) bits of space; • The hash table is dynamically resized, so the space bound holds with respect to the current size n at each time step. }}
+
 
 @inproceedings{LiAn14,
   author       = {Li, Xiaozhou and Andersen, David G. and Kaminsky,
@@ -26724,3 +26742,19 @@ pages = {319--320},
   pages        = {1946--1952},
   year         = {2021}
 }
+
+@article{DBLP:journals/pacmmod/ConwayFJ23,
+  author       = {Alex Conway and
+                  Martin Farach{-}Colton and
+                  Rob Johnson},
+  title        = {SplinterDB and Maplets: Improving the Tradeoffs in Key-Value Store
+                  Compaction Policy},
+  journal      = {Proc. {ACM} Manag. Data},
+  volume       = {1},
+  number       = {1},
+  pages        = {46:1--46:27},
+  year         = {2023}
+}
+
+
+
