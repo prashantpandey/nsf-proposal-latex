@@ -60,33 +60,39 @@ GPUs are fast, they are space constrained.  Therefore, we need new data structur
 The kernels are:
 
 
-\begin{itemize}[leftmargin=*,noitemsep,nolistsep]
+\begin{itemize}[leftmargin=*,nolistsep]
+%\begin{itemize}[leftmargin=*,noitemsep,nolistsep]
 \item \textbf{\Kmer analysis.}
 \Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \defn{\boldkmers}, and performing analysis on the occurrence, frequency (and sometimes locations) of \kmers in the data sets; the objective is to answer questions about their genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc.~\cite{wood2014kraken,GeorganasEHG18,hofmeyr2020terabase,solomon2016fast,PatroSailfish:2014,PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b}.
 
-Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as \defn{approximate} if they  have only false positives and \defn{lossy} if they can have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \Kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc.) about the \kmers~\cite{hofmeyr2020terabase}. When the metadata is coherent, this can often be exploited to allow much more space-efficient indexing, at least in the static case~\cite{pibiri2022sparse,pibiri2023weighted,fan2023spt,fan2023fulgor}.
+ \medskip
 
-As we will see, \kmer analysis is a key part of several of the specific applications we will be addressing. \mab{can somebody (else) name these? Alice, Bob, Eve?}
+Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as \defn{approximate} if they  have only false positives and \defn{lossy} if they can have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \Kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc.) about the \kmers~\cite{hofmeyr2020terabase}. When the metadata is coherent, this can often be exploited to allow much more space-efficient indexing, at least in the static case~\cite{pibiri2022sparse,pibiri2023weighted,fan2023spt,fan2023fulgor}.
+As we will see, \kmer analysis is a key part of several of the specific applications we will be addressing. 
+%\mab{can somebody (else) name these? Alice, Bob, Eve?}
 
 % \item \textbf{Compressed indexes.}
 % FM-index, BWT, comressed suffix array.
 
 \item \textbf{Sequence alignment.} Sequence alignment involves aligning sequences of DNA, RNA, or protein to identify similar regions that may be a consequence of underlying biological process and to establish evolutionary relationships.
-Sequence alignment is used extensively in reference-based analyses, in which sequencing data is aligned against one or more reference genomes, as well as in genomic and metagenomic assembly to map contigs back to the raw sequencing reads to extend the contigs in the correct order to construct the full genome. In computational biology applications, sequence alignment is often performed sequence to sequence; between multiple sequences (\emph{multiple sequence alignment}); and from a sequence to graph where the the graph is a sequence graph representing genomes from multiple individuals.
+Sequence alignment is used extensively in reference-based analyses, in which sequencing data is aligned against one or more reference genomes, as well as in genomic and metagenomic assembly to map contigs back to the raw sequencing reads to extend the contigs in the correct order to construct the full genome. In computational biology applications, sequence alignment is often performed sequence to sequence; among multiple sequences (\emph{multiple sequence alignment}); and from a sequence to graph where the  graph is a \defn{sequence graph} representing genomes from multiple individuals.
 
-Existing tools use compressed and succinct string indexes such as the BWT~\cite{burrows1994block} and FM-index~\cite{ferragina2000opportunistic}, the r-index~\cite{gagie2018optimal}, compressed suffix arrays~\cite{grossi2000compressed}, and several hashing-based schemes based on \kmers, minimizers, or other types of designed ``seeds''~\cite{li2018minimap2,pibiri2022sparse,sahlin2022strobealign}, as well as dynamic programming algorithms for sequence alignment.
+\medskip
+Existing tools use compressed and succinct string indexes such as the BWT~\cite{burrows1994block} and FM-index~\cite{ferragina2000opportunistic}, the r-index~\cite{gagie2018optimal}, compressed suffix arrays~\cite{grossi2000compressed}, and several hashing-based schemes based on \kmers, minimizers, or other types of designed ``seeds''~\cite{li2018minimap2,pibiri2022sparse,sahlin2022strobealign}, as well as dynamic-programming algorithms for sequence alignment.
 Compressed and succinct indexes support efficient ``seed'' lookup, which vastly reduces the set of candidate locations where a high-quality alignment might occur, and help to perform sequence alignment in a memory-efficient manner and enable these tool to scale to large volumes of data.
 One of the most widely used tools across computational biology, BLAST~\cite{altschul1990basic}, performs fast and efficient sequence alignment using such string indexes.
-\mab{Shorten, or just improve writing on bullets}
+%\mab{Shorten, or just improve writing on bullets}
 %Given the large sizes of sequencing datasets, these tools also use hash-based \kmer indexes to seed the sequence alignment to achieve speedups.
 \end{itemize}
 
 \noindent
 This toolbox is used, for example, to solve the following problems.
 
-\begin{itemize}[leftmargin=*]
+\begin{itemize}[leftmargin=*,nolistsep]
 
 \item \textbf{Taxonomic classification.} Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial \mfc{only microbial?} taxa present in large-scale metagenomic and microbiome datasets coming from complex biological and environmental samples by assigning a taxonomic label to each sequencing read. This plays an important role of many computational genomics pipelines for metagenomics projects, and is closely tied to the related problem of taxonomic abundance estimation (determining the taxonomic composition of a sequencing sample)~\cite{truong2015metaphlan2,skoufos2022agamemnon,wei2022kmcp}.
+
+\medskip
 
 Methods for taxonomic classification of metagenomic data~\cite{wood2014kraken} often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
 Furthermore, to save space, many solutions~\cite{wood2019improved} also employ approximate sketches (e.g., locality sensitive hashing (LSH)~\cite{roberts2004reducing}) to represent metagenomic data and perform similarity computations over sketches or reduced representations of the data~\cite{Shaw2023}.
@@ -94,7 +100,11 @@ Some approaches~\cite{kim2016centrifuge} employ compact string indexes such as t
 
 \item \textbf{Raw sequence search.} Raw sequence search involves identifying all sequencing samples that contain a given query sequence in a database of raw sequencing data, such as SRA~\cite{kodama2012sequence}. A query is an arbitrary sequence, such as a gene transcript, or viral genome. Though common genomics processing pipelines extract and condense useful information (e.g., genomic variants, transcript abundance, etc.) from raw sequencing data, current solutions often eliminate unexpected signal or diversity (e.g., specific viral or microbial reads that might be present across many samples~\cite{Edgar2022}). \mfc{to be clear: this is a false-negative issue, not a performance issue}
 
+\medskip
+
 Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples where the \kmer is present. Tools such as SSBT~\cite{solomon2016fast} build a tree of approximate \kmer indexes to quickly prune down the search space of samples. Other tools include:  Mantis~\cite{PandeyABFJP18Cell}, which builds an exact inverted index that uses compact hash tables; or Metagraph~\cite{Karasikov2020}, which uses a \kmer-index based on a succinct representation of the de Bruijn Graph~\cite{bowe2012succinct}.
+
+\medskip
 
 In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers.
 
@@ -104,6 +114,8 @@ In raw sequencing data, singleton \kmers are most likely caused by sequencing er
 
 \item \textbf{Pangenomics.}
 Pangenomics~\cite{garrison2018variation} involves representing the biological variation represented within and across populations of individual organisms belonging to a species or group.  The most popular approaches to pangenomics store the genome of a species as a sequence graph consisting of genomes of multiple individuals (or multiple major haplotype groups) instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
+
+\medskip
 
 Existing tools for constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{garrison2018variation}), space-efficient, dynamic hash tables, and string data structures~\cite{pandey2021variantstore}.
 
