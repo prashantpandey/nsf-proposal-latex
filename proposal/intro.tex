@@ -41,17 +41,28 @@ Specifically, the scale of the data is such that two main problems arise \textbf
 
 %
 
-In this project, we aim to build high-performance and scalable data-analyses pipelines for computational biology applications.  To do so, we will address the main computational bottlenecks that are at the core of many existing systems by developing new massively parallel and distributed data structures and algorithms for common and widely-needed computational biology data-processing tasks. We believe that, if successful, our efforts will address the fundamental problems described above, \emph{enabling certain heretofore intractable analyses}, and \emph{vastly reducing (by an order of magnitude or more) the key computational costs associated with some of the most common data analyses}. For concreteness, we consider the following two raw data analysis ``kernels''
-\mab{Replace tools with more specific word. Are these tools?}
-that are used broadly throughout computational biology.
+In this project, we aim to build high-performance and scalable data-analyses pipelines for computational biology applications.  To do so, we will address the main computational bottlenecks that are at the core of many existing systems by developing new massively parallel and distributed data structures and algorithms for common and widely-needed computational biology data-processing tasks. We aim to address the fundamental problems described above, \emph{enabling certain heretofore intractable analyses}, and \emph{vastly reducing (by an order of magnitude or more) the key computational costs associated with some of the most common data analyses}. 
+%
+Central to our approach is to leverage the massive parallelism of GPUs. The challenge with (clusters of) GPUs  is that dynamic data structures have traditionally  been difficult to design and implement GPUs, indeed, even on single GPUs. 
+Furthermore, the scale of comp.~bio.~applications are such that scale out to multiple, distributed GPUs will be necessary in this setting.
+See Section~\ref{xxx} for specifics.  
 
-\mab{say, explicitly, and or provide evidence that these are actually bottlenecks.  maybe here or maybe in the applications}
 
-\prashant{1. We need to be faster and bigger. 2. There's a relatively small set of data structure that are bottleneck for multiple applications. 3. If we make these data structures faster and smaller it will have widespread impact. 4. We have additional source of computational power (GPU) that PIs already have experience with. 5. GPUs are fast but are constrained in space. 6. Therefore, we need new data structures and algorithms that are space efficient and scalable to the CPU RAM to speed up these applications. 7. We are the perfect team to this. We already have experience with GPUs, core algorithms and data structures, computational biology, and everyone in the team has worked together for years.}
+\noindent\textbf{The team.} The team has an rare combination of skills needed for this proposal.  \emph{We are a tightly coupled team:}  All of the PIs have written multiple papers with other PIs, and we have 18 published papers, each authored by at least three  of the PIs.
+%three of the PIs have published papers with at least three other PIs.  
+\emph{The proposed work is in our main area of expertise:} Every PI has published in HPC, Comp. Bio. and Algorithms.  One of the PIs is a world leader in GPUs, two of the PIs are world leaders in Comp. Bio. and two  of the PIs are world leaders in the theory of data structures.  All of us have as a main thrust of our research the transfer of theoretical results in data structures to practice, especially in HPC settings.  Three of us have particular expertise in implementing sophisticated data structures on GPUs.
 
-\begin{itemize}[leftmargin=*]
+\noindent\textbf{The target of opportunity.}
+We identify two raw data analysis ``kernels''
+that are used broadly throughout computational biology.  These kernels are bottlenecks in many comp.~bio.~workflows, so making them faster and scaling them to larger data sets will have widespread impact. GPUs offer an avenue to scaling these data structures.  And while 
+GPUs are fast, they are space constrained.  Therefore, we need new data structures and algorithms that are space efficient to speed up these applications.  
+
+The kernels are:
+
+
+\begin{itemize}[leftmargin=*,noitemsep,nolistsep]
 \item \textbf{\Kmer analysis.}
-\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \kmers, and performing analysis on the occurrence, frequency (and sometimes locations) of \kmers in the data sets; the objective is to answer questions about their genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc.~\cite{wood2014kraken,GeorganasEHG18,hofmeyr2020terabase,solomon2016fast,PatroSailfish:2014,PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b}.
+\Kmer analysis involves representing raw sequencing data as length-$k$ subsequences called \defn{\boldkmers}, and performing analysis on the occurrence, frequency (and sometimes locations) of \kmers in the data sets; the objective is to answer questions about their genomic diversity, abundance variance, taxonomic information, etc. \Kmer analysis is the first step in numerous computational biology pipelines, e.g., error correction, de Bruijn graph construction, raw sequence search, digital normalization, comparative genomics, genomics assembly, transcript quantification, taxonomic classification of metagenomic reads, etc.~\cite{wood2014kraken,GeorganasEHG18,hofmeyr2020terabase,solomon2016fast,PatroSailfish:2014,PandeyABFJP18Cell,PandeyBJP17a,PandeyBJP17b}.
 
 Existing tools use both  approximate\footnote{In this proposal, we refer to data structures as approximate if they only have false positives and lossy if they have false negatives.} and exact data structures (e.g., filters vs.\ hash tables) to construct and store \kmer indexes~\cite{MarccaisKi11,PandeyBJP17a}.  \Kmer analysis tools such as  Jellyfish~\cite{MarccaisKi11} use a compact filter to identify singleton \kmers and use a hash table to maintain the frequency count and associated metadata (e.g., prefix-suffix extension, read id, etc.) about the \kmers~\cite{hofmeyr2020terabase}. When the metadata is coherent, this can often be exploited to allow much more space-efficient indexing, at least in the static case~\cite{pibiri2022sparse,pibiri2023weighted,fan2023spt,fan2023fulgor}.
 
