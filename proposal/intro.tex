@@ -78,6 +78,7 @@ As we will see, \kmer analysis is a key part of several of the specific applicat
 Sequence alignment is used extensively in reference-based analyses, in which sequencing data is aligned against one or more reference genomes, as well as in genomic and metagenomic assembly to map contigs back to the raw sequencing reads to extend the contigs in the correct order to construct the full genome. In computational biology applications, sequence alignment is often performed sequence to sequence; among multiple sequences (\emph{multiple sequence alignment}); and from a sequence to graph where the  graph is a \defn{sequence graph} representing genomes from multiple individuals.
 
 \medskip
+
 Existing tools use compressed and succinct string indexes such as the BWT~\cite{burrows1994block} and FM-index~\cite{ferragina2000opportunistic}, the r-index~\cite{gagie2018optimal}, compressed suffix arrays~\cite{grossi2000compressed}, and several hashing-based schemes based on \kmers, minimizers, or other types of designed ``seeds''~\cite{li2018minimap2,pibiri2022sparse,sahlin2022strobealign}, as well as dynamic-programming algorithms for sequence alignment.
 Compressed and succinct indexes support efficient ``seed'' lookup, which vastly reduces the set of candidate locations where a high-quality alignment might occur, and help to perform sequence alignment in a memory-efficient manner and enable these tool to scale to large volumes of data.
 One of the most widely used tools across computational biology, BLAST~\cite{altschul1990basic}, performs fast and efficient sequence alignment using such string indexes.
@@ -94,23 +95,29 @@ This toolbox is used, for example, to solve the following problems.
 
 \medskip
 
-Methods for taxonomic classification of metagenomic data~\cite{wood2014kraken} often use hash tables to index the \kmer content of samples and quickly compare samples to prune down the search space.
+Methods for taxonomic classification of metagenomic data~\cite{wood2014kraken} often use hash tables to index the \kmer content of samples and quickly compare samples to prune the search space.
 Furthermore, to save space, many solutions~\cite{wood2019improved} also employ approximate sketches (e.g., locality sensitive hashing (LSH)~\cite{roberts2004reducing}) to represent metagenomic data and perform similarity computations over sketches or reduced representations of the data~\cite{Shaw2023}.
-Some approaches~\cite{kim2016centrifuge} employ compact string indexes such as the FM-index~\cite{ferragina2000opportunistic} to perform sequence comparison to determine exact matches among the pruned-down samples. \mfc{which of these are bottlenecks?} \rob{to Martin's point/question --- there are \emph{many} different tools for taxonomic classification using different indexing strategies. Kraken (and Kraken2) are likely the most popular and use k-mer / minimizer hashing-based approaches. However, other pipelines like centrifuge and the recent Centrifuger use the FM-index or r-index. They provide different tradeoffs. Do we want to specifically lean into one here, or claim that we will tackle both?}.
-
-\item \textbf{Raw sequence search.} Raw sequence search involves identifying all sequencing samples that contain a given query sequence in a database of raw sequencing data, such as SRA~\cite{kodama2012sequence}. A query is an arbitrary sequence, such as a gene transcript, or viral genome. Though common genomics processing pipelines extract and condense useful information (e.g., genomic variants, transcript abundance, etc.) from raw sequencing data, current solutions often eliminate unexpected signal or diversity (e.g., specific viral or microbial reads that might be present across many samples~\cite{Edgar2022}). \mfc{to be clear: this is a false-negative issue, not a performance issue}
+Some approaches~\cite{kim2016centrifuge} employ compact string indexes such as the FM-index~\cite{ferragina2000opportunistic} to perform sequence comparison to determine exact matches among the pruned samples. There are many different tools for taxonomic classification.  Although they different in the details of their bottlenecks, they share some features: they are all bottlenecked around some aspect of $k$-mer analysis, especially around compression schemes for $k$-mer analysis.
+%\mfc{which of these are bottlenecks?} \rob{to Martin's point/question --- there are \emph{many} different tools for taxonomic classification using different indexing strategies. Kraken (and Kraken2) are likely the most popular and use k-mer / minimizer hashing-based approaches. However, other pipelines like centrifuge and the recent Centrifuger use the FM-index or r-index. They provide different tradeoffs. Do we want to specifically lean into one here, or claim that we will tackle both?}.
 
 \medskip
 
-Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples where the \kmer is present. Tools such as SSBT~\cite{solomon2016fast} build a tree of approximate \kmer indexes to quickly prune down the search space of samples. Other tools include:  Mantis~\cite{PandeyABFJP18Cell}, which builds an exact inverted index that uses compact hash tables; or Metagraph~\cite{Karasikov2020}, which uses a \kmer-index based on a succinct representation of the de Bruijn Graph~\cite{bowe2012succinct}.
+\item \textbf{Raw sequence search.} Raw sequence search involves identifying all sequencing samples that contain a given query sequence in a database of raw sequencing data, such as SRA~\cite{kodama2012sequence}. A query is an arbitrary sequence, such as a gene transcript, or viral genome. Though common genomics processing pipelines extract and condense useful information (e.g., genomic variants, transcript abundance, etc.) from raw sequencing data, current solutions often eliminate unexpected signal or diversity (e.g., specific viral or microbial reads that might be present across many samples~\cite{Edgar2022}). 
+%\mfc{to be clear: this is a false-negative issue, not a performance issue}
+
+\medskip
+
+Methods for raw sequence search use \kmer-based indexing tools to build an inverted index from the \kmers to the underlying samples where the \kmer is present. Tools such as SSBT~\cite{solomon2016fast} build a tree of approximate \kmer indexes to quickly prune the search space of samples. Other tools include:  Mantis~\cite{PandeyABFJP18Cell}, which builds an exact inverted index that uses compact hash tables; or Metagraph~\cite{Karasikov2020}, which uses a \kmer-index based on a succinct representation of the de Bruijn Graph~\cite{bowe2012succinct}.
 
 \medskip
 
 In raw sequencing data, singleton \kmers are most likely caused by sequencing errors, yet they make up a large fraction of the data~\cite{solomon2016fast,MarccaisKi11}. These tools often use filters to weed out singleton \kmers.
 
-\mfc{I still don't know what the bottleneck is.}
+%\mfc{I still don't know what the bottleneck is.}
 
-\mab{So far, the proposal does a great job of convincing people that we are experts. And that requires most of the real estate. What still needs to happen is (1) we need to convince the reader that actual pain is experienced, and (2) we need to convince the reader that we have a solution to this pain. Only a small number of additional sentences, but necessary ones. We haven't even mentioned GPUs as a possible solution.}
+%\mab{So far, the proposal does a great job of convincing people that we are experts. And that requires most of the real estate. What still needs to happen is (1) we need to convince the reader that actual pain is experienced, and (2) we need to convince the reader that we have a solution to this pain. Only a small number of additional sentences, but necessary ones. We haven't even mentioned GPUs as a possible solution.}
+
+\medskip
 
 \item \textbf{Pangenomics.}
 Pangenomics~\cite{garrison2018variation} involves representing the biological variation represented within and across populations of individual organisms belonging to a species or group.  The most popular approaches to pangenomics store the genome of a species as a sequence graph consisting of genomes of multiple individuals (or multiple major haplotype groups) instead of a single linear reference. A primary goal of pangenomic variation analysis is to avoid biases that arise when treating a single genome as the reference when identifying or comparing variants across samples in a population.
@@ -123,7 +130,7 @@ Existing tools for constructing a pangenomic graph use a combination of succinct
 
 \end{itemize}
 
-\mfc{this sounds like software engineering.  why is there a technical problem?   are we just having them pay for us to build stuff that no one has gotten around to building?  Still no discussion of what the challenges are.}
+%\mfc{this sounds like software engineering.  why is there a technical problem?   are we just having them pay for us to build stuff that no one has gotten around to building?  Still no discussion of what the challenges are.}
 
 Our goal 
 is to build tools for performing complex biological analyses at the scale of terabytes and petabytes, for datasets that are available today, and beyond, for the datasets of the future. For example, raw sequencing data from SRA~\cite{kodama2012sequence} is already at petabyte scale, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase} are hundreds of terabytes, and pangenomic data from the 100,000 Genome Project~\cite{1002021100} are sequencing individuals at population scale. To quickly process and perform biological analysis on these data we will exploit the massive computing in modern GPUs (e.g., NVIDIA's Tesla V100 and A100) and also the distributed computing infrastructure of supercomputers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}).
@@ -147,10 +154,12 @@ underlying data structures they use. These data structures are also the building
 \end{wrapfigure}
 
 
+\mfc{this next paragraph feels redundant.  PRashant, do we just kill it?}
 \paragraph{Existing software tools for computational biology applications.}
-
-There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
+%\sout
+{There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
 These existing tools are limited by single-node compute and shared-memory parallelism. They are not designed to scale to thousands of cores on modern accelerators nor scale out to hundreds to nodes in a high-performance computing (HPC) environment.
+}
 %
 
 
@@ -184,7 +193,7 @@ These limitations affect the capabilities of GPU data structures: most existing 
 
 These limitations are critical for building scalable computational biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification, the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures (such as filters and hash tables) to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as hash tables and filters~\cite{Geil:2018:QFA} currently available on GPUs are sized using an overapproximation of the number of \kmers, which leads to space inefficiency.
 Similarly, the local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to perform contig (contiguous strand of DNA) extension walks. The CPU implementation of local assembly relies heavily on dynamic
-structures like hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing this module on GPUs a very challenging problem.
+structures such as hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing this module on GPUs a very challenging problem.
 
 % \begin{wrapfigure}{r}{0.45\textwidth}
 % \centering
@@ -205,7 +214,7 @@ structures like hash tables, vectors and strings, which are a challenge to imple
 Data structures are the core of computational biology applications and are critical for their performance and scalability.
 To build scalable computational biology applications that can keep up with the rapid growth data we need compact, high-performance, dynamic, and distributed data structures. Specifically, we need: (1) approximate data structures such as filters, sketches, and locality-sensitive hashing data structures; and (2) exact data structures such as hash tables, string data structures, succinct data structures, and trees.
 
-These data structures and algorithms will need to exploit accelerators such as GPUs to scale up computations and at the same time support  features like space-efficiency, dynamism, high concurrency, scaling out of GPU device RAM to host RAM, and distributed memory design to scale out to multiple nodes.
+These data structures and algorithms will need to exploit accelerators such as GPUs to scale up computations and at the same time support  features such as space-efficiency, dynamism, high concurrency, scaling out of GPU device RAM to host RAM, and distributed memory design to scale out to multiple nodes.
 %
 Furthermore, to achieve fine-grained resizing and to keep the peak memory usage low, we first need to develop new algorithmic approaches for traditional CPU data structures and then extend them to GPUs.
 
@@ -311,7 +320,7 @@ Most existing applications in computational biology use CPUs to perform data  an
 However, the growth of the CPU speed and capacity is slowing and at the same time data is growing faster than ever. CPU growth will not keep up with application demands.
 
 As a consequence, a few recent tools~\cite{cite-something} have tried to scale
-up using accelerators like GPUs to speed up computations. However, these tools
+up using accelerators such as GPUs to speed up computations. However, these tools
 use only primitive data structures and as a result achieve suboptimal
 performance. Some applications [cite] have also tried to scale out using
 distributed memory.  However, these applications are still limited by the CPU
