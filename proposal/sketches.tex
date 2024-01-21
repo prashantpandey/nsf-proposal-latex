@@ -1,3 +1,5 @@
+%!TEX root =  proposal.tex
+
 \section{Sketches}
 
 Measuring sequence similarity is at the core of many algorithms in computational biology~\cite{Myers2000, Langmead2012,Li2010}. Computing sequence similarity via optimal alignment is computationally intensive and requires an $O(n^2)$-time solution for two sequences of length $n$, in the worst case.  For highly divergent sequences, faster algorithms~\cite{MarcoSola2023} are known, and some have been implemented on the GPU~\cite{AguadoPuig2023}. However, due to the sheer size of datasets available today in terms of both complete and draft assemblies (e.g., metagenomic assemblies in RefSeq~\cite{RefSeq}) and raw sequences in SRA~\cite{SRA}, computing sequence similarities using traditional algorithms --- even the most efficient variants --- is not feasible.
