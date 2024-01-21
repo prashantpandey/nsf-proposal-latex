@@ -139,10 +139,6 @@ The computational biology applications described above (and numerous others)  us
 Compact and exact data structures include: hash tables and succinct bit vectors, compressed string indexes, and trees.
 Sketches and approximate data structures include: filters, cardinality estimators,  min-hash based sketches, and other locality-sensitive hash data structures.
 
-The performance and scalability of the computational biology applications
-depends on the space-efficiency, speed, dynamism, and scalability of the
-underlying data structures they use. These data structures are also the building blocks in many other domains, such as databases, machine learning, software systems, and security applications.
-
 % \setlength\intextsep{0pt}
 \begin{wrapfigure}{R}{0.6\textwidth}
 % \begin{figure}
@@ -153,10 +149,17 @@ underlying data structures they use. These data structures are also the building
 % \end{figure}
 \end{wrapfigure}
 
+The performance and scalability of the computational biology applications
+depends on the space-efficiency, speed, dynamism, and scalability of the
+underlying data structures they use. These data structures are also the building blocks in many other domains, such as databases, machine learning, software systems, and security applications.
+
+
+
 
 \mfc{this next paragraph feels redundant.  PRashant, do we just kill it?}
+
 \paragraph{Existing software tools for computational biology applications.}
-%\sout
+\sout
 {There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
 These existing tools are limited by single-node compute and shared-memory parallelism. They are not designed to scale to thousands of cores on modern accelerators nor scale out to hundreds to nodes in a high-performance computing (HPC) environment.
 }
@@ -268,9 +271,6 @@ The cross-cutting concerns of particular interest to the PPoSS program are well-
 
 \iffalse
 ==========
-
-
-
 \begin{itemize}[noitemsep, leftmargin=*]
   \item \textbf{Module 1 [theory/algorithms]:} Develop single-node GPU data structures.
     Specifically, filters, hash tables, succinct/string data structures, and
