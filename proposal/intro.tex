@@ -17,7 +17,6 @@
 \section{Introduction}
 \label{intro}
 
-
 % \subsection{Problem}
 
 % \mab{proposal format has too much white space between paragraphs...}
@@ -41,11 +40,11 @@ Specifically, the scale of the data is such that two main problems arise \textbf
 
 %
 
-In this project, we aim to build high-performance and scalable data-analyses pipelines for computational biology applications.  To do so, we will address the main computational bottlenecks that are at the core of many existing systems by developing new massively parallel and distributed data structures and algorithms for common and widely-needed computational biology data-processing tasks. We aim to address the fundamental problems described above, \emph{enabling certain heretofore intractable analyses}, and \emph{vastly reducing (by an order of magnitude or more) the key computational costs associated with some of the most common data analyses}. 
+In this project, we aim to build high-performance and scalable data-analyses pipelines for computational biology applications. To do so, we will address the main computational bottlenecks that are at the core of many existing systems by developing new massively parallel and distributed data structures and algorithms for common and widely-needed computational biology data-processing tasks. We aim to address the fundamental problems described above, \emph{enabling certain heretofore intractable analyses}, and \emph{vastly reducing (by an order of magnitude or more) the key computational costs associated with some of the most common data analyses}. 
 %
 Central to our approach is to leverage the massive parallelism of GPUs. The challenge with (clusters of) GPUs  is that dynamic data structures have traditionally  been difficult to design and implement GPUs, indeed, even on single GPUs. 
 Furthermore, the scale of comp.~bio.~applications are such that scale out to multiple, distributed GPUs will be necessary in this setting.
-See Section~\ref{xxx} for specifics.  
+See Section~\Cref{sec:multigpu} for specifics.  
 
 
 \noindent\textbf{The team.} The team has an rare combination of skills needed for this proposal.  \emph{We are a tightly coupled team:}  All of the PIs have written multiple papers with other PIs, and we have 18 published papers, each authored by at least three  of the PIs.
@@ -126,7 +125,7 @@ Pangenomics~\cite{garrison2018variation} involves representing the biological va
 
 Existing tools for constructing a pangenomic graph use a combination of succinct data structures (e.g., compressed bit vectors~\cite{garrison2018variation}), space-efficient, dynamic hash tables, and string data structures~\cite{pandey2021variantstore}.
 
-\prashant{Talk about Metahipmer here.}
+% \prashant{Talk about Metahipmer here.}
 
 \end{itemize}
 
@@ -156,13 +155,13 @@ underlying data structures they use. These data structures are also the building
 
 
 
-\mfc{this next paragraph feels redundant.  PRashant, do we just kill it?}
+% \mfc{this next paragraph feels redundant.  PRashant, do we just kill it?}
 
-\paragraph{Existing software tools for computational biology applications.}
-\sout
-{There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
-These existing tools are limited by single-node compute and shared-memory parallelism. They are not designed to scale to thousands of cores on modern accelerators nor scale out to hundreds to nodes in a high-performance computing (HPC) environment.
-}
+% \paragraph{Existing software tools for computational biology applications.}
+% \sout
+% {There are numerous tools for \kmer counting~\cite{MarccaisKi11,PandeyBJP17a}, sequence alignment~\cite{altschul1990basic,kielbasa2011adaptive,li2018minimap2,schwartz2003human}, raw sequence search~\cite{solomon2016fast,PandeyABFJP18Cell}, taxonomic classification~\cite{wood2014kraken,wood2019improved}, and pangenomics~\cite{garrison2018variation,pandey2021variantstore}. These tools rely on space-efficient and high-performance CPU data structures such as filters, sketches, hash tables, and string indexes. Most of these tools are designed for shared-memory parallelism and they often do not scale out of shared memory to disks.
+% These existing tools are limited by single-node compute and shared-memory parallelism. They are not designed to scale to thousands of cores on modern accelerators nor scale out to hundreds to nodes in a high-performance computing (HPC) environment.
+% }
 %
 
 
@@ -174,6 +173,7 @@ Although CPU performance is increasing at 2--25\%/year and single-node RAM sizes
 Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible on single-node shared-memory systems.
 
 As mentioned by Leiserson et al.~\cite{leiserson2020there}, in the post-Moore’s-Law period, performance gains will come from software, algorithms, and hardware (referred to as the top of the computing stack) rather than semiconductors (the bottom). We can achieve massive scalability by first, designing data structures and algorithms to scale up using modern accelerators such as GPUs and second, scaling out by using distributed memory in an high-performance computing (HPC) environment.
+
 
 
 \paragraph{GPUs and other accelerators in computational biology.}
@@ -194,7 +194,7 @@ However, the penetration of GPUs into biology pipelines is limited by how the li
 
 These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as strings or vectors, which have variable lengths are not available; and GPU data structures do not scale out of the GPU's device RAM to host.
 
-These limitations are critical for building scalable computational biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification, the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures (such as filters and hash tables) to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as hash tables and filters~\cite{Geil:2018:QFA} currently available on GPUs are sized using an overapproximation of the number of \kmers, which leads to space inefficiency.
+These limitations are critical for building scalable computational biology applications. For example, in \kmer analysis during raw sequence search and taxonomic classification, the size of the \kmer multiset is not known in advance. Therefore, applications initialize the data structures (such as filters and hash tables) to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to perform \kmer analysis in a space-efficient manner. Static data structures such as hash tables and filters~\cite{GeilFO18} currently available on GPUs are sized using an overapproximation of the number of \kmers, which leads to space inefficiency.
 Similarly, the local assembly module involves constructing thousands of hash tables in parallel and then using those hash tables to perform contig (contiguous strand of DNA) extension walks. The CPU implementation of local assembly relies heavily on dynamic
 structures such as hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, the algorithmic motif of local assembly induces a random memory-access pattern with a non-deterministic amount of work, which makes implementing this module on GPUs a very challenging problem.
 
@@ -252,128 +252,3 @@ The cross-cutting concerns of particular interest to the PPoSS program are well-
 \end{description}
 
 
-
-% \paragraph{Roadmap.} Roadmap here. In Section
-
-% Section 2: bioinformatics problems, state of the art, what we need
-
-% Section 3: Our approach: Why GPUs?  Also GPU-specific generic research problems
-
-% Section 4: Filters, with reserach problems -- theory, systems, HPC
-
-% Section 5: Hash tables, with reserach problems -- theory, systems, HPC
-
-% Section 6: String indexes, with reserach problems -- theory, systems, HPC
-
-% Section 7: Sketches, with reserach problems -- theory, systems, HPC
-
-% Section 8: Bioinformatics validation, with research problems for each bioinformatics problem, and if successful statements.
-
-\iffalse
-==========
-\begin{itemize}[noitemsep, leftmargin=*]
-  \item \textbf{Module 1 [theory/algorithms]:} Develop single-node GPU data structures.
-    Specifically, filters, hash tables, succinct/string data structures, and
-    trees. Challenges: high concurrency; being able to scale 100K threads;
-    branching statements have a high cost; data movement and irregular data
-    accesses are expensive. We will develop new theoretical data structures and
-    algorithms that can efficiently exploit massive GPU parallelism while being
-    compact and dynamic.
-
-  \item \textbf{Module 2 [Systems]:} Develop GPU data structures that can scale out of
-      GPU device RAM to CPU host RAM\@. We will develop a memory allocator to
-      seamlessly manage the GPU and CPU ram and efficiently move data across GPU
-      and CPU RAMs.
-
-    \item \textbf{Module 3 [HPC]:} Develop data structures that can scale out to
-      multiple-GPU nodes in a distributed computing environment. We will develop
-      communication-efficient distributed versions of the above data structure
-      to efficiently scale out hundreds of nodes in a HPC environment.
-
-    \item \textbf{Module 4 [Applications]:} Building high-performance and scalable
-      computational biology applications by integrating GPU data structures in
-      k-mer analysis, taxonomic classification, pangenomics tools.
-
-\end{itemize}
-
--------------------------------------------------------------
-
-In this project, we propose to develop a  collection of
-memory-efficient, high-performance, dynamic, and distributed GPU data structures.
-We will show how to use these data structures for our target applications in computational biology, as well as some others.
-With the help these data structures, we aim to scale computational biology applications to massive datasets (raw sequencing datasets, metagenomic datasets from complex microbiomes, population-scale pangenomic datasets) and enable them to answer complex biological questions that are not possible today.
-Because many of these applications require the same set of data structures, we will incorporate these data structures into a standalone library to enable easy reuse in other applications.
-
-The PIs and others have shown that recent data structure advances~\cite{cite-somethin} show that
-implementations that go beyond primitive data structures are possible on GPUs
-but this work has not had much practical impact to date. \mfc{this is a big turd in the middle of our first page -- well maybe the end of the first page -- is it even true? My papers with John are wracking up citations}    \mfc{awkward transition.  this is not about what we are proposing.  this comes before what we are proposing $\rightarrow$} A pure GPU solution is
-desirable because transfer costs are high, and this is the direction being taken
-in other application domains (machine learning, data science).
-
-\paragraph{GPUs and other accelerators.}
-
-In this project we envision solving these problems with a combination of  scale-up (via better algorithms and accelerators) and scale-out (distributing data and compute across multiple nodes of large high-performance computing systems). \mfc{how do you scale out without better algorithms?  you make it sounds like scaleup needs algorithms but any old crap will work for scaleout.  I don't think that's true.}
-
-% The rate of growth data is much higher than the growth of the CPU speeds and single-node storage capacities. CPU growth will not keep up with application demands.
-
-Most existing applications in computational biology use CPUs to perform data  analysis.
-However, the growth of the CPU speed and capacity is slowing and at the same time data is growing faster than ever. CPU growth will not keep up with application demands.
-
-As a consequence, a few recent tools~\cite{cite-something} have tried to scale
-up using accelerators such as GPUs to speed up computations. However, these tools
-use only primitive data structures and as a result achieve suboptimal
-performance. Some applications [cite] have also tried to scale out using
-distributed memory.  However, these applications are still limited by the CPU
-speed and capacity and leave performance on the table due to suboptimal
-scalability of data structures.
-
-
-\prashant{Assigned to Martin/Michael: Need to add theory/algorithmic challenges
-to develop GPU data structures. Why is it hard to just port existing CPU data
-structures to GPUs.}
-
-
-\begin{enumerate}[noitemsep, leftmargin=*]
-  \item Filters
-  \item Hash table
-  \item String data structures (suffix array, FM index, BWT)
-  \item Succinct data structures (Dynamic rank-select indexes)
-  \item Trees and Tries
-\end{enumerate}
-
-\prashant{Martin, Michael wants a postdoc in year 3-4-5. Maybe a PhD student from John/Prashant.}
-
-
-\prashant{Section 2: State of the art, data structures (theory/systems), applications. What are the deficiencies.}\\
-\prashant{Section 3: Here's what we will do. Need a concrete plan with what we are going to. Sub-problems, milestones, schedule. How the four pillars interact.}\\
-\prashant{Conclusion, Broader impact, previous NSF support}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Section 4: Management Plan %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Time Line and Management Plan}
-
-\begin{table}[H]
-\label{table1}
-\renewcommand{\arraystretch}{0}
-\caption{Project schedule.  PIs are Person One (P1), Person Two (P2), graduate student is GS, and the undergraduate student is US\@. Time frame gives the year each activity will occur.}
-\scriptsize
-\begin{tabularx}{\textwidth}{Y c c }
-\hline
-\hline
-\textbf{Research Activity} & \textbf{Personnel} & \textbf{Time Frame}\\
-\hline
-Perform a task that sounds impressive & P2, US & Y1 \T\\
-Perform another super-amazing task & P1, US & Y1 \T\\
-Perform something else that may not be as sexy as the other things & P2, GS & Y1 \T\\
-Wonder why you are such a terrible programmer & P1, US & Y1 \T\\
-Analyze the results and stuff & P1, P2, SS & Y1,Y2 \T\\
-Take the day off and grill some meat & P1, P2, SS & Y1,Y2 \T\\
-Present findings at scientific meetings and publish results in peer-reviewed journals & P1, P2, US, GS & Y1, Y2, Y3\T\B\\
-\hline
-\hline
-\end{tabularx}
-\end{table}
-
-\fi
