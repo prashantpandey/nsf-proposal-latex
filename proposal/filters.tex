@@ -27,24 +27,22 @@ Some filters are static, in that they require $S$ to be given at initialization~
 
 It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets have been shown to be  critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{GeorganasEHG18}. 
 
-\mab{Prashant: fix this. Please delete systems that shouldn't be mentioned.} The PIs Bender, Farach-Colton, Pandey, Patro used filters high-functionality filters (including maplets) in bioinformatics systems such as Mantis~\cite{PandeyAlBe18}, Squeakr~\cite{PandeyBeJo18}, deBGR~\cite{PandeyBeJo17b}, Rainbowfish~\cite{AlmodaresiPaPa17}, and MetaHepmer~\cite{mccoy2022high} and in SplinterDB~\cite{DBLP:journals/pacmmod/ConwayFJ23}.
-PIs Farach-Colton, Owens, and Pandey implemented high-functionality filters on GPUs~\cite{mccoy2022high, GeilFO18}. 
-
+The PIs Bender, Farach-Colton, Pandey, and Patro used feature-rich filters (including maplets) in bioinformatics systems such as Mantis~\cite{PandeyAlBe18}, Squeakr~\cite{PandeyBeJo18}, deBGR~\cite{PandeyBeJo17b}, Rainbowfish~\cite{AlmodaresiPaPa17}, and MetaHepmer~\cite{mccoy2022high}, MetaHipMer~\cite{McCoyHYP23a} and storage and streaming applications such as SplinterDB~\cite{DBLP:journals/pacmmod/ConwayFJ23} and LERTs~\cite{PandeySiBe20}.
+PIs Farach-Colton, Owens, and Pandey implemented high-functionality filters on GPUs~\cite{mccoy2022high, McCoyHYP23a, GeilFO18}. 
 
 To date, all maplets that we know of are based on the quotient filter~\cite{conway2020splinterdb,PandeyBJP17,DBLP:journals/pacmmod/ConwayFJ23}, and we know of no implementation of maplets on the GPU\@.
 Our first research problem is:
 
 \begin{rproblem}
-Design and build a high-performance maplet for the GPU\@.
-\mab{This will allow us to solve computational-biology problems such as well.... Prashant, to discuss.}
+Design and build a high-performance maplet for the GPU\@. This will allow us to accelerate ans scale large-scale sequence search and \kmer processing applications using GPUs. 
 \end{rproblem}
 
 Building a space-efficient and high-performance maplet is challenging as associating variable-length values with fingerprints results in unaligned memory accesses, which are especially expensive on GPUs. We will develop a quotient filter-based maplet on GPUs as the quotient filters offer compact fingerprint storage and value association. We plan to employ a bulk insertion approach using the sort and merge algorithm to achieve lock-free and high coherence on GPUs. We further plan to explore a two-choice hashing-based vector quotient filter~\cite{PandeyCDBFJ21} and CUDA's cooperative-groups programming model on GPUs to achieve even higher performance.
 
 \begin{rproblem}\label{rprob:resizable-maplet}
-Design and build a high-performance incrementally resizable maplet.
-\mab{This will allow us to solve computational-biology problems such as well.... Prashant, to discuss.}
+Design and build a high-performance incrementally resizable maplet. This will allow us to accelerate and scale large-scale sequence search and \kmer processing applications using GPUs.
 \end{rproblem}
+
 The na\"\i{}ve way to resize a maplet is to double its size and move items (perhaps incrementally) from the old filter to the new.  This means that during the transition, which can last quite a long time, both tables must be stored and both tables must be queried. The most direct way to resize a filter is to lock it while we rebuild it at double the size.  We encounter similar problem when resizing hash tables (\S~\ref{sec:hash-tables}), and we will explore the same techniques for resizing filters and hash tables.
 
 
