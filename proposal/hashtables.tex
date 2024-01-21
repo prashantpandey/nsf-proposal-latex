@@ -42,7 +42,7 @@ Work by PIs Bender and Farach-Colton~\cite{iceberg,partitionhashing} explore the
 {\bf Proposed approach.}
 We anticipate two directions of research that will allow us to provide the necessary support:
 
-\begin{itemize}[noitemsep,nolistsep,leftmargin=*]
+\begin{itemize}%[noitemsep,nolistsep,leftmargin=*]
   \item The GPU's high computational capability likely makes it tractable to perform a large number of arithmetic operations on each key (as PI Owens noted in his 2011 static-hash-table work~\cite{Alcantara:2011:BAE}, ``we can run up to 1000 instructions per memory update and remain memory bound''). Thus we will investigate computing a hash function (e.g., MD5) on each key and use the (fixed-size) hash value as the key. If necessary, we can also store the keys themselves: modern GPU memory managers (e.g., Ouroboros~\cite{Winter:2020:OVQ}) maintain multiple pools of memory, each of which satisfies requests of different sizes. Again because of the bounded size of \kmers, we believe we can specialize a memory manager to only a few pools and yet still maintain high memory load factors.
   \item We also will study the design of a cascade of hash tables, where keys in the first hash table are the first 32 or 64 bits of the \kmer and the value associated with each key is a second hash table, whose keys represent the next 32 or 64 bits, and so on. This strategy would be impractical for arbitrary-length keys but for \kmers, with their bounded lengths, it appears to be feasible.
 \end{itemize}

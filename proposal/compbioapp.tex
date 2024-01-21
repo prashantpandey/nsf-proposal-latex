@@ -6,11 +6,10 @@
 \subsection{Taxonomic classification and abundance estimation of metagenomic data}
 
 \textbf{Problem definition.}
-The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome.
-The study of metagenomes provides an opportunity to closely examine complex biological interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
-Metagenomic datasets contain sequencing reads from multiple species (and strains) that are present in the biological environment from which the sample was drawn.
+% The microbes that live in an environment can be identified by their combined genomic material, also called the metagenome. 
+Metagenomic datasets contain sequencing reads from multiple species (and strains) that are present in the environment from which the sample was drawn. Metagenomes provides an opportunity to closely examine complex  interactions, such as phage-host and metabolic dynamics~\cite{national2007new}.
 %
-Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxa present in large-scale  metagenomic datasets coming from complex biological and environmental samples. Assigning taxonomic labels to sequencing reads, and the related challenge of quantifying the associated abundances of these taxa, are important steps in many computational genomics pipelines for metagenomics projects.
+Taxonomic classification~\cite{wood2014kraken} helps to identify the microbial taxa present in large-scale  metagenomic datasets. Assigning taxonomic labels to sequencing reads, and the related challenge of quantifying the associated abundances of these taxa, are important steps in many computational genomics pipelines for metagenomics projects.
 
 \noindent
 \textbf{Importance.}
@@ -27,16 +26,16 @@ Although BLAST is one of the most sensitive metagenomics alignment methods, it i
 
 \noindent
 \textbf{State of the art.}
-A large number of recently developed taxonomic classification tools~\cite{ames2013scalable, kim2016centrifuge, menzel2016fast, wood2014kraken, wood2019improved, dilthey2019strain,liu2018novel} use a supervised approach to assign taxonomic labels to reads.
-These tools build a database of known previously sequenced microbial genetic sequences and their taxonomic labels from the NCBI database.
-The database is typically an index (usually a compact hash table) that maps smaller subsequences (\kmers) to the list of taxa corresponding to the genomes in which the subsequences occur.
-During the classification phase, the input reads are decomposed into \kmers and queried in the index to determine the most appropriate taxon using the lowest-common ancestor (LCA) of the genomes in the taxonomic tree.
+Many recently developed taxonomic classification tools~\cite{ames2013scalable, kim2016centrifuge, menzel2016fast, wood2014kraken, wood2019improved, dilthey2019strain,liu2018novel} use a supervised approach to assign taxonomic labels to reads.
+These tools build a database of previously sequenced microbial genetic sequences and their taxonomic labels from the NCBI database.
+The database is usually a compact hash table that maps smaller subsequences (\kmers) to the list of taxa corresponding to the genomes in which the subsequences occur.
+Then, the input reads are decomposed into \kmers and queried in the index to determine the most appropriate taxon using the lowest-common ancestor (LCA) of the genomes in the taxonomic tree.
 
 \noindent
 \textbf{Gaps and requirements.}
-The sheer size of sequenced microbial genetic sequences presents a considerable computational and memory challenge.
+The size of sequenced microbial genetic sequences presents a computational and memory challenge.
 % Building the database of known genomes is often quite memory intensive.
-The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species as well as the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ million sequences.
+The most popular reference database are RefSeq complete genomes (RefSeq CG) for microbial species and the BLAST nt and nr databases for high-quality nucleotide and protein sequences, respectively, with $\approx50$ and $\approx200$ million sequences.
 Kraken's~\cite{wood2014kraken} memory requirements can easily exceed 100~GB~\cite{simon2019benchmarking}, especially when the reference data includes large eukaryotic genomes~\cite{meiser2017sequencing, knutson2017porcine}.
 %
 The universe of microbial sequences is large and diverse. The vast search space often results in false positives as sequences can be matched against multiple taxa. Also, a large number of undiscovered microbial species can result in false negatives as these species are not present in the database.
@@ -61,7 +60,10 @@ Build a software tool to perform reference-based taxonomic classification of met
 
 \noindent
 \textbf{Importance.}
-The Sequence Read Archive (SRA)~\cite{kodama2012sequence}, the world’s largest database of sequences, hosts approximately 10 petabytes (1016 bp) of sequence data and is growing at the alarming rate of 10 TB per day.
+The Sequence Read Archive (SRA)~\cite{kodama2012sequence}, the world’s largest database of sequences, hosts approximately 10 petabytes %(1016 bp) 
+of sequence data and is growing by 
+%at the alarming rate of 
+10 TB per day.
 %
 The vast majority of publicly available sequencing data (e.g., the data deposited in the Sequence Read Archive, or European Nucleotide Archive (ENA)~\cite{CumminsAABDEGHH22}) exist in the form of raw, unassembled sequencing reads. The raw sequencing data contains a lot of biological diversity information which is lost during the assembly process. Furthermore, only a small fraction of all the raw sequencing data is assembled, making the raw sequencing data even more important to answer complex biological-diversity related questions.
 %
@@ -71,8 +73,8 @@ The genomics community established this database to enable sharing of the data, 
 
 \noindent
 \textbf{Challenges.}
-There have been multiple tools such as BLAST~\cite{altschul1990basic} and its variants that are designed to perform sequence-level searches over publicly available databases of assembled genomes and known proteins. %Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. \mfc{This previous sentence is a jolt. what does that have to do with raw sequence data?}
-However, the strategies applied by such tools focus on the case where queries are issued over a database of reference sequences which is much smaller in size compared to the SRA\@.
+Many tools, such as BLAST~\cite{altschul1990basic} and its variants, have been designed to perform sequence-level searches over publicly available databases of assembled genomes and known proteins. %Much subsequent work has focused on how to extend tools such as BLAST to be faster, more sensitive, or both~\cite{XXX}. \mfc{This previous sentence is a jolt. what does that have to do with raw sequence data?}
+However, such tools focus on the case where queries are issued over a database of reference sequences which is much smaller in size compared to the SRA\@.
 Using BLAST (or other BLAST-based tools) to perform searches over SRA is computationally infeasible.
 %
 There are a number of reasons that typical reference-database-based search techniques cannot easily be applied in the context of searching raw, unassembled sequences. One major reason is that most current techniques do not scale well as the amount of data grows to the size of the SRA (which today is $\approx4$ petabytes of sequence information). A second reason is that searching unassembled sequences means that relatively long queries (e.g., genes) are unlikely to be present in their entirety as an approximate substring of the input.
@@ -81,21 +83,22 @@ As such, these data have mostly been rendered impervious to sequence-level searc
 
 \noindent
 \textbf{State of the art.}
-Recently, new computational schemes have been proposed that hold the potential to allow searching raw SRA while overcoming these challenges. Solomon and Kingsford~\cite{solomon2016fast} introduced the sequence Bloom tree (SBT) data structure and an associated algorithm that enables an efficient search over thousands of sequencing experiments. Specifically, they re-phrase the query in terms of \kmer set membership in a way that is robust to the fact that the target sequences have not been assembled. The resulting problem is coined as the \emph{experiment discovery problem}, where the goal is to return all experiments that contain at least some user-defined $q$ fraction of the \kmers present in the query string.
+New computational schemes have been proposed that promise to search raw SRA while overcoming these challenges. Solomon and Kingsford~\cite{solomon2016fast} introduced the sequence Bloom tree (SBT) data structure and an associated algorithm that enables an efficient search over thousands of sequencing experiments. Specifically, they re-phrase the query in terms of \kmer set membership in a way that is robust to the fact that the target sequences have not been assembled. The resulting problem is coined as the \emph{experiment discovery problem}, where the goal is to return all experiments that contain at least some user-defined $q$ fraction of the \kmers present in the query string.
 %
-Subsequently, Mantis~\cite{PandeyABFJP18Cell} was developed by PI Pandey, Patro and Bender that showed how to solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments in which they appear. Mantis uses the counting quotient filter~\cite{PandeyBJP17} developed by PI Pandey as a space-efficient and exact map to map \kmers. Mantis's index is smaller in size, faster to index and query, and has no false positives compared to the SBT (and other SBT-based tools~\cite{SolomonK17,HarrisM20,BingmannBGI19}).
+Subsequently, Mantis~\cite{PandeyAlBe18} was developed by PI Pandey, Patro and Bender that showed how to solve the experiment discovery problem using an inverted-index approach by mapping \kmers to the list of experiments in which they appear. Mantis uses the counting quotient filter~\cite{PandeyBJP17} developed by PI Pandey as a space-efficient and exact map to map \kmers. Mantis's index is smaller in size, faster to index and query, and has no false positives compared to the SBT (and other SBT-based tools~\cite{SolomonK17,HarrisM20,BingmannBGI19}).
 %
 PIs Pandey and Patro further continued this effort to compress the Mantis index in order to reduce memory requirements and scale Mantis~\cite{AlmodaresiPFJP19,AlmodaresiPFJP20} out of RAM to storage devices.
 
 
 \noindent
 \textbf{Gaps and requirement.}
-Existing raw sequence search indexes suffer from the scalability challenge. Indexing \kmers from the SRA samples is memory-intensive and indexes often take hundreds of GBs. For example, the SBT index size for 2652 experiments consisting of short-read RNA sequencing runs of human blood, brain, and breast tissues is 97~GB\@. Scaling SBT-based indexes to 100K experiments in SRA is not currently feasible on single-node machines \draft{and scaling to an approximation of the entire SRA is likely not possible on a single machine, even with improved representations}.
+Existing raw sequence search indexes suffer from the scalability challenge. Indexing \kmers from the SRA samples is memory-intensive and indexes often take hundreds of GBs. For example, the SBT index size for 2652 experiments consisting of short-read RNA sequencing runs of human blood, brain, and breast tissues is 97~GB\@. Scaling SBT-based indexes to 100K experiments in SRA is not currently feasible on single-node machines and scaling to an approximation of the entire SRA is likely not possible on a single machine, even with improved representations.
 Furthermore, SBT-based indexes are approximate; the search results include false positives, which can quickly become problematic even if only 1\% of results are false positives, due to the sheer size of the search space.
 
-Mantis's index is exact and has no false positives in the results. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using Bentley/Saxe's transformation~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA\@. These indexes are reaching the limits of single-node RAM and storage hardware.
+Mantis's index is exact and has no false positives. Recently, LSM-Mantis~\cite{almodaresi2022incrementally} showed how to efficiently scale the index to SSD storage devices using Bentley/Saxe's transformation~\cite{BentleyS80}. However, even LSM-Mantis could only index 40K experiments from the SRA\@. These indexes are reaching the limits of single-node RAM and storage hardware.
 
-\draft{Finally, in addition to representing the exact (or approximate) \kmer sets, a key challenge in constructing a large-scale sequence search index is the ability to build a compact yet updatable color-class representation. The \emph{color} of a \kmer refers to the set of indexed samples in which it is present (conceptually, this can be thought of as a simple list of samples for each \kmer, or a binary vector with dimension equal to the number of indexed samples); since many \kmers share exactly the same patterns of occurrence across samples we can instead discuss color-classes --- the distinct subsets of occurrence where two \kmers are deemed equivalent under the color relation if they appear in exactly the same set of samples.  In existing work, there is a substantial tension between the overall size of the representation of the color-class information, and the ability to add to or update this representation, with highly-compressed representations existing~\cite{Karasikov2020,Pibiri2023MacDBG,AlmodaresiPFJP19}, but being restricted mostly to static or semi-static indexes.  In this proposal, we will seek to leverage our work on building dynamic succinct data structure primitives to develop novel, compact, and \emph{updatable} color-class representations, drawing on ideas from our prior work in compact static representations~\cite{AlmodaresiPFJP19,Pibiri2023MacDBG}.}
+\draft{Finally, in addition to representing the exact (or approximate) \kmer sets, a key challenge in constructing a large-scale sequence search index is the ability to build a compact yet updatable color-class representation. The \emph{color} of a \kmer is the set of indexed samples in which it is present; % (conceptually, this can be thought of as a simple list of samples for each \kmer, or a binary vector with dimension equal to the number of indexed samples); 
+since many \kmers share exactly the same patterns of occurrence across samples we can instead discuss color-classes --- the distinct subsets of occurrence where two \kmers are deemed equivalent under the color relation if they appear in exactly the same set of samples.  In existing work, there is a substantial tension between the overall size of the representation of the color-class information, and the ability to add to or update this representation, with highly-compressed representations existing~\cite{Karasikov2020,Pibiri2023MacDBG,AlmodaresiPFJP19}, but being restricted mostly to static or semi-static indexes.  In this proposal, we will seek to leverage our work on building dynamic succinct data structure primitives to develop novel, compact, and \emph{updatable} color-class representations, drawing on ideas from our prior work in compact static representations~\cite{AlmodaresiPFJP19,Pibiri2023MacDBG}.}
 
 \prashant{Add a discussion about representing color-classes.}
 
