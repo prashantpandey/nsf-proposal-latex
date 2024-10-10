@@ -1,0 +1,182 @@
+%!TEX root =  proposal.tex
+
+\section{Filters}
+
+Filters are a key data structure for compactly representing sets, and they are extensively used in computational biology applications.  The PIs have extensive experience in designing best-in-class filters, both theoretically~\cite{BenderFaGo18,BenderDaFa21,BenderFaKu22b,BenderCoFa23b} and for computational biology~\cite{AlmodaresiPaFe18,PandeyAlBe18,PandeyBeJo18, AlmodaresiPaPa17,PandeyBeJo17b} and for general high-performance computation~\cite{DBLP:conf/usenix/ConwayGCFSTJ20,PandeyBeCo23,PandeyBeJo17a,BenderFaJo12}.
+In this section, we articulate the computational challenges in implementing filters in computational-biology applications. 
+In particular, filters in HPC settings are compute intensive while being small, making them perfect candidates for GPU implementations.  
+However, not all filters have the same functionality, and we will propose algorithm work to create filters than are GPU-friendly, e.g. concurrent, small space, high locality, that will serving the needs of comp. bio. applications.
+
+%==
+
+%Vision of section: different filters have different capabilities. Most famous filter, the Bloom filter, is 
+
+A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under approximate membership queries. Specifically, $\texttt{Member}(x)$ returns \textsc{True} if $x\in S$, and returns \textsc{True} with probability at most $\varepsilon$ for $x\notin S$, where $\varepsilon$ is a configurable parameter of the filter.  When a filter returns \textsc{True} erroneously, we say that it has experienced a \defn{false positive}.
+%
+A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega\left(\log \binom{u}{n}\right) = \Omega(n \log (u/n))$ bits, whereas a filter  takes space at least  lower bound of $\opt + \Omega(n)$ bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound with high probability (w.h.p.), including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerM09,BenderFaJo12,PandeyBJP17,PandeyCDBFJ21}, XOR filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerW21}.  Bloom filters~\cite{Bloom70} do not meet this lower bound, nor, technically speaking, do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p.\ grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
+%
+For typical $\varepsilon$, the best filters take one or two bytes per item.
+
+\noindent
+\textbf{Filters differ in their functionality, and computational biology software is often limited by the difference in the functionality needed and the functionality of the filter selected.}
+Some filters are static, in that they require $S$ to be given at initialization~\cite{GrafLe20,DillingerW21}.  Some filters, such as Bloom filters, allow insertions but no deletions.  Quotient and cuckoo filters are fully dynamic.  Furthermore, quotient filters are \defn{mergeable}, in that two filters can be merged into a single filter, perhaps at the cost of a higher false-positive rate.  Mergeability turns out to be critical in some applications~\cite{conway2020splinterdb,PandeyAlBe18}. Mergeability is closely related to \defn{resizability}.  Any filter can be resized to a larger capacity if we  simply rebuild it from the set $S$.  We refer to a filter as resizable if it can increase its capacity without reference to $S$.  A filter is \defn{incrementally resizable} if we can efficiently resize it by factors of less than 2.  Incremental resizability is a critical to achieving low peak-memory usage in many computational biology applications~\cite{hofmeyr2020terabase,PandeyBJP17,PandeyBeJo17a,MarccaisKi11,wood2014kraken,wood2019improved}, as the size of the set is not known in advance, so existing applications often overprovision the filter size to avoid running out of filter capacity at runtime.
+
+% \mfc{Prashant: why do we need this feature?}  \mfc{We know of no existing filters are incrementally resizable.}
+
+
+
+It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets have been shown to be  critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{GeorganasEHG18}. 
+
+The PIs Bender, Farach-Colton, Pandey, and Patro used feature-rich filters (including maplets) in bioinformatics systems such as Mantis~\cite{PandeyAlBe18}, Squeakr~\cite{PandeyBeJo18}, deBGR~\cite{PandeyBeJo17b}, Rainbowfish~\cite{AlmodaresiPaPa17}, and MetaHepmer~\cite{mccoy2022high}, MetaHipMer~\cite{McCoyHYP23a} and storage and streaming applications such as SplinterDB~\cite{DBLP:journals/pacmmod/ConwayFJ23} and LERTs~\cite{PandeySiBe20}.
+PIs Farach-Colton, Owens, and Pandey implemented high-functionality filters on GPUs~\cite{mccoy2022high, McCoyHYP23a, GeilFO18}. 
+
+To date, all maplets that we know of are based on the quotient filter~\cite{conway2020splinterdb,PandeyBJP17,DBLP:journals/pacmmod/ConwayFJ23}, and we know of no implementation of maplets on the GPU\@.
+Our first research problem is:
+
+\begin{rproblem}
+Design and build a high-performance maplet for the GPU\@. This will allow us to accelerate ans scale large-scale sequence search and \kmer processing applications using GPUs. 
+\end{rproblem}
+
+Building a space-efficient and high-performance maplet is challenging as associating variable-length values with fingerprints results in unaligned memory accesses, which are especially expensive on GPUs. We will develop a quotient filter-based maplet on GPUs as the quotient filters offer compact fingerprint storage and value association. We plan to employ a bulk insertion approach using the sort and merge algorithm to achieve lock-free and high coherence on GPUs. We further plan to explore a two-choice hashing-based vector quotient filter~\cite{PandeyCDBFJ21} and CUDA's cooperative-groups programming model on GPUs to achieve even higher performance.
+
+\begin{rproblem}\label{rprob:resizable-maplet}
+Design and build a high-performance incrementally resizable maplet. This will allow us to accelerate and scale large-scale sequence search and \kmer processing applications using GPUs.
+\end{rproblem}
+
+The na\"\i{}ve way to resize a maplet is to double its size and move items (perhaps incrementally) from the old filter to the new.  This means that during the transition, which can last quite a long time, both tables must be stored and both tables must be queried. The most direct way to resize a filter is to lock it while we rebuild it at double the size.  We encounter similar problem when resizing hash tables (\S~\ref{sec:hash-tables}), and we will explore the same techniques for resizing filters and hash tables.
+
+
+We propose to adapt an approach recently proposed by PIs Bender and Farach-Colton: waterfall addressing~\cite{Bender2022}.   Waterfall addressing is a method for addressing into an array (for example for a filter or hash table that uses open addressing) so that the array can grow in small increments.  Each item hashes to a location based on the current size of the array, and when the array resizes, only those items that go into the new piece are moved.  The surprising thing is that this can be done efficiently, but it does require maintaining metadata.  The theoretical version of this result uses pointer-intensive metadata, so this research problem requires developing a new, GPU-friendly metadata scheme and algorithms for distributing the filter. \begin{rproblem}\label{rprob:resizable-maplet-metadata}
+Design and build a succinct, GPU-friendly data structure for resizability meta-data.
+\end{rproblem}
+
+Finally, some filters, most notably the quotient filter, can be made \defn{adaptive}~\cite{BenderFaGo18}.  A filter is adaptive if its false-positive probability is at most $\varepsilon$ for every $x\notin S$, even if $x$ is repeatedly queried.  In a standard filter, every time $x$ is queried, the filter returns the same answer.  In an adaptive filter, if $x$ is queried and determined to be a false positive, the filter has the option of adjusting itself so that this query is correctly answered as \textsc{False}.  All provably adaptive filters are based on the quotient filter~\cite{BenderFaGo18,Lee21}, although there are some heuristically adaptive filters based on the cuckoo filter~\cite{Mitzenmacher2020}.
+
+% de Bruijn graphs (dbg) are at the heart of many sequence analysis pipelines~\cite{PandeyBeJo17a,PandeyBeJo17b}. In a (node-centric) de Bruijn graph, each node is a $k$-length subsequence from the underlying biological samples and two nodes are connected via an edge if they share a $(k-1)$-length suffix-prefix overlap.  Traversing long non-branching paths in the de Bruijn graphs, known as unitigs, helps in building long continuous sequences (contigs) as an intermediate step in the assembly process.
+% de Bruijn graphs are also used to weed out erroneous sequences in the underlying datasets.
+% In the graph, each node can have at most four successors by extending the sequence using the four nucleotides (\texttt{A}, \texttt{C}, \texttt{T}, \texttt{G}), and likewise at most four predecessors. Therefore, the set of queries needed to traverse the whole graph is known in advance, and in fact one can think both practically and theoretically about \emph{navigational} representations of such graphs~\cite{Chikhi2015}.
+
+\para{Feature-rich filters, adaptive filters, and dynamic maplets in computational biology}  
+de Bruijn graphs (dbg) are at the heart of many sequence analysis pipelines~\cite{PandeyBeJo17a,PandeyBeJo17b}. de Bruijn graphs are often large enough that they do not fit in main memory. 
+% They must also support adding \kmers from new sequences and removing existing \kmers to weed out erroneous sequences.
+Therefore, several approaches have been proposed to minimize the space usage of representing a de Bruijn graph by representing it using a  filter~\cite{chikhi2013space}. They can support dbg traversal by querying all four possible extensions from a given node in the filter and building the neighbor list based on positive queries. However, due to false positives there can be some erroneous edges in the graph.
+% To avoid the false edges, Chikhi and Rizk~\cite{chikhi2013space} proposed to store the de Bruijn graph in a cascading Bloom filter, which is possible because the set of traversal queries is known in advance. Each Bloom filter stores the false positives from querying the earlier Bloom filter using all possible queries during the dbg traversal.
+%
+However, existing Bloom filter-based solutions are not space-efficient and also do not support deletions. PIs Bender, Patro and Pandey showed how to use quotient filter-based solutions to build a compact representation of de Bruijn and weighted de Bruijn graphs~\cite{PandeyBeJo17b}. However, the quotient filters used in that solution do not adapt during queries and require domain-specific mechanisms and graph invariants to fix approximation errors~\cite{PandeyBeJo17b}.
+
+Dynamic adaptive maplets can be used to build a compact, error-free, and fast representation for de Bruijn graphs. Adaptive maplets can be updated and  would, in theory, take less space than hash tables. Thus, adaptive filters are a good choice for representing and querying de Bruijn graphs, though how they would perform compared to other dynamic succinct de Bruijn graph representations~\cite{DBLP:journals/bioinformatics/AlipanahiKPSB21} remains an open question.
+
+\begin{rproblem}\label{rprob:adaptive-maplet}
+Define and prove bounds on adaptive maplets.
+\end{rproblem}
+The literature on adaptivity has focused on filters.  There are a few possible ways to extend the notion of adaptivity to maplets.  We will explore which of these makes the most sense for our applications and prove bounds on their size and time complexity.
+
+\begin{rproblem}\label{rprob:dyn-apt-filter}
+Design and build a dynamic adaptive maplet to compactly represent de Bruijn graphs.  Compare them to other dynamic succinct de Bruijn graph representations. Port deBGR~\cite{PandeyBeJo17b}, which is based on the quotient filter, to GPU using adaptive maplets.
+\end{rproblem}
+
+In the algorithmic literature on adaptive filters, adaptivity is implemented by varying the number of bits stored in a fingerprint of each item.  When there is a false positive, enough bits are added that the fingerprint of the false-positive query no longer collides with the fingerprint of the item in the set.  Variable-length codes make memory accesses inefficient since the fingerprints are no longer byte-aligned.  We propose to over-adapt by a full byte whenever we have a false positive.  We believe that we can prove that over-adapting in this way does not blow up the space.  Such a scheme will substantially simplify the GPU implementation of adaptive filters.  We believe that all these comments carry over directly to adaptive maplets.
+
+
+% \textbf{Quotient
+% filters}~\cite{Cleary84,PaghPaRa05,DillingerMa09,BenderFaJo12,PandeyBJP17,pandeySigmod21}
+% represent a set approximately by compactly storing small fingerprints of the
+% items in the set via Robin Hood hashing~\cite{CelisLaMu85}. The quotient filter
+% uses $1.053 (2.125 + \log_21/\epsilon)$ bits per element, which is less than the
+% Bloom filter whenever $\epsilon \leq 1/64$, which is the case in almost all
+% applications. It supports insertion, deletion, lookups, resizing, and merging.
+% The counting quotient filter (CQF)~\cite{PandeyBJP17}, improves upon the
+% performance of the quotient filter and adds variable-sized counters to count
+% items using asymptotically optimal space, even in large and skewed datasets. In
+% the counting quotient filter, we can also associate small values with items
+% either by re-purposing the variable-sized counters~\cite{PandeyABFJP18Cell} to
+% store values or by explicitly storing small values with the remainders in the
+% table~\cite{PandeySMB20}.
+
+
+
+% \textbf{Two-Choice filters}~\cite{pandeySigmod21} organize fingerprints
+% compactly in blocks similar to the cuckoo filter. However, unlike the cuckoo
+% filter, there is no kicking. The blocks in the two-choice filter are larger in
+% size ($\approx \log{n}$, where $n$ is the number of items which is usually the
+% size of the cache line on most machines) than the cuckoo filter and
+% power-of-two-choice hashing is used to reduce the variance across the blocks and
+% achieve a high load factor. During insertions if both blocks corresponding to a
+% fingerprint are full then the data structure is declared full. The
+% power-of-two-choice hashing enables the filter to probe exactly two cache lines
+% during inserts and queries and write to a single cache line during inserts.
+% Given the larger block sizes the vector quotient filter~\cite{pandeySigmod21}
+% uses quotienting (similar to the quotient filter) to organize fingerprints
+% inside blocks. It divides the fingerprints into a quotient and remainder part
+% and only stores the remainder in the slot given by the quotient. It uses two
+% additional metadata bits to resolve collisions among quotients.
+
+\iffalse
+
+\subsection{Analysis of filter designs}
+
+We now look at the dynamic filters discussed in~\Cref{sec:prelim} and evaluate
+them based on the GPU design principles.  Our goal is to identify the filters
+that offer necessary features such as deletions, counting, and value
+associations and at the same time satisfy most of the design principles.  We
+will further discuss the challenges of implementing these filter on the GPUs to
+achieve high speed operations.
+
+Bloom filters are easy to implement on the GPU as they only require test and set
+operations. These operations can be implemented using atomic operations and
+achieve low thread divergence. However, each operation results in multiple cache
+misses and therefore Bloom filters have low memory coherence. They also have
+sub-optimal space usage. Moreover, Bloom filters do not support deletions,
+counting\footnote{The counting Bloom filter~\cite{FanCaAl00}, a variant of the
+Bloom filter, supports counting but it comes at a high space-overhead which
+makes it highly inefficient in practice.}, and associating small values with
+items.
+% that many data analytics applications require.
+
+Blocked Bloom filters are better suited to GPUs.  Each operation requires
+probing inside a single block. They achieve low thread divergence, high memory
+coherence, a high degree of parallelism, and atomic operations. Thus, blocked
+Bloom filters can satisfy all the GPU design principles. However, blocked Bloom
+filters have a high false-positive rate compared to Bloom filters and also do
+not support necessary features like deletions and counting.
+
+Operations in the quotient filter have high cache locality which makes it an
+appropriate choice to achieve high memory coherence. However, insert operations
+in the quotient filter requires shifting fingerprints which makes it harder to
+use atomic operations and also results in high thread divergence. However, the
+quotient filter can support all the necessary features like deletions, counting,
+and associating small values with items which makes the quotient filter a highly
+usable data structure that multiple applications can benefit from.
+
+It is quite challenging to achieve high speed operations while maintaining all
+of the features in a GPU implementation of the quotient filter. Geil et
+al.~\cite{Geil:2018:QFA} implemented a preliminary version of the GPU quotient filter.
+However, that implementation was adapted from Bender et al.'s quotient
+filter~\cite{BenderFaJo12}, which did not have all the features, like counting
+and value association, and also had higher space overhead. Furthermore, Geil et
+al.'s GPU-based quotient filter has implementation-specific limitations (e.g., it
+supports a fixed false-positive rate and can only be sized to store less than
+$2^{26}$ items) resulting in poor performance and limited scalability.
+
+The cuckoo filter stores fingerprints in fixed size blocks. This design is
+amenable to high memory coherence and low thread divergence. Atomic operations
+can also be used to read and write fingerprints. However, the cascading sequence
+of reads and writes to random memory locations makes the cuckoo filter hard to
+implement efficiently on the GPU\@. In particular, at high load factors when the
+number of kicked items becomes high, each insertion will result in very low
+memory coherence. Moreover, each kicking operation results in multiple
+cache-line writes. This makes it challenging to achieve high speed operations in
+a GPU cuckoo filter. Moreover, cuckoo filters do not support counting and
+associating small values with items.
+
+The two-choice filter has the advantages of the cuckoo filter design. It has
+fixed size blocks. Each operation requires probing into exactly two blocks, and
+inserts and deletes only write into a single block. This results in low thread
+divergence, high memory coherence, and a high degree of parallelism. However,
+due to large block sizes a more sophisticated structure is required to maintain
+fingerprints inside each block. Therefore, it is not straightforward to use
+atomic operations to read or write fingerprints inside blocks. It is a
+challenging task to implement a two choice filter on the GPU using atomic
+operations to achieve high throughput.
+
+\fi

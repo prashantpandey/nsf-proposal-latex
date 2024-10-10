@@ -1,0 +1,101 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% LaTeX template to generate an NSF proposal
+%
+% First version by: Stefan Llewellyn Smith, Sarah Gille, others.
+%
+% Additions by: Ronni Grapenthin, New Mexico Tech.
+%
+% This version maintained/modified by: Jeremy A. Gibbs, NOAA NSSL
+%
+% This template is free source code. It comes without any warranty, to
+% the extent permitted by applicable law. You can redistribute it and/or
+% modify it under the terms of the Do What The Fuck You Want To Public
+% License, Version 2, as published by Sam Hocevar. See
+% http://www.wtfpl.net for more details.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Package calls and title
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{header}
+\pagenumbering{gobble}
+\renewcommand{\title}{\noindent {\textbf{A Compact, Dynamic, and Distributed Data
+Structure Library for Computational Biology}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document starts here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\sloppy
+\begin{document}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% B - PROJECT SUMMARY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This needs to fit on one page
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\thispagestyle{empty}
+
+\include{summary}
+
+
+\newpage
+\setcounter{page}{1}
+\input{intro}
+\input{researchareas}
+\input{compbioapp}
+\input{gpu}
+\input{filters}
+\input{sketches}
+\input{hashtables}
+\input{string.tex}
+\input{multigpu}
+\input{evaluationplan}
+\input{broaderimpact}
+\input{priornsf}
+
+% \include{researchprob}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% E - REFERENCES CITED
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\pagestyle{empty}
+% \renewcommand{\bibname}{References Cited}
+\bibliographystyle{plainjdo}
+\bibliography{references,owens-all,owens-temp,sample,bibliography,compbio,models-gpu,martin,dtench}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PERSONNEL
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\include{personnel.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DATA MANAGEMENT PLAN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\include{data-mgmt.tex}
+
+\newpage
+\input{management}
+
+% \newpage
+% \input{postdoc}
+% \newpage
+
+\input{facilities-ucd}
+\newpage
+\input{facilities-utah}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-master: t
+%%% End:

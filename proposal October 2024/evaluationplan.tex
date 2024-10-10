@@ -1,0 +1,46 @@
+%!TEX root =  proposal.tex
+
+\section{Evaluation plan}
+
+\para{Measuring Success} We will combine our systems and theory advances into a standalone GPU library for compact, dynamic, and distributed data structures that we will link with our focus computational biology applications. We will measure our success based on the capabilities, completeness, and uptake of this data-structure library and its impact on these downstream applications.
+
+\noindent
+\para{Success for our data-structure library} \label{sec:sw-methodology}
+\begin{itemize}%[leftmargin=*,noitemsep]
+  \item Our library is the data-structure substrate for the three computational biology applications described below, for both single-GPU and multi-GPU/multi-node configurations.
+  \item Our library embodies best practices in software development: open-source software with an Apache 2.0 license, available via Github; a suite of functional and performance tests; a benchmarking suite to evaluate the performance and help drive subsequent modules; use of code-coverage tools together with these tests; internally documented code with Doxygen; and high-level developer documentation that guides use of the library. Particularly with our widely cited and used Gunrock library~\cite{Wang:2017:GGG} for GPU graph analytics, streaming graph representation library~\cite{pandey2021terrace}, filters~\cite{PandeyBJP17,PandeyCDBFJ21}, and computational biology tools~\cite{PandeyBeJo18,PandeyBeJo17b,PandeyAlBe18,pandey2021variantstore}, we have extensive experience with building and deploying high-quality academic libraries for use by others.
+  \item We will quantitatively measure the success of our library and its utility to others with GitHub download and star counts; with issues filed and closed; with the number of pull requests from external developers; and primarily, via the use of our library in other projects, where we will measure both uses by developers with whom we develop as well as uses from those with whom we do not.
+\end{itemize}
+
+\para{Success of computational biology applications}
+For each of our focus applications (taxonomic classification, raw sequence search, and pangenomics), success means we will scale each of these applications to exceed the state-of-the-art with a focus on truly large data, which we expect will continue to become ever more prevalent over the course of the project and beyond:
+
+\begin{itemize}%[leftmargin=*,noitemsep]
+  \item For taxonomic classification we will assess our accuracy and runtime against the most efficient existing classifiers like Kraken2~\cite{wood2019improved}, MMseq2 taxonomy~\cite{Mirdita_2021}, and Ganon~\cite{Piro_2020}. We will evaluate our tool using standard comprehensive benchmarking datasets and evaluation experiments --- detailing many distinct and comprehensive metrics of accuracy --- that have been curated by the community (CAMI~\cite{Meyer_2022}), and we will evaluate scalability by performing taxonomic classification on terabyte-scale metagenomic datasets from WA, Rhizo, and Tymeflies~\cite{hofmeyr2020terabase}. 
+  \item For raw sequence search and large-scale query we will evaluate our new system against existing state-of-the-art sequence-search tools, including PAC~\cite{Marchet_2023}, MetaGraph~\cite{Karasikov2020}, KMIndex~\cite{Lemane_2023} and the most recent iteration of our own Mantis system~\cite{almodaresi2022incrementally}. We will evaluate index construction time and space, ``final'' index space (we intend our index, unlike most other tools, to allow updates, hence final here means once all samples have been inserted), as well as query time and accuracy.  We will evaluate across a wide range of different datasets and use-cases, including large collections of RNA-seq data~\cite{Lonsdale_2013}, challenging and diverse collections of metagenomic data~\cite{Sunagawa_2020}, and ultimately, we will seek to construct an index (or federation of indices) across the entire SRA (specifically, the non-controlled-access data) at petabyte scale~\cite{kodama2012sequence}. As we expect our tool will be able to scale beyond existing systems, we will catalog the point at which the existing tools fail (and the reason for that failure), and will evaluate the comparative size, speed, and accuracy of our index at all of these points.
+  \item For pangenomic analysis, we will evaluate the construction of indices over various types of data with different characteristics, including heterogeneous collections of bacterial genomes~\cite{Blackwell_2021}, and human genomes at population scale (100,000 Genomes Project~\cite{1002021100}). We will specifically evaluate our tools on the memory and time required to construct the indexes, the resulting index size, and the speed and accuracy of the subsequent queries. We plan to support fast variant queries as well as full sequence-to-graph alignment, and will compare to existing state-of-the-art tools within each category~\cite{garrison2018variation,pandey2021variantstore,Chandra_2023,Ivanov_2022,Hickey_2023}. Critically, we will focus in our evaluation on query efficiency and throughput, since an existing limitation of pangenomic indices is that they are considerably slower to query than linear genome indices; we expect our algorithmic and engineering advances will help close the gap and enable more regular and frequent use of pangenomic alignment. 
+  \item We will evaluate strong and weak scalability across multiple GPUs and multiple nodes in an HPC environment. Specifically, we will deploy and run our applications on distributed computing infrastructure of supercomputers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}). PI Pandey is an affiliate faculty at the Lawrence Berkeley National Lab and has access to these supercomputers.
+  \item For all of these applications we will build open-source software tools with an Apache 2.0 license, available via Github, and also distributed via bioconda~\cite{Gr_ning_2018}. In addition to our library experience (above), our widely cited and used computational biology tools~\cite{PandeyAlBe18,PandeyBeJo17a,PandeyBeJo17b,PandeyBeJo18,pandey2020timely,pandey2021variantstore,pandey2021terrace,pandey2022iceberght,Patro2017Salmon,he2022alevin,He2023,Khan2022} show our extensive experience with building and deploying high-quality, and widely-used, academic software.
+  %\item In addition to the above, we will evaluate Best-in-class performance (vs.\ CPUs) on a single node and multiple nodes.
+\end{itemize}
+
+\input{gantchart.tex}
+
+\para{Timeline}
+We have organized our timeline into tasks. There is a task corresponding to every research problem described in earlier sections. The timeline is divided into quarters and tasks are grouped based on research areas; Algorithms, Systems, HPC, and Applications. Furthermore, each applications task is divided into three sub-tasks, first: integrating advanced CPU data structures; second: integrating GPU data structures to scale up; third: integrating distributed data structures to scale out.
+%
+We have distributed the research problems across the four areas and we will work on the overlapping problems simultaneously across the years.
+
+
+
+% \begin{description}
+% \item [Year 1:] Develop theoretical models for GPU-based data structures. Build initial prototypes of filters, hash tables, sketches, and string data structures for single GPUs. [Task 1, Task 4]
+
+% \item [Year 2:] Explore computational biology applications such as taxonomic classification for metagenomic data, raw sequence search, and pangenomics to develop a common data structure API\@. Build single GPU-enabled software tools for common data processing pipelines such as k-mer analysis and sequence alignment. [Task 5, Task 10]
+
+% \item [Year 3:] Develop theoretical models for single-node-multi GPU data structures. Develop a single-node-multi-GPU compact and dynamic data structure library with strong theoretical guarantees. Integrate the data structure library in computational biology tools. [Task 2, Task 6, Task 11]
+
+% \item [Year 4:] Develop theoretical models for multi-node multi-GPU data structures for computational biology problems. Build prototype multi-node multi-GPU data structures. [Task 3, Task 7]
+
+% \item [Year 5:] Scale out computational biology applications such as taxonomic classification for metagenomic data, raw sequence search, and pangenomics in HPC environments such as Perlmutter and Summit supercomputers using the multi-node multi-GPU data structures library and perform petabyte scale data analyses. [Task 8, Task 9, Task 12, Task 13]
+% \end{description}
