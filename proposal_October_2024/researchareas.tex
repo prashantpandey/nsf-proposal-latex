@@ -1,6 +1,6 @@
 %!TEX root =  proposal.tex
 
-\section{Research areas}
+\section{The Team}
 
 % The Project Description must contain a section titled "Research Areas" that must:
 
@@ -8,20 +8,16 @@
 % Describe the targeted distributed applications and systems, and the heterogeneous platforms on which they run; and
 % Define relevant notions of scale and describe how scalability will be theoretically and experimentally evaluated for the targeted distributed applications and systems and heterogeneous platforms in (2) with respect to the full hardware/software stack.
 
-
-
-\paragraph{Coverage areas.}
-Data structures are ubiquitous  as a way to build scalable computational biology applications that can process petabyte-scale genomic data.
-Data structures have become a bottleneck, but redesigning data structures for GPUs to exploit massive parallelism and scaling to distributed memory is tantamount to renegotiating the division of labor among system components---requiring a closely knit team and an approach that weighs the costs and benefits holistically.
-Our team has extensive expertise in the following four research areas:
-
-% \begin{itemize}[noitemsep,nolistsep]
+The team has a rare combination of skills needed for this proposal.  \defn{We are a tightly coupled team:}  All of the PIs have written multiple papers with other PIs, and we have 19 published papers, each authored by at least three  of the PIs.
+%three of the PIs have published papers with at least three other PIs.  
+\defn{The proposed work is in our main area of expertise:} Every PI has published in HPC, Systems, Computational Biology and Algorithms.  More specifically:
+%One of the PIs is a world leader in GPUs, two of the PIs are world leaders in Computational Biology, two  of the PIs are world leaders in the theory of data structures, and two of the PIs are world leaders in high-performance data structures. All of us have as a main thrust of our research the transfer of theoretical results in data structures to practice, especially in HPC settings. Three of us have particular expertise in implementing sophisticated data structures in multi-node multi-GPUs settings.
 
 \begin{description}%[noitemsep,nolistsep]
     \item[Theory and Algorithms (PIs Bender, Farach-Colton, Pandey, and Patro)]
     Bender, Farach-Colton, Pandey, and Patro have written numerous theory related publications and have made significant contributions towards designing efficient data structures and building scalable applications using their theoretical contributions~\cite{BenderFaGo18,BenderFaJo12,PandeyBJ17,PandeyAlBe18,PandeyBeJo17a,PandeyBeJo17b,ConwayFaSh18,JannenYuZh15a,JannenYuZh15b,YuanZhJa16,pandey2021terrace,pandey2021variantstore,pandey2022iceberght,Assadi2023,Bender2023,pandey2020timely,PandeyCDBFJ21,mccoy2022high,Almodaresi2018Pufferfish,fan2023spt,Khan2021,Khan2022,Khan2023CapsSA,fan2023fulgor,Pibiri2023MacDBG}.
 
-    \item[GPU Systems (PIs Farach-Colton, Owens, and Pandey)] Owens and Pandey have written numerous paper on GPU data structures and programming models. Owens' research program in GPU computing~\cite{Owens:2007:ASO,Owens:2008:GC} spans nearly 20 years and includes representative research advances in fundamental algorithms~\cite{Sengupta:2007:SPF}, data structures~\cite{Lefohn:2006:GGE,Alcantara:2009:RPH}, % scalability to multiple GPUs~\cite{Stuart:2009:MPO,Stuart:2011:EMT,Stuart:2011:MMO,Pan:2017:MGA,Pan:2018:SBS,Chen:2022:SIP},
+    \item[GPU Systems (PIs Farach-Colton, Owens, and Pandey)] Farach-Colton, Owens, and Pandey have written numerous paper on GPU data structures and programming models. Owens' research program in GPU computing~\cite{Owens:2007:ASO,Owens:2008:GC} spans nearly 20 years and includes representative research advances in fundamental algorithms~\cite{Sengupta:2007:SPF}, data structures~\cite{Lefohn:2006:GGE,Alcantara:2009:RPH}, % scalability to multiple GPUs~\cite{Stuart:2009:MPO,Stuart:2011:EMT,Stuart:2011:MMO,Pan:2017:MGA,Pan:2018:SBS,Chen:2022:SIP},
     performance engineering~\cite{Zhang:2011:AQP}, programming models~\cite{Gupta:2012:ASO, Tzeng:2010:TMF}, and applications~\cite{Wang:2017:GGG}. Pandey's research includes building massively parallel and feature-rich GPU filters~\cite{mccoy2022high}, distributed-memory GPU hash tables for efficiently processing genomic data~\cite{nisa2021distributed}, GPU-accelerated exascale metagenomic assembly pipelines~\cite{McCoyHYP23a}, and high-performance and general-purpose GPU memory managers~\cite{McCoyP24}.
 
     \item[High-Performance Computing (PIs Bender, Farach-Colton, Owens, and
@@ -35,14 +31,5 @@ Our team has extensive expertise in the following four research areas:
 \end{description}
 
 
-\paragraph{Notions of Scale.}
-Our proposed work addresses several notions of scale.
-% First, multi-core parallelism on CPUs is critical to efficiently scale data structure to exploit CPU compute.
-First, our work involves scaling up data structures by designing them for GPUs. GPUs are cost-effective and offer massive parallelism, allowing significant speedups compared to CPUs. GPU data structures can help speed up computational-biology applications
-% by orders of magnitude \john{this phrase ``orders of magnitude'' makes me nervous, I don't want to make reviewers nervous}
-and quickly analyze large-scale datasets. Without a principled redesign of data structures, additional device RAM and GPU cores will be of diminishing value.
-Second, our work includes scaling out data structures in distributed memory across multi-node GPUs to quickly process petabyte-scale genomic and metagenomic datasets. This will involve building distributed data structures that can offer low communication volume and low load imbalance. Prior work has demonstrated that data movement and load imbalance is the major bottleneck for achieving high performance in a distributed application.
-Furthermore, computational biology datasets available today are already terabyte- and petabyte-scale. For example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from the 100,000 Genome Project~\cite{1002021100}. 
-% \john{Pretty sure the previous sentence was already stated in the intro.} 
-% \prashant{Yeah, Martin/Michael mentioned to repeat this a couple of times.}
-To quickly process and perform biological analysis on these data, we need to exploit the massive computing in modern GPUs (V100 and A100) and also the distributed computing infrastructure of supercomputers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}).
+%\paragraph{Notions of Scale.}
+Our proposed work addresses several notions of scale.  First, our work involves scaling up data structures by designing them for GPUs. GPUs are cost-effective and offer massive parallelism, allowing significant speedups compared to CPUs. GPU data structures can help speed up computational-biology applications and quickly analyze large-scale datasets. Without a principled redesign of data structures, additional device RAM and GPU cores will be of diminishing value. Second, our work includes scaling out data structures in distributed memory across multi-node GPUs to quickly process petabyte-scale genomic and metagenomic datasets. This will involve building distributed data structures that can offer low communication volume and low load imbalance. Prior work has demonstrated that data movement and load imbalance is the major bottleneck for achieving high performance in a distributed application. Furthermore, computational biology datasets available today are already terabyte- and petabyte-scale. For example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from the 100,000 Genome Project~\cite{1002021100}.  To quickly process and perform biological analysis on these data, we need to exploit the massive computing in modern GPUs (V100 and A100) and also the distributed computing infrastructure of supercomputers (Perlmutter~\cite{perlmutter} and Summit~\cite{summit}).
