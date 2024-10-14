@@ -17,22 +17,37 @@
 \section{Introduction}
 \label{intro}
 
-% \subsection{Problem}
-
-% \mab{proposal format has too much white space between paragraphs...}
-
-% MAB: the problem
 
 %\mfc{we don't explain which data structures are the bottleneck.  We don't calculate how much faster they can potentially get -- for example, if we use GPUs -- , nor translate that into a concrete biological win.  We don't say what the challenge is to realizing this upside.}
 
 %\mfc{in short, some things are great, but some things are missing.  And some things are strange -- like the very late mention of GPUs.}
 
-\mfc{this used to be a section of the proposal but now it feels like part of the intro.  Maybe we need a way to ease into it.}
+{\color{blue} Outline of an intro:
+\begin{itemize}
+    \item set up a target problem of data analystics, where we are going to use comp bio as an example
+    \item talk about how many data pipelines end up using the same basic data structures.  forward pointer to how we work this out in detail in section 3 for 3 seamingly different/unrealted comp bio problems
+    \item so the topic of this proposal is high-throughput HPC versions of these data structures 
+    \item argue that things are now at a scale where this will require GPUs
+    \item then talk about how GPUs have been great for regular computations, but these data structures are irregular
+    \item talk about the technical challenges of building these data structures at scale
+    \item talk about why we will succeed/what has change in the world so we can succeed
+    \item talk about how we have clear application targets that will validate that our work is useful on actual data pipelines
+\end{itemize}
 
-\mfc{In particular, it needs to be focused on applications?  Which was a given when it was section 4, but now needs to be added back.}
+}
 
 
-With power constraints (continuing to be) the main bottleneck in increased computing performance, the superior performance and power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes them increasingly attractive at all scales, from mobile devices to laptop and desktop computation to the largest supercomputers. The recent and extremely rapid rise of training deep neural networks for deep-learning applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data centers in nearly every large Internet company and NVIDIA GPUs in each of the three major cloud computing providers. As well, GPUs have made enormous inroads into the largest-scale computations. GPU-centered machines dominate the top of the biannual TOP500 list~\cite{top500:nov2022}, including 7 of the top 10 (\#1 and \#3 have AMD GPUs; 157 total of the 168 GPU-centered machines have NVIDIA GPUs). In systems that have high compute requirements, GPU hardware is now ubiquitous. \mfc{This is the business end of this intro.  It belongs at the front with an explanThis is true despite a gap between the capabilities of CPU and GPU software infrastructure, a gap that can be directly addressed with ambitious research proposals such as ours. Successful research outcomes will further incentivize primarily targeting GPUs with new application development and moving existing applications onto GPUs.
+With power constraints (continuing to be) the main bottleneck in increased computing performance, the superior performance and power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes them increasingly attractive at all scales, from mobile devices to laptop and desktop computation to the largest supercomputers. The recent and extremely rapid rise of training deep neural networks for deep-learning applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data centers in nearly every large Internet company and NVIDIA GPUs in each of the three major cloud computing providers. As well, GPUs have made enormous inroads into the largest-scale computations. GPU-centered machines dominate the top of the biannual TOP500 list~\cite{top500:nov2022}, including 7 of the top 10 (\#1 and \#3 have AMD GPUs; 157 total of the 168 GPU-centered machines have NVIDIA GPUs). In systems that have high compute requirements, GPU hardware is now ubiquitous. 
+%
+%\mfc{This is the business end of this intro.  It belongs at the front with an explanation of what we mean.  Let's sell it} 
+%\mab{Text to be updated and moved somewhere: \\
+%
+The performance advantages  of GPU hardware are so advantageous that GPU systems are ubiquitous even though the  
+CPU software infrastructure is much more cumbersome/underdeveloped than the CPU software infrastructure. 
+
+%a gap that can be directly addressed with ambitious research proposals such as ours. 
+%Successful research outcomes will further incentivize primarily targeting GPUs with new application development and moving existing applications onto GPUs.
+%}
 
 The most successful GPU applications have historically been focused on highly parallel, regular workloads (e.g., training deep neural networks). What has been more challenging, and the focus of significant research effort over the past decade, has been \emph{irregular} and/or \emph{sparse} workloads that are harder to parallelize effectively. These workloads include the powerful data structures that are the focus of this proposal. While these workloads may exhibit ample parallelism and thus are potentially a good fit for the GPU, they are challenging to implement efficiently because they do not naturally map well to key GPU software design guidelines:
 
