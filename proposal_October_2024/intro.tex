@@ -24,18 +24,16 @@
 
 {\color{blue} Outline of an intro:
 \begin{itemize}
-    \item set up a target problem of data analystics, where we are going to use comp bio as an example
-    \item talk about how many data pipelines end up using the same basic data structures.  forward pointer to how we work this out in detail in section 3 for 3 seamingly different/unrealted comp bio problems
-    \item so the topic of this proposal is high-throughput HPC versions of these data structures 
-    \item argue that things are now at a scale where this will require GPUs
-    \item then talk about how GPUs have been great for regular computations, but these data structures are irregular
-    \item talk about the technical challenges of building these data structures at scale
-    \item talk about why we will succeed/what has change in the world so we can succeed
-    \item talk about how we have clear application targets that will validate that our work is useful on actual data pipelines
+    \item set up a target problem of data analytics, where we are going to use comp bio as an example [Prashant + Michael]
+    \item talk about how many data pipelines end up using the same basic data structures.  forward pointer to how we work this out in detail in section 3 for 3 seemingly different/unrelated comp bio problems [Prashant + Michael]
+    \item so the topic of this proposal is high-throughput HPC versions of these data structures [Prashant + Michael] 3 bullets 1/2 page
+    \item argue that things are now at a scale where this will require GPUs [John]
+    \item then talk about how GPUs have been great for regular computations, but these data structures are irregular [John]
+    \item talk about the technical challenges of building these data structures at scale [John]
+    \item talk about why we will succeed/what has change in the world so we can succeed [John] 1/2 - 1 page (for all four bullets in total) [deduplicate with rest of intro]
+    \item talk about how we have clear application targets that will validate that our work is useful on actual data pipelines [Prashant + Michael] 1/4 page
 \end{itemize}
-
 }
-
 
 With power constraints (continuing to be) the main bottleneck in increased computing performance, the superior performance and power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes them increasingly attractive at all scales, from mobile devices to laptop and desktop computation to the largest supercomputers. The recent and extremely rapid rise of training deep neural networks for deep-learning applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data centers in nearly every large Internet company and NVIDIA GPUs in each of the three major cloud computing providers. As well, GPUs have made enormous inroads into the largest-scale computations. GPU-centered machines dominate the top of the biannual TOP500 list~\cite{top500:nov2022}, including 7 of the top 10 (\#1 and \#3 have AMD GPUs; 157 total of the 168 GPU-centered machines have NVIDIA GPUs). In systems that have high compute requirements, GPU hardware is now ubiquitous. 
 %
