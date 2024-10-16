@@ -24,9 +24,9 @@
 
 {\color{blue} Outline of an intro:
 \begin{itemize}
-    \item set up a target problem of data analytics, where we are going to use comp bio as an example [Prashant + Michael]
-    \item talk about how many data pipelines end up using the same basic data structures.  forward pointer to how we work this out in detail in section 3 for 3 seemingly different/unrelated comp bio problems [Prashant + Michael]
-    \item so the topic of this proposal is high-throughput HPC versions of these data structures [Prashant + Michael] 3 bullets 1/2 page
+    \item \sout{set up a target problem of data analytics, where we are going to use comp bio as an example [Prashant + Michael]}
+    \item \sout{talk about how many data pipelines end up using the same basic data structures.  forward pointer to how we work this out in detail in section 3 for 3 seemingly different/unrelated comp bio problems [Prashant + Michael]}
+    \item \sout{so the topic of this proposal is high-throughput HPC versions of these data structures [Prashant + Michael] 3 bullets 1/2 page}
     \item argue that things are now at a scale where this will require GPUs [John]
     \item then talk about how GPUs have been great for regular computations, but these data structures are irregular [John]
     \item talk about the technical challenges of building these data structures at scale [John]
@@ -34,6 +34,58 @@
     \item talk about how we have clear application targets that will validate that our work is useful on actual data pipelines [Prashant + Michael] 1/4 page
 \end{itemize}
 }
+
+Our ability to generate, acquire, and store data has grown exponentially over
+the past decade, transforming fields such as biology, cosmology, drug discovery,
+etc.  
+\mab{Put in an example here. E.g., a biology example showing that our ability to generate this data is outpacing hardware capacity and speed.}
+As a result, increasingly complex and large-scale analyses are employed to
+gain insights into this data. 
+The scalability of these complex data
+analyses arguably rank among the biggest challenges in the next decade. For
+example, both the volume and variety of genomic sequencing data has been
+increasing at an ever faster rate, driven by new and improved massively parallel
+high-throughput sequencing (HTS) technologies.  These technologies are already
+producing petabyte-scale datasets~\cite{kodama2012sequence}, and the NIH
+estimates that ``genomics research will generate between 2 and 40 exabytes of
+data within the next decade''~\cite{NHGRIDataScience}. 
+
+
+These applications are bottlenecked by the performance of an underlying core set
+of data structures, including filters~\cite{PandeyAlBe18, solomon2016fast}, hash
+tables~\cite{solomon2016fast,almodaresi2022incrementally}, locality sensitive
+hashing~\cite{Marais2019}, compressed string
+indexes~\cite{Almodaresi2018Pufferfish}, etc. Specifically, the scale of the
+data is such that two main problems arise \textbf{(1)} some analyses are simply
+not currently feasible with existing data structures and algorithms --- for
+example, despite the long-standing desire to build a sequence-level index for
+the entire SRA, existing efforts have not reached this
+scale~\cite{Karasikov2020, HarrisM20, SolomonK17, almodaresi2022incrementally,
+AlmodaresiPFJP20,PandeyAlBe18} and \textbf{(2)} other common analyses are
+feasible, but computationally burdensome, requiring powerful local compute
+abilities, or leading to increased costs for analyses using cloud compute; this
+slows down the analysis and discovery cycle, and has led to a scenario in which,
+in many cases, compute has overtaken data generation as the predominant
+experiment-related cost~\cite{Muir_2016} (apart from humans).
+
+\para{CPU speed and RAM capacity cannot keep up with data growth}
+The CPU speed and RAM sizes are not keeping up with the data growth in modern
+applications across databases, machine learning, computational biology, and
+scientific computing. Although CPU performance is increasing at 2--25\%/year and
+single-node RAM sizes are increasing at 2--11\%/year, genomics data is is likely
+to double in size every 1.5 years~\cite{kodama2012sequence}. Thus, today's
+software tools will not scale with tomorrow's data. For example, performing
+\kmer analysis or sequence alignment on petabyte-scale raw sequencing data is
+not possible on single-node shared-memory systems.
+In the post-Moore’s-Law period, performance gains will come from software,
+algorithms, and hardware rather than semiconductors~\cite{leiserson2020there}.
+We can achieve massive scalability by first, designing data structures and
+algorithms to scale up using modern accelerators such as GPUs and second,
+scaling out by using distributed memory in an high-performance computing (HPC)
+environment.
+
+
+\prashant{Editing here...}
 
 With power constraints (continuing to be) the main bottleneck in increased computing performance, the superior performance and power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes them increasingly attractive at all scales, from mobile devices to laptop and desktop computation to the largest supercomputers. The recent and extremely rapid rise of training deep neural networks for deep-learning applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data centers in nearly every large Internet company and NVIDIA GPUs in each of the three major cloud computing providers. As well, GPUs have made enormous inroads into the largest-scale computations. GPU-centered machines dominate the top of the biannual TOP500 list~\cite{top500:nov2022}, including 7 of the top 10 (\#1 and \#3 have AMD GPUs; 157 total of the 168 GPU-centered machines have NVIDIA GPUs). In systems that have high compute requirements, GPU hardware is now ubiquitous. 
 %
