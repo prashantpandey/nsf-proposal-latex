@@ -2,7 +2,9 @@
 
 \section{Sketches}
 
-Measuring sequence similarity is at the core of many algorithms in computational biology~\cite{Myers2000, Langmead2012,Li2010}. Computing sequence similarity via optimal alignment is computationally intensive and requires an $O(n^2)$-time solution for two sequences of length $n$, in the worst case.  For highly divergent sequences, faster algorithms~\cite{MarcoSola2023} are known, and some have been implemented on the GPU~\cite{AguadoPuig2023}. However, due to the sheer size of datasets available today in terms of both complete and draft assemblies (e.g., metagenomic assemblies in RefSeq~\cite{RefSeq}) and raw sequences in SRA~\cite{SRA}, computing sequence similarities using traditional algorithms --- even the most efficient variants --- is not feasible.
+\mfc{this tool is so general, and this application is so specific by comparison}
+
+Measuring sequence similarity is at the core of many algorithms in  computational biology~\cite{Myers2000, Langmead2012,Li2010}. Computing sequence similarity via optimal alignment is computationally intensive and requires an $O(n^2)$-time solution for two sequences of length $n$, in the worst case.  For highly divergent sequences, faster algorithms~\cite{MarcoSola2023} are known, and some have been implemented on the GPU~\cite{AguadoPuig2023}. However, due to the sheer size of datasets available today in terms of both complete and draft assemblies (e.g., metagenomic assemblies in RefSeq~\cite{RefSeq}) and raw sequences in SRA~\cite{SRA}, computing sequence similarities using traditional algorithms --- even the most efficient variants --- is not feasible.
 
 Recently, researchers have employed dimensionality-reduction techniques, such as Minhash~\cite{Broder97}, ordered-min hash~\cite{Marais2019}, and HyperLogLog~\cite{Baker2019} to include a pairwise-mutation distance and P-value-significance test, enabling  efficient clustering and searching in massive sequence collections~\cite{Mitzenmacher2014,ondov2016mash,Marais2019,Baker2019}. PI Pandey developed a new locality sensitive hashing (LSH) method, called Order Min Hash (OMH)~\cite{Marais2019}, for  edit distance. This method is a refinement of the minHash LSH used to approximate the Jaccard similarity, in that OMH is sensitive not only to the \kmer contents of the sequences but also to the relative order of the \kmers in the sequences. PI Pandey presented theoretical guarantees of the OMH as a gapped LSH\@.
 
@@ -15,8 +17,11 @@ Develop sketching algorithms that can replace hashing with batch sorting and ach
 Our approach is to develop algorithmic techniques where we can compute sketches by pre-computing and sorting the \kmers in a hash order. Doing this will help preserve locality and achieve massive parallelism on GPUs. PI Pandey has explored similar techniques in the past to preserve the order of \kmers in the sequence~\cite{Marais2019}.
 
 \begin{rproblem}
-Develop data structures for indexing and searching low-dimensional embeddings (based on minhash) for raw genomic and metagenomic data.
+Develop data structures for indexing and searching low-dimensional embeddings (based on minhash).  Test them on raw genomic and metagenomic data.
 \end{rproblem}
+
+\mfc{every problem needs to be rewritten so that it's Build x.  Test is on comp bio.}
+
 
 The ability to perform an approximate nearest neighbor (ANN) search on the vector space (minhash sketch) enables researchers to quickly prune the search space of millions of samples to find the sample of interest. PIs  Bender, Pandey, and Patro have developed Mantis~\cite{PandeyAlBe18}, an inverted index on \kmers, to perform sequence-level searches. Our goal is to further reduce the index space by indexing sequences using sketches instead of \kmers and speed up the construction and query using GPUs on larger datasets.
 

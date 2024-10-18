@@ -18,7 +18,7 @@ The use of the FM-index across applications is due to its fast performance and l
 %
 The FM-index is a static data structure. It saves space at the cost of updatability. However, sequences are often added and deleted in computational biology datasets and existing applications have to rebuild the string indexes from scratch to support updatability.
 %
-Constructing compressed string indexes such as the BWT and FM-index is memory-intensive. Existing tools such as BOSS~\cite{Bowe2012} and VARI~\cite{Muggli2019} use disks to mitigate the high memory requirements to construct a string index. They need to write out the intermediate results to disk and page them back and forth. This results in suboptimal construction speed.
+Constructing compressed string indexes such as the BWT and FM-index is memory-intensive. Existing tools such as BOSS~\cite{bowe2012succinct} and VARI~\cite{Muggli2019} use disks to mitigate the high memory requirements to construct a string index. They need to write out the intermediate results to disk and page them back and forth. This results in suboptimal construction speed.
 %
 
 
