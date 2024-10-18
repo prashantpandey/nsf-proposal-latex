@@ -25,7 +25,6 @@
 %\RequirePackage{charter}
 \RequirePackage{mathptmx}
 
-
 % For some reason, the NSF Fastlane pdf upload checker would flag margins
 % as being less than 1 inch of margin was set to 1 inch here. Setting to 
 % 1.02 inches seemed to work. 
