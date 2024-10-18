@@ -31,7 +31,7 @@
     \item \sout{then talk about how GPUs have been great for regular computations, but these data structures are irregular [John]}
     \item \sout{talk about the technical challenges of building these data structures at scale [John]}
     \item \sout{talk about why we will succeed/what has change in the world so we can succeed [John] 1/2 - 1 page (for all four bullets in total) [deduplicate with rest of intro]}
-    \item talk about how we have clear application targets that will validate that our work is useful on actual data pipelines [Prashant + Michael] 1/4 page
+    \item \sout{talk about how we have clear application targets that will validate that our work is useful on actual data pipelines [Prashant + Michael] 1/4 page}
 \end{itemize}
 }
 
@@ -220,36 +220,106 @@ As a consequence of these two broad trends, NVIDIA has made a large investment i
 
 %
 
-\para{In this project} We aim to build high-performance and scalable data-analyses pipelines on the GPU for a wide variety of data-intensive computations.  To do so, we will address the main computational bottlenecks that are at the core of many existing systems by developing new massively parallel and distributed data structures and algorithms for common and widely-needed data-processing tasks. We aim to address the fundamental problems described above, \defn{enabling certain heretofore intractable analyses}, and \defn{vastly reducing (by an order of magnitude or more) the key computational costs associated with some of the most common data analyses}.    
+\para{In this project} We aim to build high-performance and scalable
+data-analyses pipelines on the GPU for a wide variety of data-intensive
+computations across computational biology, machine learning, databases, and
+scientific computing.  To do so, we will address the main computational
+bottlenecks that are at the core of many existing systems by developing new
+massively parallel and distributed data structures and algorithms for common
+and widely-needed data-processing tasks. We aim to address the fundamental
+problems described above, \defn{enabling certain heretofore intractable
+analyses}, and \defn{vastly reducing (by an order of magnitude or more) the key
+computational costs associated with some of the most common data analyses}.    
 %
-Central to our approach is to leverage the massive parallelism of GPUs. The challenge with (clusters of) GPUs  is that dynamic data structures have traditionally  been difficult to design and implement on GPUs, indeed, even on a single GPU. 
+Central to our approach is to leverage the massive parallelism of GPUs. The
+challenge with (clusters of) GPUs  is that dynamic data structures have
+traditionally  been difficult to design and implement on GPUs, indeed, even on
+a single GPU. 
 
-We will stress-test of data structural library on computational biology applications. The scale of comp.~bio.~applications are such that scale out to multiple, distributed GPUs will be necessary in this setting.
-See Section~\Cref{sec:multigpu} for specifics.  
+We will stress-test on data structural library on computational biology
+applications. Specifically, we identify two raw data analysis ``kernels'':
+\Kmer analysis and sequence alignment. These kernels are used broadly
+throughout computational biology. These are bottlenecks in many
+comp.~bio.~workflows, so making them faster and scaling them to larger data
+sets will have widespread impact. GPUs offer an avenue to scaling these data
+structures. And while GPUs are fast, they are space constrained.  Therefore,
+we need new data structures and algorithms that are space efficient to speed up
+these applications. The scale of comp.~bio.~applications are such that scale
+out to multiple, distributed GPUs will be necessary in this setting. See
+Section~\Cref{sec:multigpu} for specifics.  
 
 
 
 
 \subsection{Our proposed work}
 
-We believe the answer to these challenges is a collection of  memory-efficient, high-performance, dynamic, scalable and massively-parallel data structures.
+We believe the answer to these challenges is a collection of  memory-efficient,
+high-performance, dynamic, scalable and massively-parallel data structures.
 %that can be directly used by computational biology applications. 
-Because these data structures are used across multiple applications and domains we propose to build a \emph{standalone library} comprising these data structures. A standalone library will enable easy integration and adoption of these data structures in the applications from this proposal (and many others).
+Because these data structures are used across multiple applications and domains
+we propose to build a \emph{standalone library} comprising these data
+structures. A standalone library will enable easy integration and adoption of
+these data structures in the applications from this proposal (and many others).
 
-\paragraph{Our approach is four-pronged.}  We will develop new {algorithmic theory} to design scalable data structures; we will develop new {systems} that implement our solutions in a scale-up manner,  both on CPU and GPU\@; we will a develop new framework to distribute our solutions in an {HPC} environment, so they scale out to clusters of GPUs; and finally we will validate our solutions on {computational biology} workloads.
+\paragraph{Our approach is four-pronged.}  We will develop new {algorithmic
+theory} to design scalable data structures; we will develop new {systems} that
+implement our solutions in a scale-up manner,  both on CPU and GPU\@; we will a
+develop new framework to distribute our solutions in an {HPC} environment, so
+they scale out to clusters of GPUs; and finally we will validate our solutions
+on {computational biology} workloads.
 %
-Specifically, our data structures are: \textbf{filters}, \textbf{hash tables}, \textbf{string indexes}, \textbf{sketches}, and related auxiliary data structures.  We propose three specific common computational biology analyses on which we will validate our solutions: {large-scale raw sequence search},{taxonomic classification for metagenomic data},{pangenomic indexing and analysis}.   See Section~\ref{sec:compbio} for a description of these analysitcal pipelines.
+Specifically, our data structures are: \textbf{filters}, \textbf{hash tables},
+\textbf{string indexes}, \textbf{sketches}, and related auxiliary data
+structures.  We propose three specific common computational biology analyses on
+which we will validate our solutions: {large-scale raw sequence
+search},{taxonomic classification for metagenomic data},{pangenomic indexing
+and analysis}.   See Section~\ref{sec:compbio} for a description of these
+analysitcal pipelines.
 
 \mfc{This needs non-bio applications, I would think}
-However, while we will focus and validate on these applications, it is critical to point out that the data structures, algorithms, and libraries that we build will find immediate application a much larger array of analyses, some of which we will endeavour to build ourselves. For example, with the ability to perform rapid seeding on the GPU (using the indices described herein), and taking advantage of our own expertise in building computationally efficient tools for the pre-processing of single-cell sequencing data~\cite{he2022alevin}, we believe that single-cell RNA-seq preprocessing will be an immediate ``low-hanging'' fruit that can be accelerated with our stack. It has already been demonstrated by nVidia that their rapids single-cell~\cite{rapids} library can speed up steps of the downstream analysis of single-cell count matrices from $4.7$-$850\times$. Yet, the preprocessing of raw data to obtain the count matrices to be analyzed, a computationally intensive process, does not yet have a GPU implementation. However, the required computation is embarrassingly parallel, with the processing of each sample requiring the alignment of hundreds of millions to billions of sequencing reads (highly parallelizable), followed by barcode correction (requires some synchronization) and UMI resolution (highly parallelizable as each cell can be evaluated independently). Thus, we anticipate implementing this preprocessing using our GPU-enhanced stack will see a one to two order-of-magnitude performance improvement over existing state-of-the-art solutions; a critical necessity given the incredibly rapid growth of single-cell sequencing data~\cite{scgrowth2022}.
+However, while we will focus and validate on these applications, it is critical
+to point out that the data structures, algorithms, and libraries that we build
+will find immediate application a much larger array of analyses, some of which
+we will endeavour to build ourselves. For example, with the ability to perform
+rapid seeding on the GPU (using the indices described herein), and taking
+advantage of our own expertise in building computationally efficient tools for
+the pre-processing of single-cell sequencing data~\cite{he2022alevin}, we
+believe that single-cell RNA-seq preprocessing will be an immediate
+``low-hanging'' fruit that can be accelerated with our stack. It has already
+been demonstrated by nVidia that their rapids single-cell~\cite{rapids} library
+can speed up steps of the downstream analysis of single-cell count matrices
+from $4.7$-$850\times$. Yet, the preprocessing of raw data to obtain the count
+matrices to be analyzed, a computationally intensive process, does not yet have
+a GPU implementation. However, the required computation is embarrassingly
+parallel, with the processing of each sample requiring the alignment of
+hundreds of millions to billions of sequencing reads (highly parallelizable),
+followed by barcode correction (requires some synchronization) and UMI
+resolution (highly parallelizable as each cell can be evaluated independently).
+Thus, we anticipate implementing this preprocessing using our GPU-enhanced
+stack will see a one to two order-of-magnitude performance improvement over
+existing state-of-the-art solutions; a critical necessity given the incredibly
+rapid growth of single-cell sequencing data~\cite{scgrowth2022}.
 
 % If successful we will be able to perform complex data analyses to answer biological questions on available terabyte- and petabyte-scale datasets, for example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. \john{These cites / this argument is also made a page earlier; consider deleting this.} Existing data structures and software tools fail to scale to these data sizes, making these publicly available and highly valuable data resources largely inert.
 
 
 \mfc{this feels appologetic.  Is there a better title that project's novelties?}
-\textbf{The project’s novelties are: a vertical-stack approach} spanning \textbf{theory and algorithms} (highly concurrent, dynamic, and distributed data structures); \textbf{systems} (scaling up using GPU acceleration); \textbf{high-performance computing} (scaling out using distributed data structures); and \textbf{applications} (computational biology applications); new parallel and distributed data structures and algorithms to exploit the massive compute on GPUs that can be applicable to other application domains; and an API for developers to quickly and seamlessly integrate high-performance and scalable data structures in applications.
+\textbf{The project’s novelties are: a vertical-stack approach} spanning
+\textbf{theory and algorithms} (highly concurrent, dynamic, and distributed
+data structures); \textbf{systems} (scaling up using GPU acceleration);
+\textbf{high-performance computing} (scaling out using distributed data
+structures); and \textbf{applications} (computational biology applications);
+new parallel and distributed data structures and algorithms to exploit the
+massive compute on GPUs that can be applicable to other application domains;
+and an API for developers to quickly and seamlessly integrate high-performance
+and scalable data structures in applications.
 %
-Our team includes a highly interdisciplinary team of researchers across four focus areas: applications (computational biology), theory and algorithms, systems, and high-performance computing. The team is taking a holistic theory/systems/HPC/applications co-design approach to explore four tightly interconnected research modules. These research modules are structured from bottom-up across the computing stack.
+Our team includes a highly interdisciplinary team of researchers across four
+focus areas: applications (computational biology), theory and algorithms,
+systems, and high-performance computing. The team is taking a holistic
+theory/systems/HPC/applications co-design approach to explore four tightly
+interconnected research modules. These research modules are structured from
+bottom-up across the computing stack.
 
 % \prashant{Add a brief application about Single cell as another application of the library.}
 
