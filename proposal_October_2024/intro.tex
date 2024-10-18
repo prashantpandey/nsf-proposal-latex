@@ -84,22 +84,67 @@ first, designing data structures and algorithms to scale up using modern
 accelerators such as GPUs and second, scaling out by using distributed memory
 in an high-performance computing (HPC) environment.
 
-With power constraints (continuing to be) the main bottleneck in increased computing performance, the superior performance, performance growth, and power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes them increasingly attractive at all scales, from mobile devices to laptop and desktop computation to the largest supercomputers. The recent and extremely rapid rise of training deep neural networks for deep-learning applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data centers in nearly every large Internet company and NVIDIA GPUs in each of the three major cloud computing providers. As well, GPUs have made enormous inroads into the largest-scale computations. GPU-centered machines dominate the top of the biannual TOP500 list~\cite{top500:jun2024}, including 9 of the top 10 (\#1 has AMD GPUs; 155 total of the 186 GPU-centered machines have NVIDIA GPUs). In systems that have high compute requirements, GPU hardware is now ubiquitous. 
+With power constraints (continuing to be) the main bottleneck in increased
+computing performance, the superior performance, performance growth, and
+power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes
+them increasingly attractive at all scales, from mobile devices to laptop and
+desktop computation to the largest supercomputers. The recent and extremely
+rapid rise of training deep neural networks for deep-learning
+applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a
+field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data
+centers in nearly every large Internet company and NVIDIA GPUs in each of the
+three major cloud computing providers. As well, GPUs have made enormous inroads
+into the largest-scale computations. GPU-centered machines dominate the top of
+the biannual TOP500 list~\cite{top500:jun2024}, including 9 of the top 10 (\#1
+has AMD GPUs; 155 total of the 186 GPU-centered machines have NVIDIA GPUs). In
+systems that have high compute requirements, GPU hardware is now ubiquitous. 
 %
-%\mfc{This is the business end of this intro.  It belongs at the front with an explanation of what we mean.  Let's sell it} 
-%\mab{Text to be updated and moved somewhere: \\
+%\mfc{This is the business end of this intro.  It belongs at the front with an
+%explanation of what we mean.  Let's sell it} \mab{Text to be updated and moved
+%somewhere: \\
 %
-These advantages of GPU hardware are so significant that GPU systems are ubiquitous even though the GPU software ecosystem is much more cumbersome/underdeveloped than the CPU world. It is precisely this gap that we address with our proposal. We believe that the GPU presents the best future direction for large-scale computation, epitomized by the applications we discuss in this proposal, and that solving the research problems involved in designing and building high-performance dynamic GPU data structures at scale are a critical component of this direction.
+
+These advantages of GPU hardware are so significant that GPU systems are
+ubiquitous even though the GPU software ecosystem is much more
+cumbersome/underdeveloped than the CPU world. It is precisely this gap that we
+address with our proposal. We believe that the GPU presents the best future
+direction for large-scale computation, epitomized by the applications we
+discuss in this proposal, and that solving the research problems involved in
+designing and building high-performance dynamic GPU data structures at scale
+are a critical component of this direction.
 
 %a gap that can be directly addressed with ambitious research proposals such as ours. 
 %Successful research outcomes will further incentivize primarily targeting GPUs with new application development and moving existing applications onto GPUs.
 %}
 
-\paragraph{State of the art} Today's most successful GPU applications focus on highly parallel, regular workloads. What has been more challenging, and the focus of significant research effort over the past decade, has been \emph{irregular} and/or \emph{sparse} workloads that are harder to parallelize effectively, exacerbated by the challenges in addressing these workloads at large scale (with distributed computing). These workloads include the powerful data structures that are the focus of this proposal. We see ample existing work that addresses subsets of the overall challenge: both regular GPU workloads at scale (e.g., training deep neural networks) and complex dynamic GPU data structures not at scale (including many contributions by the PIs of this proposal). The success of both of these thrusts of work gives us confidence that we can build on them to address the grand challenge of dynamic and distributed GPU data structures.
+\para{State of the art} Today's most successful GPU applications focus on
+highly parallel, regular workloads. What has been more challenging, and the
+focus of significant research effort over the past decade, has been
+\emph{irregular} and/or \emph{sparse} workloads that are harder to parallelize
+effectively, exacerbated by the challenges in addressing these workloads at
+large scale (with distributed computing). These workloads include the powerful
+data structures that are the focus of this proposal. We see ample existing work
+that addresses subsets of the overall challenge: both regular GPU workloads at
+scale (e.g., training deep neural networks) and complex dynamic GPU data
+structures not at scale (including many contributions by the PIs of this
+proposal). The success of both of these thrusts of work gives us confidence
+that we can build on them to address the grand challenge of dynamic and
+distributed GPU data structures.
 
-While these workloads may exhibit ample parallelism and thus are potentially a good fit for the GPU, they are challenging to implement efficiently because they do not naturally map well to key GPU software design guidelines, including minimizing thread divergence and contention, maximizing memory coherence, and avoiding serialization and synchronization. Scaling out data structures to a distributed domain adds the challenges of low-bandwidth, high-latency communication and load balancing across GPUs.
+While these workloads may exhibit ample parallelism and thus are potentially a
+good fit for the GPU, they are challenging to implement efficiently because
+they do not naturally map well to key GPU software design guidelines, including
+\emph{minimizing thread divergence and contention, maximizing memory coherence,
+and avoiding serialization and synchronization}. Furthermore, scaling out data
+structures to a distributed domain adds the challenges of \emph{low-bandwidth,
+high-latency communication and load balancing across GPUs}.
 
-We believe the time is right to address this problem with a multidisciplinary team with significant collaboration experience between the team members. Our recent successes in single-node and distributed GPU data structures, algorithmic advances, and computational biology applications give us the collective background to address the broad challenge with proposed research thrusts in applications, data structures, algorithms, and systems.
+We believe the time is right to address this problem with a multidisciplinary
+team with significant collaboration experience between the team members. Our
+recent successes in single-node and distributed GPU data structures,
+algorithmic advances, and computational biology applications give us the
+collective background to address the broad challenge with proposed research
+thrusts in applications, data structures, algorithms, and systems.
 
 \begin{comment}
 Over the past fourteen years, our team has significant experience in developing data structures that address these challenges. We developed the first hash tables that could be built on the GPU~\cite{Alcantara:2009:RPH,Alcantara:2011:BAE} and a plethora of dynamic data structures that were the first to be built on the GPU~\cite{Ashkiani:2018:ADH,Ashkiani:2018:GLA,Awad:2019:EAH,GeilFO18,mccoy2022high,nisa2021distributed}.
