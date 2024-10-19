@@ -38,7 +38,7 @@ Sequence alignment is used extensively in reference-based analyses, in which seq
 
 Many existing tools use compressed and succinct string indexes such as the BWT~\cite{burrows1994block} and FM-index~\cite{ferragina2000opportunistic}, the r-index~\cite{gagie2018optimal}, compressed suffix arrays~\cite{grossi2000compressed}, and several hashing-based schemes based on \kmers, minimizers, or other types of designed ``seeds''~\cite{li2018minimap2,pibiri2022sparse,sahlin2022strobealign}, as well as dynamic-programming algorithms for sequence alignment.
 Compressed and succinct indexes support efficient ``seed'' lookup, which vastly reduces the set of candidate locations where a high-quality alignment might occur, and helps to perform sequence alignment in a memory-efficient manner and enable these tool to scale to large volumes of data.
-Some of the most widely used alignment tools across computational biology, such as Bowtie2~\cite{langmead2012fast}, BWA-MEM~\cite{li2013aligning}, STAR~\cite{Dobin2012}, perform fast and efficient sequence alignment using such string indexes.
+Some of the most widely used alignment tools across computational biology, such as Bowtie2~\cite{Langmead2012}, BWA-MEM~\cite{li2013aligning}, STAR~\cite{Dobin2012}, perform fast and efficient sequence alignment using such string indexes.
 %\mab{Shorten, or just improve writing on bullets}
 %Given the large sizes of sequencing datasets, these tools also use hash-based \kmer indexes to seed the sequence alignment to achieve speedups.
 \end{itemize}

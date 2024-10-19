@@ -220,7 +220,7 @@ As a consequence of these two broad trends, NVIDIA has made a large investment i
 
 %
 
-\para{In this project} We aim to build high-performance and scalable
+\textbf{In this project}, we aim to build high-performance and scalable
 data-analyses pipelines on the GPU for a wide variety of data-intensive
 computations across computational biology, machine learning, databases, and
 scientific computing.  To do so, we will address the main computational
@@ -234,19 +234,19 @@ computational costs associated with some of the most common data analyses}.
 Central to our approach is to leverage the massive parallelism of GPUs. The
 challenge with (clusters of) GPUs  is that dynamic data structures have
 traditionally  been difficult to design and implement on GPUs, indeed, even on
-a single GPU. 
+a single GPU\@. 
 
-We will stress-test on data structural library on computational biology
+We will stress-test our data structural library on computational biology
 applications. Specifically, we identify two raw data analysis ``kernels'':
 \Kmer analysis and sequence alignment. These kernels are used broadly
 throughout computational biology. These are bottlenecks in many
 comp.~bio.~workflows, so making them faster and scaling them to larger data
 sets will have widespread impact. GPUs offer an avenue to scaling these data
-structures. And while GPUs are fast, they are space constrained.  Therefore,
-we need new data structures and algorithms that are space efficient to speed up
+structures. And while GPUs are fast, they are space-constrained.  Therefore,
+we need new data structures and algorithms that are space-efficient to speed up
 these applications. The scale of comp.~bio.~applications are such that scale
 out to multiple, distributed GPUs will be necessary in this setting. See
-Section~\Cref{sec:multigpu} for specifics.  
+\Cref{sec:multigpu} for specifics.  
 
 
 
@@ -286,9 +286,9 @@ advantage of our own expertise in building computationally efficient tools for
 the pre-processing of single-cell sequencing data~\cite{he2022alevin}, we
 believe that single-cell RNA-seq preprocessing will be an immediate
 ``low-hanging'' fruit that can be accelerated with our stack. It has already
-been demonstrated by nVidia that their rapids single-cell~\cite{rapids} library
+been demonstrated by NVIDIA that their RAPIDS single-cell~\cite{rapids} library
 can speed up steps of the downstream analysis of single-cell count matrices
-from $4.7$-$850\times$. Yet, the preprocessing of raw data to obtain the count
+from 4.7--850$\times$. Yet, the preprocessing of raw data to obtain the count
 matrices to be analyzed, a computationally intensive process, does not yet have
 a GPU implementation. However, the required computation is embarrassingly
 parallel, with the processing of each sample requiring the alignment of
@@ -303,7 +303,7 @@ rapid growth of single-cell sequencing data~\cite{scgrowth2022}.
 % If successful we will be able to perform complex data analyses to answer biological questions on available terabyte- and petabyte-scale datasets, for example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. \john{These cites / this argument is also made a page earlier; consider deleting this.} Existing data structures and software tools fail to scale to these data sizes, making these publicly available and highly valuable data resources largely inert.
 
 
-\mfc{this feels appologetic.  Is there a better title that project's novelties?}
+\mfc{this feels apologetic.  Is there a better title that project's novelties?}
 \textbf{The project’s novelties are: a vertical-stack approach} spanning
 \textbf{theory and algorithms} (highly concurrent, dynamic, and distributed
 data structures); \textbf{systems} (scaling up using GPU acceleration);
