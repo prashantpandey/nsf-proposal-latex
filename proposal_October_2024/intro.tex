@@ -37,28 +37,25 @@
 
 Our ability to generate, acquire, and store data has grown rapidly over
 the past decade, transforming fields such as biology, cosmology, drug
-discovery, etc.  \mab{What can we cite here?} \john{I don't like the word ``exponentially'' at all.} \rob{replaced it with ``rapidly.''} As a result, increasingly complex
-and large-scale analyses are employed to gain insights into this data. 
-\mab{I cannot tell whether I like this previous sentence, but it seems out of place.}
+discovery, etc.   
+%As a result, increasingly complex and large-scale analyses are employed to gain insights into this data.  \mab{I cannot tell whether I like this previous sentence, but it seems out of place.}
 For
 instance, new and improved
-massively parallel high-throughput sequencing (HTS) technologies are already producing petabyte-scale
+massively parallel high-throughput sequencing (HTS) technologies \mab{Rob, Prashant, please add citation.} are already producing petabyte-scale
 datasets~\cite{kodama2012sequence}, and the NIH estimates that ``genomics
 research will generate between 2 and 40 exabytes of data within the next
-decade''~\cite{NHGRIDataScience}. This is one of many instances where our
-ability to generate data is outpacing the improvements in hardware speed and
-storage. The ability to scale complex data analyses to these vast quantities of data
-arguably rank among the biggest challenges in the next decade.
+decade''~\cite{NHGRIDataScience}.
+This is one of many instances where our
+ability to generate data is outpacing the improvements in hardware speed, and
+storage capacity, and the throughput of an analysis pipelines.
+% Furthermore, increasingly complex and large-scale analyses are employed to gain insights into this data.
+The ability to scale complex data analyses to these vast quantities of data ranks among the biggest challenges in the next decade.
 
-\mab{How about ``As we argue in this proposal, a large number of diverse applications are often bottlenecked on a surprisingly small number of core data structures.'' 
-What's there now isn't really doing it for me.}
-The relevant applications are often bottlenecked by the performance of an underlying core
-set of data structures, including filters~\cite{PandeyAlBe18, solomon2016fast},
+As we argue in this proposal, a large number of diverse applications are bottlenecked on a surprisingly small number of core data structure: filters~\cite{PandeyAlBe18, solomon2016fast},
 hash tables~\cite{solomon2016fast,almodaresi2022incrementally}, locality
 sensitive hashing~\cite{Marais2019}, and compressed string
 indexes~\cite{Almodaresi2018Pufferfish}. 
-\mab{Idea to communicate somewhere nearby:  
-any improvements to these data structures would have a disproportionately large positive impact on many applications. }
+Any improvements to the throughput of these data structures will have a disproportionately large impact on many applications. 
 Specifically, the scale of the data is
 such that two main problems arise: \textbf{(1)} some analyses are simply not
 currently feasible with existing data structures and algorithms---for example,
@@ -67,8 +64,7 @@ sequence read archive (SRA)~\cite{SRA},\footnote{SRA is a public repository for 
 scale~\cite{Karasikov2020, HarrisM20, SolomonK17, almodaresi2022incrementally,
 AlmodaresiPFJP20,PandeyAlBe18} and \textbf{(2)} other common analyses are
 feasible, but computationally burdensome, requiring powerful local compute
-abilities, or leading to increased costs for analyses using cloud compute; this
-slows down the analysis and discovery cycle and has led to a scenario in
+abilities, or leading to increased costs for analyses using cloud compute.  Consequently, the scale of data is such that the analysis and discovery cycle and has led to a scenario in
 which, in many cases, compute has overtaken data generation as the predominant
 experiment-related cost~\cite{Muir_2016} (apart from humans).
 \mab{This last sentence seems a little weak. Not sure if it's worth fixing.}
