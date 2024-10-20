@@ -55,6 +55,7 @@ As we argue in this proposal, a large number of diverse applications are bottlen
 hash tables~\cite{solomon2016fast,almodaresi2022incrementally}, locality
 sensitive hashing~\cite{Marais2019}, and compressed string
 indexes~\cite{Almodaresi2018Pufferfish}. 
+In \S\ref{sec:compbio}, we analyze several data analytic tasks and find that these data structures come up over and over again, which is not surprising: hash tables are key to much of computation, and filters are lossily compressed hash tables; locality sensitive hashing 
 Any improvements to the throughput of these data structures will have a disproportionately large impact on many applications. 
 Specifically, the scale of today's data is
 such that two main problems arise: \textbf{(1)} some analyses are simply
@@ -156,33 +157,25 @@ data-analyses pipelines on the GPU that can apply to a wide variety of data-inte
 computations.  To do so, we will address the main computational
 bottlenecks that are at the core of many existing systems by developing new
 massively parallel and distributed data structures and algorithms for common
-and widely needed data-processing tasks. We aim to address the fundamental
-problems described above, \defn{enabling certain heretofore intractable
-analyses}, and \defn{vastly reducing (by an order of magnitude or more) the key
-computational costs associated with some of the most common data analyses}.
-%
-\mab{Sentence about why people should believe us? Seems BS otherwise.}
-%
-Central to our approach is to leverage the massive parallelism of GPUs. The
-challenge with (clusters of) GPUs  is that dynamic data structures have
-traditionally  been difficult to design and implement on GPUs, indeed, even on
-a single GPU\@.
+and widely needed data-processing tasks. 
+As we argue in this proposal, we aim to address the fundamental problems described above, \emph{enabling certain heretofore intractable analyses}, and \emph{vastly reducing (by an order of magnitude or more) the key computational costs associated with some of the most common data analyses}; and
+central to our approach is to leverage the massive parallelism of GPUs. 
 
-Our application target in this proposal is computational biology.
-\mab{Computational biology isn't an application any more than engineering or graphics is an application.}
-\mab{Can we say ``three separate applications in Comp bio, for some value of three? I can explain why verbally.}
+% The challenge with (clusters of) GPUs  is that dynamic data structures have traditionally  been difficult to design and implement on GPUs, indeed, even on a single GPU\@.
+
+We identify three representative analytical pipelines from computational biology to serve as our validating application targets.
+%\mab{Can we say ``three separate applications in Comp bio, for some value of three? I can explain why verbally.}
 Specifically, we identify two raw data analysis ``kernels'':
 \Kmer analysis and sequence alignment. These kernels are used broadly
 throughout sequence analysis tasks in computational biology. These are bottlenecks in many
-comp.~bio.~workflows, so making them faster and scaling them to larger data
+workflows, so making them faster and scaling them to larger data
 sets will have widespread impact. GPUs offer an avenue to scaling data
 structures for these tasks. And while GPUs are fast, they are space-constrained.  Therefore,
 we need new data structures and algorithms that are space-efficient to speed up
-these applications. The scale of comp.~bio.~applications are such that scale
-out to multiple, distributed GPUs will be necessary in this setting. See
+these applications. The scale of \Kmer analysis and sequence alignment applications are such that scale-out to multiple, distributed GPUs will be necessary. See
 \Cref{sec:multigpu} for specifics.
 
- While these workloads may exhibit ample parallelism and thus are potentially a
+While these workloads may exhibit ample parallelism and thus are potentially a
 good fit for the GPU, they are challenging to implement efficiently because
 they do not naturally map well to key GPU software design guidelines, including
 \emph{minimizing thread divergence and contention, maximizing memory coherence,
@@ -190,21 +183,17 @@ and avoiding serialization and synchronization}. Furthermore, scaling out data
 structures to a distributed domain adds the challenges of \emph{low-bandwidth,
 high-latency communication and load balancing across GPUs}.
 
- We believe the time is right to address this problem with a multidisciplinary
-team with significant collaboration experience between the team members. Our
-recent successes in single-node and distributed GPU data structures and
+%We believe the time is right to address this problem with a multidisciplinary team with significant collaboration experience between the team members. 
+Our recent successes in single-node and distributed GPU data structures and
 algorithmic advances give us the
 collective background to address the broad challenge of this proposal, and out expertise in computational biology give us a rich test bed to validate our advances.
 
 
 \paragraph{Our proposed work: The details.}
-We believe the answer to the large-scale, high throughput, data pipeline challenges is a collection of  memory-efficient,
-high-performance, dynamic, scalable and massively-parallel data structures.
-\mab{Seems weak to begin with philosophy. }
+We will build a standalone library of data structures optimized for single GPUs and for distributed clusters of GPUs.
+We will test this library by evaluating them exhaustively on concrete applications drawn from computational biology. 
 %that can be directly used by computational biology applications.
-Because these data structures are used across multiple applications and domains
-we propose to build a \emph{standalone library} comprising these data
-structures.
+%Because these data structures are used across multiple applications and domains we propose to build a \emph{standalone library} comprising these data structures.
 \mab{I know what a standalone library is. At the same time... what do we mean by standalone library. Is there a followup sentence so that sounds less BS-y? 
 E.g., a previous standalone library we build for filters appeared in XXXXX.... }
  A standalone library will enable easy integration and adoption of
