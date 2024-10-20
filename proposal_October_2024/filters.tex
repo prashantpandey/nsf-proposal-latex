@@ -34,7 +34,7 @@ To date, all maplets that we know of are based on the quotient filter~\cite{conw
 Our first filter-related research problem is:
 
 \begin{rproblem}
-Design and build a high-performance maplet for the GPU\@. This will allow us to accelerate ans scale large-scale sequence search and \kmer processing applications using GPUs. 
+Design and build a high-performance maplet for the GPU\@. Validate this solution on large-scale sequence search and \kmer processing applications.
 \end{rproblem}
 
 Building a space-efficient and high-performance maplet is challenging as associating variable-length values with fingerprints results in unaligned memory accesses, which are especially expensive on GPUs. We will develop a quotient filter-based maplet on GPUs as the quotient filters offer compact fingerprint storage and value association. We plan to employ a bulk insertion approach using the sort and merge algorithm to achieve lock-free and high coherence on GPUs. We further plan to explore a two-choice hashing-based vector quotient filter~\cite{PandeyCDBFJ21} and CUDA's cooperative-groups programming model on GPUs to achieve even higher performance.

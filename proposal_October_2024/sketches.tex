@@ -25,11 +25,11 @@ Develop data structures for indexing and searching low-dimensional embeddings (b
 The ability to perform an approximate nearest neighbor (ANN) search on the vector space (minhash sketch) enables researchers to quickly prune the search space of millions of samples to find the sample of interest. PIs  Bender, Pandey, and Patro have developed Mantis~\cite{PandeyAlBe18}, an inverted index on \kmers, to perform sequence-level searches. Our goal is to further reduce the index space by indexing sequences using sketches instead of \kmers and speed up the construction and query using GPUs on larger datasets.
 
 \begin{rproblem}
-Develop distributed algorithms that are close to the communication lower bound to  compute the similarity score for two set of \kmers.
+Develop distributed algorithms that are close to the communication lower bound to  compute the similarity score for two set of items.
 \end{rproblem}
 
 \begin{rproblem}
-Develop a distributed method to compute similarity score (Jaccard index) for \kmer sets.
+Develop a distributed method to compute similarity score (Jaccard index) for sets of items.
 \end{rproblem}
 
 We plan to develop distributed algorithms that are close to the communication lower bound to estimate sequence similarities. Effectively, all linear sketching algorithms~\cite{li2014sketchuniversal} are highly parallelizable, easy to distribute, robust to arbitrarily ordered input streams, and have good data locality. In a nutshell, they trade more computation for a smaller space requirement. Our approach is to develop parallel and distributed techniques to compute sketches without communicating sequences across nodes but rather only communicating the hash sketches.
