@@ -16,44 +16,20 @@ Co-PIs: Michael A. Bender (SBU), John Owens (UC Davis), Prashant Pandey (Northea
 \vspace{-0.3cm}
 
 \noindent \textbf{\large Overview:}\\
-Both the volume and variety of data has been increasing at an ever faster rate
-driven by our ever increasing ability to generate data across fields likes
-biology, astrophysics, quantum chemistry, etc. Applications across these
-fields require processing data at petabyte scales. These applications use a set
-of common data structures to perform many data-analysis tasks, and their
-performance is bottlenecked by the data-structure and algorithm performance.
+The volume and variety of available data in need of computational processing are growing at an increasing pace, driven by our ever increasing capacity to rapidly generate information across various fields such as  computational biology, astrophysics, quantum chemistry, social networks, IoT devices, etc. Applications in these areas often need to process data at petabyte scales. 
+GPUs are cost-effective and offer massive parallelism, allowing significant speedups compared to CPUs. GPU can help speed up large-scale data analyses tasks. However, to perform a wide range of data-analysis tasks, these applications rely on common data structures, and their efficiency is often bottlenecked by the performance of these data structures and algorithms. Furthrermore, without a principled redesign of data structures, additional device RAM and GPU cores will be of diminishing value.
 
-This project aims to develop high-performance and scalable data
-analysis-pipelines for modern data-intensive applications. Specifically, we aim
-to develop new massively-parallel and distributed data structures and
-algorithms that sit at the heart of many data processing tasks. These new data
-structures and algorithms will have wide applicability across applications.
+This project aims to develop high-performance and scalable data analysis-pipelines for modern data-intensive applications. Specifically, we aim to develop new massively-parallel (GPU) and distributed data structures and algorithms that sit at the heart of many data processing tasks. These new data structures and algorithms will have wide applicability across various domains.
 %
-We will develop new \defn{algorithmic theory} to design scalable data
-structures and new \defn{systems} that implement our solutions in a scale-up
-manner on GPUs. We will develop a new framework to distribute our solutions
-across nodes, so they scale out to clusters of GPUs; and finally we will
-validate our solutions on \defn{computational biology} workloads.
+We will develop new \defn{algorithmic theory} to design scalable data structures and new \defn{systems} that implement our solutions in a scale-up manner on GPUs. We will develop a new framework to distribute our solutions across nodes, so they scale out to clusters of GPUs; and finally we will validate our solutions on \defn{computational biology} workloads.
 %
-Specifically, the data structures we propose to study are: \defn{filters},
-\defn{sketches}, \defn{hash tables}, \defn{string indexes}, and related
-data structures.  We will validate our solutions on \defn{large-scale raw
-sequence search}, \defn{single-cell preprocessing}, \defn{taxonomic
-classification for metagenomic data},  and others.
+Specifically, the data structures we propose to study are: \defn{filters}, \defn{sketches}, \defn{hash tables}, \defn{string indexes}, \defn{succinct data structure primitives}, and related data structures.  We will validate our solutions on \defn{taxonomic classification for metagenomic data}, \defn{large-scale raw sequence search}, \defn{pangenome indexing and alignment} and others.
 
 \noindent \textbf{\large Keywords:} Data structures, algorithms, computational
 biology, GPUs, high-performance computing (HPC).
 
 \noindent \textbf{\large Intellectual Merit:}\\
-If successful we will be able to quickly perform complex data analyses on
-terabyte- and petabyte-scale datasets. For example, raw
-sequencing data from sequence read archive (SRA) is already at petabyte scale,
-metagenomic data from Western Arctic and Rhizo are in terabytes, and
-population-scale pangenomic data from the 100,000 Genome Project contains the
-genomes of $\approx85$K individuals. Existing data structures and software
-tools fail to scale to these data sizes, limiting the value of these essential
-public resources, and hampering critical data re-analysis in light of new and
-improved computational methods.
+If successful we will be able to quickly perform complex data analyses on terabyte- and petabyte-scale datasets. For example, raw sequencing data from sequence read archive (SRA) is already at petabyte scale, metagenomic data from Western Arctic and Rhizo are in terabytes, and population-scale pangenomic data from the 100,000 Genome Project contains the genomes of $\approx85$K individuals. Existing data structures and software tools fail to scale to these data sizes, limiting the value of these essential public resources, and hampering critical data re-analysis in light of new and improved computational methods.
 
 The project’s novelties are: a vertical-stack approach spanning \defn{theory
 and algorithms}: highly concurrent, dynamic, and distributed data structures,
@@ -64,12 +40,7 @@ GPUs applicable to other application domains; and an API for developers to
 quickly and seamlessly integrate high-performance and scalable data structures
 in applications.
 %
-Our team constitutes a highly interdisciplinary array of researchers across :
-applications (computational biology), theory and algorithms, systems, and
-high-performance computing. The team is taking a holistic
-theory/systems/HPC/applications co-design approach to explore four tightly
-interconnected research modules. These research modules are structured from
-bottom-up across the computing stack.
+Our team constitutes a highly interdisciplinary array of researchers across : theory and algorithms, systems, high-performance computing, and computational biology. The team is taking a holistic theory/systems/HPC/applications co-design approach to explore four tightly interconnected research modules. These research modules are structured from bottom-up across the computing stack.
 
 \noindent \textbf{\large Broader Impacts: }\\
 The primary broader impact of this work is to enhance the capability of

@@ -25,7 +25,7 @@
 }
 
 @article{li2013aligning,
-  title={Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM},
+  title={Aligning sequence reads, clone sequences and assembly contigs with {BWA-MEM}},
   author={Li, H},
   journal={arXiv preprint arXiv:1303.3997},
   year={2013}
@@ -65,6 +65,14 @@
   author = {Jovic,  Dragomirka and Liang,  Xue and Zeng,  Hua and Lin,  Lin and Xu,  Fengping and Luo,  Yonglun},
   year = {2022},
   month = mar 
+}
+
+@inproceedings{backurs2015edit,
+  title={Edit distance cannot be computed in strongly subquadratic time (unless SETH is false)},
+  author={Backurs, Arturs and Indyk, Piotr},
+  booktitle={Proceedings of the forty-seventh annual ACM symposium on Theory of computing},
+  pages={51--58},
+  year={2015}
 }
 
 @inproceedings{bowe2012succinct,
@@ -273,11 +281,12 @@ booktitle        = {Proceedings of the International Workshop on Algorithms in B
   number={6},
   pages={1--41},
   year={2017},
-  publisher={ACM New York, NY, USA}
+  publisher={ACM New York, NY, USA},
+  doi={10.1145/3125643},
 }
 
 @article{MarcoSola2023,
-  title = {Optimal gap-affine alignment in O(s) space},
+  title = {Optimal gap-affine alignment in $O(s)$ space},
   volume = {39},
   ISSN = {1367-4811},
   url = {http://dx.doi.org/10.1093/bioinformatics/btad074},
@@ -292,7 +301,7 @@ booktitle        = {Proceedings of the International Workshop on Algorithms in B
 }
 
 @article{AguadoPuig2023,
-  title = {WFA-GPU: gap-affine pairwise read-alignment using GPUs},
+  title = {{WFA-GPU}: gap-affine pairwise read-alignment using {GPU}s},
   volume = {39},
   ISSN = {1367-4811},
   url = {http://dx.doi.org/10.1093/bioinformatics/btad701},
@@ -370,7 +379,7 @@ booktitle        = {Proceedings of the International Workshop on Algorithms in B
 
 @InProceedings{fan2023fulgor,
   author =	{Fan, Jason and Singh, Noor Pratap and Khan, Jamshed and Pibiri, Giulio Ermanno and Patro, Rob},
-  title =	{{Fulgor: A Fast and Compact \{k-mer\} Index for Large-Scale Matching and Color Queries}},
+  title =	{Fulgor: A Fast and Compact \{k-mer\} Index for Large-Scale Matching and Color Queries},
   booktitle =	{23rd International Workshop on Algorithms in Bioinformatics (WABI 2023)},
   pages =	{18:1--18:21},
   series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
@@ -622,13 +631,19 @@ booktitle        = {Proceedings of the International Workshop on Algorithms in B
   month = jan
 }
 @article{Karami2023,
-  title = {Designing efficient randstrobes for sequence similarity analyses},
-  url = {http://dx.doi.org/10.1101/2023.10.11.561924},
-  DOI = {10.1101/2023.10.11.561924},
-  publisher = {Cold Spring Harbor Laboratory},
-  author = {Karami,  Moein and Mohammadi,  Aryan Soltani and Martin,  Marcel and Ekim,  Barış and Shen,  Wei and Guo,  Lidong and Xu,  Mengyang and Pibiri,  Giulio Ermanno and Patro,  Rob and Sahlin,  Kristoffer},
-  year = {2023},
-  month = oct
+    author = {Karami, Moein and Soltani Mohammadi, Aryan and Martin, Marcel and Ekim, Barış and Shen, Wei and Guo, Lidong and Xu, Mengyang and Pibiri, Giulio Ermanno and Patro, Rob and Sahlin, Kristoffer},
+    title = "{Designing efficient randstrobes for sequence similarity analyses}",
+    journal = {Bioinformatics},
+    volume = {40},
+    number = {4},
+    pages = {btae187},
+    year = {2024},
+    month = apr,
+    abstract = "{Substrings of length k, commonly referred to as k-mers, play a vital role in sequence analysis. However, k-mers are limited to exact matches between sequences leading to alternative constructs. We recently introduced a class of new constructs, strobemers, that can match across substitutions and smaller insertions and deletions. Randstrobes, the most sensitive strobemer proposed in Sahlin (Effective sequence similarity detection with strobemers. Genome Res 2021a;31:2080–94. https://doi.org/10.1101/gr.275648.121), has been used in several bioinformatics applications such as read classification, short-read mapping, and read overlap detection. Recently, we showed that the more pseudo-random the behavior of the construction (measured in entropy), the more efficient the seeds for sequence similarity analysis. The level of pseudo-randomness depends on the construction operators, but no study has investigated the efficacy.In this study, we introduce novel construction methods, including a Binary Search Tree-based approach that improves time complexity over previous methods. To our knowledge, we are also the first to address biases in construction and design three metrics for measuring bias. Our evaluation shows that our methods have favorable speed and sampling uniformity compared to existing approaches. Lastly, guided by our results, we change the seed construction in strobealign, a short-read mapper, and find that the results change substantially. We suggest combining the two results to improve strobealign’s accuracy for the shortest reads in our evaluated datasets. Our evaluation highlights sampling biases that can occur and provides guidance on which operators to use when implementing randstrobes.All methods and evaluation benchmarks are available in a public Github repository at https://github.com/Moein-Karami/RandStrobes. The scripts for running the strobealign analysis are found at https://github.com/NBISweden/strobealign-evaluation.}",
+    issn = {1367-4811},
+    doi = {10.1093/bioinformatics/btae187},
+    url = {https://doi.org/10.1093/bioinformatics/btae187},
+    eprint = {https://academic.oup.com/bioinformatics/article-pdf/40/4/btae187/57303432/btae187.pdf},
 }
 
 @article{wu2023seesaw,

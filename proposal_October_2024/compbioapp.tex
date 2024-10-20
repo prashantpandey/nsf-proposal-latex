@@ -47,7 +47,7 @@ Some of the most widely used alignment tools across computational biology, such 
 \textbf{These kernels appear time and again as foundational steps in many different types of analyses within computational biology, and rely on a core set of common data structures to achieve performance and scalability.}  We highlight some of these analyses an their relationships to these kernels in~\Cref{fig1}, and describe the specific applications of metagenomic classification and abundance estimation, large-scale sequence search, and pangenomics, that we will use as target applications within this proposal, in~\Cref{subsec:target-applications}. The underlying set of shared data structures that we will build out and apply in this proposal include (i) compact compact and exact data structures: hash tables and succinct bit vectors, compressed string indexes, and trees, as well as (ii) sketches and approximate data structures: filters, cardinality estimators,  min-hash based sketches, and other locality-sensitive hash data structures.
 
 % \setlength\intextsep{0pt}
-\begin{wrapfigure}{R}{0.6\textwidth}
+\begin{wrapfigure}[17]{R}{0.6\textwidth}
 % \begin{figure}
 \centering
 \includegraphics[width=1.0\textwidth]{images/PPOSS_App_DS}
@@ -70,6 +70,9 @@ underlying data structures they use. In addition to computational biology, these
 
 
 \label{sec:we-need-performance-and-scalability}
+
+\begin{comment}
+    
 \paragraph{CPU speed and RAM capacity cannot keep up with data growth.}
 Unfortunately, CPU speed and RAM sizes aren't keeping up with the data growth in computational biology and other applications.
 Although CPU performance is increasing at 2--25\%/year and single-node RAM sizes are increasing at 2--11\%/year, genomics data is is likely to double in size every 1.5 years~\cite{kodama2012sequence}.
@@ -77,6 +80,7 @@ Although CPU performance is increasing at 2--25\%/year and single-node RAM sizes
 Thus, today's software tools will not scale with tomorrow's data. For example, performing \kmer analysis or sequence alignment on petabyte-scale raw sequencing data is not possible on single-node shared-memory systems.
 
 In the post-Moore’s-Law period, performance gains will come from software, algorithms, and hardware rather than semiconductors~\cite{leiserson2020there}. We can achieve massive scalability by first, designing data structures and algorithms to scale up using modern accelerators such as GPUs and second, scaling out by using distributed memory in an high-performance computing (HPC) environment.
+\end{comment}
 
 
 
@@ -86,12 +90,15 @@ GPUs are increasingly used in large-scale computational biology applications bec
 %
 For example, GPUs are already used in some recent computational biology applications to speed up \kmer counting~\cite{nisa2021distributed} and local assembly~\cite{awan2021accelerating}.
 
+%%Might need to move some stuff from the below para.
+\begin{comment}
 However, the penetration of GPUs into biology pipelines has been hindered by how the limitations of GPUs have translated so far into data structures.  These GPU limitations include: (i) GPU device RAM is much smaller than CPU RAM\@; this is especially
 challenging given the data sizes in computational biology. (ii) GPUs have high contention due to thousands of threads and are
 inefficient when computations are irregular. (iii) GPUs don't have a fully functional, high-performance suite of memory management tools; it is hard to perform dynamic memory management without involving the host CPU\@. 
 % \john{I'm not sure what the main point is here; dynamic memory management is not terrible on GPUs~\cite{Winter:2020:OVQ}, though it does have limitations. I softened this. But I don't get this point.}
 
 These limitations affect the capabilities of GPU data structures: most existing GPU data structures do not support dynamic resizes and are statically allocated; pointer-based data structures such as trees and tries do not achieve high performance on GPUs; data structures on hard-to-align data, such as strings or vectors, which have variable lengths are not available; and GPU data structures do not scale out of the GPU's device RAM to host.
+\end{comment}
 
 \textbf{Overcoming these limitations is critical for building scalable GPU solutions to more general and irregularly structured problems, both within and beyond computational biology}. For example, in the computational biology domain, in \kmer analysis during raw sequence search and taxonomic classification, the size of the \kmer multiset is not known in advance. Thus, applications initialize the data structures to a default size and then dynamically resize (mostly expand) based on the actual number of \kmers. The ability to resize is critical to space-efficient \kmer analysis. Static data structures such as hash tables and filters~\cite{GeilFO18} currently available on GPUs are sized using an overapproximation of the number of \kmers, which leads to space inefficiency and limits scalability.
 Similarly, local assembly modules in sequence assemblers involve constructing thousands of hash tables in parallel and then using them to perform contig (contiguous strand of DNA) extension walks. The CPU implementation of local assembly relies on dynamic structures such as hash tables, vectors and strings, which are a challenge to implement on GPUs. In addition, local assembly induces a random memory-access pattern with a non-deterministic amount of work, which further complicates implementing this module on GPUs.
@@ -121,9 +128,9 @@ To achieve fine-grained resizing and keep peak RAM usage low, we need to develop
 %Furthermore, to achieve fine-grained resizing and to keep the peak memory usage low, we first need to develop new algorithmic approaches for traditional CPU data structures and then extend them to GPUs.
 %}
 
-\begin{comment}
-{\color{red}
+
 \subsection{Computational Biology Applications and Associated Research Problems}
+\label{subsec:target-applications}
 
 \textbf{Metagenomic classification and abundance estimation} is the problem of assigning each read in a metagenomic sequencing sample to some likely taxon of origin.  This is a challenging task for many reasons, including the heterogeneity of the data (the sample being sequences can contains thousands of taxa and millions or more individual organisms), the incompleteness of the reference databases (the sample almost certainly contains species never before seen and absent from the database), and the complex sequence similarity relationships between the organisms in the sample (the organisms are related through a deep and often complex taxonomy).  The goal in this problem is to assign each read to the most specific taxon possible (e.g. if the read can't be associated with a species, assign a genus, etc.) or to leave the read as unclassified. The closely related problem of metagenomic abundance estimation asks to determine the distribution of abundances of taxa in a metagenomic sample, but does not require the specific allocation of individual reads, allowing e.g. the probabilistic or proportional allocation of individual sequencing reads.
 
@@ -132,11 +139,12 @@ Existing tools for metagenomic classification and abundance estimation~\cite{ame
 We plan to turn the algorithms and data structures we develop to the challenge of scalable metagenomic classification and abundance estimation. Our tool will rely on state of the art hashing and string indexing approaches to construct a succinct (updatable) reference index, and will take advantage of the massive parallelism available on the GPUs to dramatically speed up the tasks of taxonomic read assignment and statistical estimation of taxa abundance.
 
 \begin{rproblem}[\textbf{Metagenomic classification and abundance estimation at terabyte scale}]
-Build a software tool to perform reference-based taxonomic classification of metagenomic reads, and the associated taxonomic abundance estimation, for terabyte-scale metagenomic datasets. The software tool will support adding newly sequenced microbial genetic sequences to the database and updating the labels of existing ones without rebuilding the whole index.
+Build a tool to perform reference-based taxonomic classification of metagenomic reads, and the associated taxonomic abundance estimation, for terabyte-scale metagenomic datasets. The software tool will support adding newly sequenced microbial genetic sequences to the database and updating the labels of existing ones without rebuilding the whole index.
 \label{rprob:taxo-meta}
 \end{rproblem}
 
-\textbf{Large-scale sequence search at SRA scale.} The BLAST~\cite{AltschulBLAST:1990} tool, which enables sequence-level search against the current database of assembled genomes, is one of the most widely-cited tools in science.  Yet, the vast majority of sequencing data has not been (and much of it will never be) assembled into a reference genome.  These raw data contain tremendous amounts of information about individual diversity, the relation of sequence level features to potential disease states, and novel (often functional) biological sequences that are not part of any reference genome.  Thus, enabling search over the raw collection of sequence data would be of tremendous utility to biological research.
+
+\para{Large-scale sequence search at SRA scale.} The BLAST~\cite{AltschulBLAST:1990} tool, which enables sequence-level search against the current database of assembled genomes, is one of the most widely-cited tools in science.  Yet, the vast majority of sequencing data has not been (and much of it will never be) assembled into a reference genome.  These raw data contain tremendous amounts of information about individual diversity, the relation of sequence level features to potential disease states, and novel (often functional) biological sequences that are not part of any reference genome.  Thus, enabling search over the raw collection of sequence data would be of tremendous utility to biological research.
 
 The problem of searching for a query sequence against a vast collection of thousands or more raw sequence samples has recently been the focus of considerable research efforts.  The problem was first introduced by Solomon and Kingsford~\cite{solomon2016fast} and dubbed the experiment discovery problem. Those authors also proposed an algorithm and data structure, the Sequence Bloom Tree (SBT) that enables large-scale search (though still at orders of magnitude smaller scale that the large publicly available databases like the Sequence Read Archive~\cite{SRA} which remains the ultimate goal).
 
@@ -151,6 +159,7 @@ Build a search index over all (non access-controlled) raw experiments present in
 \label{rprob:seq-search}
 \end{rproblem}
 
+\noindent
 \textbf{Pangenomics}~\cite{sherman2020pan} involves cataloging the genomes of individuals in a related population in the form of a sequence graph to preserve the variation across the individuals. This pangenome is used as the reference genome for the species and forms the basis of subsequent studies. Representing population variation (e.g. SNVs, indels, copy numbers, etc.) is critical to understanding relatedness, population diversity, and to avoiding reference bias during analysis and disease studies. These graphs represent a population-level reference, against which one can perform sequence-to-graph alignment. Even in the context of small and easy-to-sequence bacteria pan-genomes provided novel scientific insights and contributed to our understanding of underlying differences in pathogenicity, virulence and drug resistance~\cite{sherman2020pan}.
 
 Cataloging the DNA from large populations of individuals in a species is a daunting task. Building a pangenome graph involves storing the genomic sequences of thousands or more individuals in the form of a sequence graph, where each path in the sequence graph follows the genome of an individual and has a unique coordinate system~\cite{pandey2021variantstore}. Query of and alignment to the graph must simultaneously weed out infeasible paths in the graph, and track the related but distinct coordinate systems of the different individuals indexed (given the absence of a single, uniform reference). Current approaches to this problem are computationally and memory intensive, despites substantial work to scale solutions up and out \cite{garrison2018variation,pandey2021variantstore}.
@@ -164,7 +173,6 @@ We seek to take advantage of the efficient dynamic succinct data structures, str
  Build a pangenomic index that can perform fast variation queries and sequence-to-graph alignment at population-scale datasets available today. We further want to support adding new genomic samples to an existing index without rebuilding the index.
 \label{rprob:pangenomics}
 \end{rproblem}
-}
 
 
 \if 0
@@ -238,5 +246,3 @@ Accelerate \kmer analysis phase in MetaHipMer using GPUs and reduce the peak RAM
 \end{rproblem}
 
 \fi
-
-\end{comment}

@@ -14,7 +14,7 @@ We propose two directions for addressing these challenges in the context of appl
 Our first goal is algorithmic: How can we recast the traditionally synchronous algorithms that underpin our applications of interest into an asynchronous formulation? By this, we mean relaxing the ordering constraints imposed by a BSP implementation, by (for instance) allowing data-structure updates to occur during rather than after computation, by not requiring a global barrier between each phase of a BSP implementation, or by allowing older data as the input to compute steps with the knowledge that updates to that data can efficiently be integrated into the computation at a later time. We have significant experience with these algorithmic transformations in the context of graph analytics~\cite{Chen:2022:AAT,Chen:2022:SIP}. These ordering constraints are the reason BSP applications do not overlap compute and communicate and reducing or eliminating them can pay a significant performance dividend.
 
 \begin{rproblem}
-Develop asynchronous formulations of core computational-biology applications and data structures.
+Develop asynchronous formulations of core applications and data structures.
 \end{rproblem}
 
 \para{Separate application and runtime}

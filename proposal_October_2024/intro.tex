@@ -39,18 +39,16 @@ Our ability to generate, acquire, and store data has grown exponentially over
 the past decade, transforming fields such as biology, cosmology, drug
 discovery, etc.  \mab{What can we cite here?} As a result, increasingly complex
 and large-scale analyses are employed to gain insights into this data.  For
-instance, both the volume and variety of genomic sequencing data has been
-increasing at an ever faster rate.\footnote{Driven by new and improved
-massively parallel high-throughput sequencing (HTS) technologies.}  These
-technologies are already producing petabyte-scale
+instance, new and improved
+massively parallel high-throughput sequencing (HTS) technologies are already producing petabyte-scale
 datasets~\cite{kodama2012sequence}, and the NIH estimates that ``genomics
 research will generate between 2 and 40 exabytes of data within the next
 decade''~\cite{NHGRIDataScience}. This is one of many instances where our
 ability to generate data is outpacing the improvements in hardware speed and
-storage. The scalability of these complex data analyses arguably rank among
-the biggest challenges in the next decade. 
+storage. The ability to scale complex data analyses to thse vast quantities of data
+arguably rank among the biggest challenges in the next decade. 
 
-These applications are bottlenecked by the performance of an underlying core
+The relevant applications are often bottlenecked by the performance of an underlying core
 set of data structures, including filters~\cite{PandeyAlBe18, solomon2016fast},
 hash tables~\cite{solomon2016fast,almodaresi2022incrementally}, locality
 sensitive hashing~\cite{Marais2019}, and compressed string
@@ -71,20 +69,19 @@ experiment-related cost~\cite{Muir_2016} (apart from humans).
 \para{CPU speed and RAM capacity cannot keep up with data growth} CPU
 performance increases and RAM sizes are not keeping up with the data growth in
 modern applications across databases, machine learning, computational biology,
-and scientific computing. Although CPU performance is increasing at
+and scientific computing\mfc{cite}. Although CPU performance is increasing at
 2--25\%/year and single-node RAM sizes are increasing at 2--11\%/year, genomics
-data is is likely to double in size every 1.5 years~\cite{kodama2012sequence}.
-\emph{Thus, today's software tools will not scale with tomorrow's data.} For
-example, performing \kmer analysis or sequence alignment (common tasks in
+data, for example, is likely to double in size every 1.5 years~\cite{kodama2012sequence} \mfc{, and blah data is likely to blah}.
+\emph{Thus, today's software tools will not scale with tomorrow's data.} An example from computational biology illustrates the point: performing \kmer analysis or sequence alignment (common tasks in
 computational biology pipelines) on petabyte-scale raw sequencing data is not
 possible on single-node shared-memory systems. In the post-Moore’s-Law period,
 performance gains will come from software, algorithms, and hardware rather than
-semiconductors~\cite{leiserson2020there}. We can achieve massive scalability by
+semiconductors~\cite{leiserson2020there}. We can achieve massive scalability by,
 first, designing data structures and algorithms to scale up using modern
-accelerators such as GPUs and second, scaling out by using distributed memory
+accelerators such as GPUs and, second, scaling out by using distributed memory
 in an high-performance computing (HPC) environment.
 
-With power constraints (continuing to be) the main bottleneck in increased
+\paragraph{GPUs for data pipelines.} With power constraints (continuing to be) the main bottleneck in increased
 computing performance, the superior performance, performance growth, and
 power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes
 them increasingly attractive at all scales, from mobile devices to laptop and
@@ -125,26 +122,15 @@ effectively, exacerbated by the challenges in addressing these workloads at
 large scale (with distributed computing). These workloads include the powerful
 data structures that are the focus of this proposal. We see ample existing work
 that addresses subsets of the overall challenge: both regular GPU workloads at
-scale (e.g., training deep neural networks) and complex dynamic GPU data
+scale (e.g., training deep neural networks)~\mfc{cite} and complex dynamic GPU data
 structures not at scale (including many contributions by the PIs of this
-proposal). The success of both of these thrusts of work gives us confidence
+proposal)~\mfc{cite}. The success of both of these thrusts of work gives us confidence
 that we can build on them to address the grand challenge of dynamic and
 distributed GPU data structures.
 
-While these workloads may exhibit ample parallelism and thus are potentially a
-good fit for the GPU, they are challenging to implement efficiently because
-they do not naturally map well to key GPU software design guidelines, including
-\emph{minimizing thread divergence and contention, maximizing memory coherence,
-and avoiding serialization and synchronization}. Furthermore, scaling out data
-structures to a distributed domain adds the challenges of \emph{low-bandwidth,
-high-latency communication and load balancing across GPUs}.
 
-We believe the time is right to address this problem with a multidisciplinary
-team with significant collaboration experience between the team members. Our
-recent successes in single-node and distributed GPU data structures,
-algorithmic advances, and computational biology applications give us the
-collective background to address the broad challenge with proposed research
-thrusts in applications, data structures, algorithms, and systems.
+
+
 
 \begin{comment}
 Over the past fourteen years, our team has significant experience in developing data structures that address these challenges. We developed the first hash tables that could be built on the GPU~\cite{Alcantara:2009:RPH,Alcantara:2011:BAE} and a plethora of dynamic data structures that were the first to be built on the GPU~\cite{Ashkiani:2018:ADH,Ashkiani:2018:GLA,Awad:2019:EAH,GeilFO18,mccoy2022high,nisa2021distributed}.
@@ -222,8 +208,8 @@ As a consequence of these two broad trends, NVIDIA has made a large investment i
 
 \textbf{In this project}, we aim to build high-performance and scalable
 data-analyses pipelines on the GPU for a wide variety of data-intensive
-computations across computational biology, machine learning, databases, and
-scientific computing.  To do so, we will address the main computational
+computations across computational biology, \rob{do we actually propose pipelines in these other domains?}\textcolor{red}{machine learning, databases, and
+scientific computing}.  To do so, we will address the main computational
 bottlenecks that are at the core of many existing systems by developing new
 massively parallel and distributed data structures and algorithms for common
 and widely-needed data-processing tasks. We aim to address the fundamental
@@ -239,7 +225,7 @@ a single GPU\@.
 We will stress-test our data structural library on computational biology
 applications. Specifically, we identify two raw data analysis ``kernels'':
 \Kmer analysis and sequence alignment. These kernels are used broadly
-throughout computational biology. These are bottlenecks in many
+throughout sequence analysis tasks in computational biology. These are bottlenecks in many
 comp.~bio.~workflows, so making them faster and scaling them to larger data
 sets will have widespread impact. GPUs offer an avenue to scaling these data
 structures. And while GPUs are fast, they are space-constrained.  Therefore,
@@ -248,12 +234,24 @@ these applications. The scale of comp.~bio.~applications are such that scale
 out to multiple, distributed GPUs will be necessary in this setting. See
 \Cref{sec:multigpu} for specifics.  
 
+ While these workloads may exhibit ample parallelism and thus are potentially a
+good fit for the GPU, they are challenging to implement efficiently because
+they do not naturally map well to key GPU software design guidelines, including
+\emph{minimizing thread divergence and contention, maximizing memory coherence,
+and avoiding serialization and synchronization}. Furthermore, scaling out data
+structures to a distributed domain adds the challenges of \emph{low-bandwidth,
+high-latency communication and load balancing across GPUs}.
 
+ We believe the time is right to address this problem with a multidisciplinary
+team with significant collaboration experience between the team members. Our
+recent successes in single-node and distributed GPU data structures and
+algorithmic advances give us the
+collective background to address the broad challenge of this proposal, and out expertise in computational biology give us a rich test bed to validate our advances.
 
 
 \subsection{Our proposed work}
 
-We believe the answer to these challenges is a collection of  memory-efficient,
+We believe the answer to \mfc{which?} these challenges is a collection of  memory-efficient,
 high-performance, dynamic, scalable and massively-parallel data structures.
 %that can be directly used by computational biology applications. 
 Because these data structures are used across multiple applications and domains
@@ -270,7 +268,7 @@ on {computational biology} workloads.
 %
 Specifically, our data structures are: \textbf{filters}, \textbf{hash tables},
 \textbf{string indexes}, \textbf{sketches}, and related auxiliary data
-structures.  We propose three specific common computational biology analyses on
+structures (including the relevant succinct data structure building blocks).  We propose three specific common computational biology analyses on
 which we will validate our solutions: {large-scale raw sequence
 search},{taxonomic classification for metagenomic data},{pangenomic indexing
 and analysis}.   See Section~\ref{sec:compbio} for a description of these
@@ -304,6 +302,7 @@ rapid growth of single-cell sequencing data~\cite{scgrowth2022}.
 
 
 \mfc{this feels apologetic.  Is there a better title that project's novelties?}
+\rob{it also feels redundant --- we've said almost exactly the same earlier.}
 \textbf{The project’s novelties are: a vertical-stack approach} spanning
 \textbf{theory and algorithms} (highly concurrent, dynamic, and distributed
 data structures); \textbf{systems} (scaling up using GPU acceleration);

@@ -2,8 +2,8 @@
 
 \section{Filters}
 
-Filters are a key data structure for compactly representing sets, and they are extensively used in computational data applications.  The PIs have extensive experience in designing best-in-class filters, both theoretically~\cite{BenderFaGo18,BenderDaFa21,BenderFaKu22b,BenderCoFa23b}, for general high-performance computation~\cite{conway2020splinterdb,PandeyBeCo23,PandeyBJP17,BenderFaJo12}, and especially for computational biology~\cite{AlmodaresiPaFe18,PandeyAlBe18,PandeyBeJo18, AlmodaresiPaPa17,PandeyBeJo17b}.
-In this section, we articulate the computational challenges in implementing high-performance filters, illustrating the issues via in computational-biology applications, as appropriate. 
+Filters are a key data structure for compactly representing sets, and they are extensively used in computational data applications.  The PIs have extensive experience in designing best-in-class filters, both theoretically~\cite{BenderFaGo18,BenderDaFa21,BenderFaKu22b,BenderCoFa23b}, for general high-performance computation~\cite{conway2020splinterdb,PandeyBeCo23,PandeyBJP17,BenderFaJo12}, and especially for computational biology~\cite{AlmodaresiPFJP19,PandeyAlBe18,PandeyBeJo18, almodaresi2017rainbowfish,PandeyBeJo17b}.
+In this section, we articulate the computational challenges in implementing high-performance filters, illustrating the issues via computational-biology applications, as appropriate. 
 In particular, filters in HPC settings are compute intensive while being small, making them perfect candidates for GPU implementations.  
 However, not all filters have the same functionality, and we will propose algorithm work to create HPC filters than are GPU-friendly, e.g., concurrent, small space, and with high locality.
 %, that will serving the needs of comp. bio. applications.
@@ -14,7 +14,7 @@ However, not all filters have the same functionality, and we will propose algori
 
 A \defn{filter} is a data structure for maintaining a set $S\subseteq U$ under approximate membership queries. Specifically, $\texttt{Member}(x)$ returns \textsc{True} if $x\in S$, and returns \textsc{True} with probability at most $\varepsilon$ for $x\notin S$, where $\varepsilon$ is a configurable parameter of the filter.  When a filter returns \textsc{True} erroneously, we say that it has experienced a \defn{false positive}.
 %
-A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega\left(\log \binom{u}{n}\right) = \Omega(n \log (u/n))$ bits, whereas a filter  takes space at least  lower bound of $\opt + \Omega(n)$ bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound with high probability (w.h.p.), including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerM09,BenderFaJo12,PandeyBJP17,PandeyCDBFJ21}, XOR filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerW21}.  Bloom filters~\cite{Bloom70} do not meet this lower bound, nor, technically speaking, do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p.\ grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
+A filter is useful because it is small: for $n= |S|$ and $u = |U|$, an error-free dictionary requires $\Omega\left(\log \binom{u}{n}\right) = \Omega(n \log (u/n))$ bits, whereas a filter  takes space lower bounded by $\opt + \Omega(n)$ bits~\cite{CarterFG78}.  There are several data structures that meet this lower bound with high probability (w.h.p.), including quotient filters~\cite{Cleary84,PaghPaRa05,DillingerM09,BenderFaJo12,PandeyBJP17,PandeyCDBFJ21}, XOR filters~\cite{GrafLe20} and Ribbon filters~\cite{DillingerW21}.  Bloom filters~\cite{Bloom70} do not meet this lower bound, nor, technically speaking, do cuckoo filters~\cite{FanAnKa14,BreslowJ18}.\footnote{Cuckoo filters are interesting because they do meet the lower bound for reasonable size $n$, but as $n$ grows, the number of bits needed to build a cuckoo filter w.h.p.\ grows to $\Theta(n\log n)$.  In practice, however, cuckoo filters approximate $\opt + \Theta(n)$.}
 %
 For typical $\varepsilon$, the best filters take one or two bytes per item.
 
@@ -25,14 +25,13 @@ Some filters are static, in that they require $S$ to be given at initialization~
 % \mfc{Prashant: why do we need this feature?}  \mfc{We know of no existing filters are incrementally resizable.}
 
 
+Some filters can be turned into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets have been shown to be  critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{GeorganasEHG18}. 
 
-It is possible to turn some filters into \defn{maplets}, which are key-value filters.  That is, each element of $S$ has an associated value.  When querying for an element $x\in S$, one gets the associated value.  And whether $x\in S$ or not, one might get, with small probability, one or more extra values.  Maplets have been shown to be  critical to high-performance key-value stores, as well as \kmer analysis tools to maintain prefix-suffix extensions along with \kmers~\cite{GeorganasEHG18}. 
-
-The PIs Bender, Farach-Colton, Pandey, and Patro used feature-rich filters (including maplets) in bioinformatics systems such as Mantis~\cite{PandeyAlBe18}, Squeakr~\cite{PandeyBeJo18}, deBGR~\cite{PandeyBeJo17b}, Rainbowfish~\cite{AlmodaresiPaPa17}, and MetaHepmer~\cite{mccoy2022high}, MetaHipMer~\cite{McCoyHYP23a} and storage and streaming applications such as SplinterDB~\cite{conway2020splinterdb} and LERTs~\cite{PandeySiBe20}.
+The PIs Bender, Farach-Colton, Pandey, and Patro used feature-rich filters (including maplets) in bioinformatics systems such as Mantis~\cite{PandeyAlBe18}, Squeakr~\cite{PandeyBeJo18}, deBGR~\cite{PandeyBeJo17b}, Rainbowfish~\cite{almodaresi2017rainbowfish}, and MetaHepmer~\cite{mccoy2022high}, MetaHipMer~\cite{McCoyHYP23a} and storage and streaming applications such as SplinterDB~\cite{conway2020splinterdb} and LERTs~\cite{pandey2020timely}.
 PIs Farach-Colton, Owens, and Pandey implemented high-functionality filters on GPUs~\cite{mccoy2022high, McCoyHYP23a, GeilFO18}. 
 
 To date, all maplets that we know of are based on the quotient filter~\cite{conway2020splinterdb,PandeyBJP17,DBLP:journals/pacmmod/ConwayFJ23}, and we know of no implementation of maplets on the GPU\@.
-Our first research problem is:
+Our first filter-related research problem is:
 
 \begin{rproblem}
 Design and build a high-performance maplet for the GPU\@. This will allow us to accelerate ans scale large-scale sequence search and \kmer processing applications using GPUs. 
@@ -44,13 +43,16 @@ Building a space-efficient and high-performance maplet is challenging as associa
 Design and build a high-performance incrementally resizable maplet for the GPU. Validate the work in large-scale sequence search and \kmer processing applications.
 \end{rproblem}
 
-The na\"\i{}ve way to resize a maplet is to double its size and move items (perhaps incrementally) from the old filter to the new.  This means that during the transition, which can last quite a long time, both tables must be stored and both tables must be queried. The most direct way to resize a filter is to lock it while we rebuild it at double the size.  We encounter similar problem when resizing hash tables (\S~\ref{sec:hash-tables}), and we will explore the same techniques for resizing filters and hash tables.
+The na\"\i{}ve way to resize a maplet is to double its size and move items (perhaps incrementally) from the old filter to the new.  However, during the transition, which can last quite a long time, both tables must be stored and both tables must be queried. An easy way to resize a filter is to lock it while we rebuild it at double the size.  We encounter similar problem when resizing hash tables (\S~\ref{sec:hash-tables}), and we will explore the same techniques for resizing filters and hash tables.
 
+We propose to adapt an approach recently proposed by PIs Bender and Farach-Colton: waterfall addressing~\cite{BenderFaKu22b}.   Waterfall addressing is a method for addressing into an array (for example for a filter or hash table that uses open addressing) so that the array can grow in small increments.  Each item hashes to a location based on the current size of the array, and when the array resizes, only those items that go into the new piece are moved.  The surprising thing is that this can be done efficiently, but it does require maintaining metadata.  The theoretical version of this result uses pointer-intensive metadata, so this research problem requires developing a new, GPU-friendly metadata scheme and algorithms for distributing the filter. 
 
-We propose to adapt an approach recently proposed by PIs Bender and Farach-Colton: waterfall addressing~\cite{Bender2022}.   Waterfall addressing is a method for addressing into an array (for example for a filter or hash table that uses open addressing) so that the array can grow in small increments.  Each item hashes to a location based on the current size of the array, and when the array resizes, only those items that go into the new piece are moved.  The surprising thing is that this can be done efficiently, but it does require maintaining metadata.  The theoretical version of this result uses pointer-intensive metadata, so this research problem requires developing a new, GPU-friendly metadata scheme and algorithms for distributing the filter. \begin{rproblem}\label{rprob:resizable-maplet-metadata}
+\begin{rproblem}\label{rprob:resizable-maplet-metadata}
 Design and build a succinct, GPU-friendly data structure for resizability meta-data.
 \end{rproblem}
 
+\begin{comment}
+    
 Finally, some filters, most notably the quotient filter, can be made \defn{adaptive}~\cite{BenderFaGo18}.  A filter is adaptive if its false-positive probability is at most $\varepsilon$ for every $x\notin S$, even if $x$ is repeatedly queried.  In a standard filter, every time $x$ is queried, the filter returns the same answer.  In an adaptive filter, if $x$ is queried and determined to be a false positive, the filter has the option of adjusting itself so that this query is correctly answered as \textsc{False}.  All provably adaptive filters are based on the quotient filter~\cite{BenderFaGo18,Lee21}, although there are some heuristically adaptive filters based on the cuckoo filter~\cite{Mitzenmacher2020}.
 
 % de Bruijn graphs (dbg) are at the heart of many sequence analysis pipelines~\cite{PandeyBJP17,PandeyBeJo17b}. In a (node-centric) de Bruijn graph, each node is a $k$-length subsequence from the underlying biological samples and two nodes are connected via an edge if they share a $(k-1)$-length suffix-prefix overlap.  Traversing long non-branching paths in the de Bruijn graphs, known as unitigs, helps in building long continuous sequences (contigs) as an intermediate step in the assembly process.
@@ -75,6 +77,8 @@ Adaptive maplets can be updated and  would, in theory, take less space than hash
 \begin{rproblem}\label{rprob:dyn-apt-filter}
 Design and build a dynamic adaptive maplet.  Use them to compactly represent de Bruijn graphs.  Compare them to other dynamic succinct de Bruijn graph representations. Port deBGR~\cite{PandeyBeJo17b}, which is based on the quotient filter, to GPU using adaptive maplets.
 \end{rproblem}
+
+\end{comment}
 
 %In the algorithmic literature on adaptive filters, adaptivity is implemented by varying the number of bits stored in a fingerprint of each item.  When there is a false positive, enough bits are added that the fingerprint of the false-positive query no longer collides with the fingerprint of the item in the set.  Variable-length codes make memory accesses inefficient since the fingerprints are no longer byte-aligned.  We propose to over-adapt by a full byte whenever we have a false positive.  We believe that we can prove that over-adapting in this way does not blow up the space.  Such a scheme will substantially simplify the GPU implementation of adaptive filters.  We believe that all these comments carry over directly to adaptive maplets.
 

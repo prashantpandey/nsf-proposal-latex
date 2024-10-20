@@ -1,8 +1,6 @@
 %!TEX root =  proposal.tex
 
-\section{Hash tables}
-\label{sec:hash-tables}
-
+\section{Hash tables} \label{sec:hash-tables}
 There are work-efficient algorithms for building building static, space-efficient, single-GPU, fixed-key-size hash tables~\cite{Awad:2023:AAI}.  However, scaling and improving the functionality of GPU hash tables to support the application workloads in this proposal presents several significant research challenges. In particular, we must address three important and orthogonal problems:
 
 %\john{There is no theory in this section at all.} \rob{It's \emph{not} dynamic, but we have a body of work that relies on minimal perfect hashing. It might be nice to add a MPHF (construction and query) as a research objective to this section.}
@@ -13,19 +11,19 @@ There are work-efficient algorithms for building building static, space-efficien
 \end{rproblem}
 
 
-These research problem are tailored to address issues in scaling hash tables for computational biology, and the solutions will be evaluated in that context.
+These research problem are tailored to address issues in scaling hash tables for computational biology, and the solutions will be evaluated in that context, though the challenges and solutions are general.
 
-\subsection{Dynamic hash tables}
+\para{Dynamic hash tables}
 
 While a large body of research has addressed building and querying static GPU hash tables, work on dynamic GPU hash tables~\cite{Ashkiani:2018:ADH,Junger:2020:WAL,Li:2021:DDH,Zhou:2021:DAD} has been much less common. This previous work has shown the possibility of low-level data structures for supporting dynamic operations (work~\cite{Ashkiani:2018:ADH} by PIs Farach-Colton and Owens uses buckets of linked lists, each made of warp-wide slabs, as its fundamental atom) but this work is generally balanced (and achieves high performance) only when its bucket count and average bucket size are near-optimal. For some applications this may be acceptable. For the bioinformatics applications we target, we expect the amount of stored data in a hash table (e.g., \kmer storage) to vary widely over the runtime of one application, and existing methods are likely to perform poorly. In the CPU world, such rebuilding is common, and transparently handled in the background, but no such runtime capability is available in the GPU world. As well, existing work does not automatically reclaim memory on deletes, which is important in applications (such as \kmer analysis) that feature both insertions and deletes.
 
-
-
-
-\noindent\textbf{Proposed approach.}
+\para{Proposed approach}
 One promising approach (for mitigating the effects of rebuilding for optimal sizing and to reclaim memory) is to leverage  NVIDIA's MPS (``MultiProcessing Service'') capability to simultaneously run two applications. One application, and the one that will take most GPU resources, will be the hash table and its umbrella application. The second will be a small ``runtime'' application that uses modest resources and will rebuild and reclaim memory alongside the main application. This can be done without programmer intervention, without stopping the entire application to rebuild the data structure or reclaim memory, and most importantly, can reduce register usage for the main application by offloading its operations into the runtime and thus improve aggregate performance.
 
-Work by PIs Bender and Farach-Colton~\cite{iceberg,partitionhashing} explore theoretical approaches to performing fine-grain resizing of hash tables while minimizing the number of memory allocations.  Such approaches are a promising complement to the above for building resizable hash tables on the GPU.
+Work by PIs Bender and Farach-Colton~\cite{BenderCoFa23b,partitionhashing} explore theoretical approaches to performing fine-grain resizing of hash tables while minimizing the number of memory allocations.  Such approaches are a promising complement to the above for building resizable hash tables on the GPU.
+
+\para{Variable-length keys}
+\Kmer analysis requires the storage of \kmers of variable length (32--200 bits). Existing hash tables only handle fixed-length, word-sized keys. Fortunately, the size of these keys is bounded, and this aids our proposed solution.
 
 \begin{rproblem}
   Extending hash-table support for \textbf{variable-length keys}.
@@ -33,12 +31,8 @@ Work by PIs Bender and Farach-Colton~\cite{iceberg,partitionhashing} explore the
 \end{rproblem}
 
 
-\subsection{Variable-length keys}
 
-\Kmer analysis requires the storage of \kmers of variable length (32--200 bits). Existing hash tables only handle fixed-length, word-sized keys. Fortunately, the size of these keys is bounded, and this aids our proposed solution.
-
-\noindent
-{\bf Proposed approach.}
+\para{Proposed approach}
 We anticipate two directions of research that will allow us to provide the necessary support:
 
 \begin{itemize}%[noitemsep,nolistsep,leftmargin=*]
@@ -47,18 +41,16 @@ We anticipate two directions of research that will allow us to provide the neces
 \end{itemize}
 
 
+\para{Distributed hash tables}
+GPU memory is modest in size and to scale up, rather than pay the high communication cost of communicating between CPUs and GPUs through the slow PCIe bus, the most common approach is to scale \emph{across} GPUs using faster technologies like NVLink and Infiniband. However, naively partitioning the hash table across GPUs and performing fine-grained, synchronous access to it is unlikely to permit competitive performance.
 
 \begin{rproblem}
   \textbf{Distributing these hash tables across multiple GPUs} for both increased capacity and increased performance.
   \label{rprob:dist-hashtable}
 \end{rproblem}
 
-\subsection{Distributed hash tables}
-
-GPU memory is modest in size and to scale up, rather than pay the high communication cost of communicating between CPUs and GPUs through the slow PCIe bus, the most common approach is to scale \emph{across} GPUs using faster technologies like NVLink and Infiniband. However, naively partitioning the hash table across GPUs and performing fine-grained, synchronous access to it is unlikely to permit competitive performance.
-
 \noindent
-{\bf Proposed approach.}
+\para{Proposed approach}
 Thus we propose several directions that can help mitigate the potential performance issues of partitioning. First, we will build our application in a chunked and pipelined way so that we can simultaneously compute hash table keys for chunk $n+2$, use inter-GPU communication to be fetching values for chunk $n+1$, and process the results for chunk $n$. Such an approach is necessary to best use our computation and communication resources. Second, we will need to bundle up small-grained communications into larger packets and only send those packets when they are full to best use the full bandwidth of the communication resources. Finally, we will investigate distributed hash table strategies that allow us to trade off (i) better load-balance vs.\ the cost of that load balance and (ii) better locality vs.\ the penalty in hash table efficiency (for instance, locality-sensitive hashing techniques and domain-specific knowledge to place pieces of the hash table where they will most frequently be used).    
 %We propose to relax (rather, explore the consequence of relaxing) ideal load balance and ideal efficiency to reduce overall communication volume. 
 For example, domain-specific knowledge --- such as the fact that temporally proximate queries tend to be made for similar or overlapping sequences --- means that partitioning based on minimizer~\cite{roberts2004reducing} or other winnowing-related~\cite{Mar_ais_2018,DeBlasio_2019,Dutta_2022} schemes may work well for our purposes.It would seem that a random partition would give us excellent load balance and efficiency, but would result in a maximal amount of communication, though this has not been established, and we will study the exact shape of this tradeoff curve, both in theory and practice.
