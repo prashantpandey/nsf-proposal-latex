@@ -2,7 +2,7 @@
 
 \section{Filters}
 
-Filters are a key data structure for compactly representing sets, and they are extensively used in computational data applications.  The PIs have extensive experience in designing best-in-class filters, both theoretically~\cite{BenderFaGo18,BenderDaFa21,BenderFaKu22b,BenderCoFa23b}, for general high-performance computation~\cite{conway2020splinterdb,PandeyBeCo23,PandeyBJP17,BenderFaJo12}, and especially for computational biology~\cite{AlmodaresiPFJP19,PandeyAlBe18,PandeyBeJo18, almodaresi2017rainbowfish,PandeyBeJo17b}.
+Filters are a key data structure for compactly representing sets, and they are extensively used in computational data applications.  The PIs have extensive experience in designing best-in-class filters, both theoretically~\cite{BenderFaGo18,BenderDaFa21,BenderFaKu22b,BenderCoFa23b}, for general high-performance computation~\cite{conway2020splinterdb,PandeyBeCo23,PandeyBJP17,BenderFaJo12}, and especially for computational biology~\cite{AlmodaresiPFJP20,PandeyAlBe18,PandeyBeJo18, almodaresi2017rainbowfish,PandeyBeJo17b}.
 In this section, we articulate the computational challenges in implementing high-performance filters, illustrating the issues via computational-biology applications, as appropriate. 
 In particular, filters in HPC settings are compute intensive while being small, making them perfect candidates for GPU implementations.  
 However, not all filters have the same functionality, and we will propose algorithm work to create HPC filters than are GPU-friendly, e.g., concurrent, small space, and with high locality.

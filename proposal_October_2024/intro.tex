@@ -41,7 +41,7 @@ discovery, etc.
 %As a result, increasingly complex and large-scale analyses are employed to gain insights into this data.  \mab{I cannot tell whether I like this previous sentence, but it seems out of place.}
 For
 instance, new and improved
-massively parallel high-throughput sequencing (HTS) technologies \mab{Rob, Prashant, please add citation.} are already producing petabyte-scale
+massively parallel high-throughput sequencing (HTS) technologies~\cite{reuter2015high} are already producing petabyte-scale
 datasets~\cite{kodama2012sequence}, and the NIH estimates that ``genomics
 research will generate between 2 and 40 exabytes of data within the next
 decade''~\cite{NHGRIDataScience}.
@@ -56,57 +56,68 @@ hash tables~\cite{solomon2016fast,almodaresi2022incrementally}, locality
 sensitive hashing~\cite{Marais2019}, and compressed string
 indexes~\cite{Almodaresi2018Pufferfish}. 
 Any improvements to the throughput of these data structures will have a disproportionately large impact on many applications. 
-Specifically, the scale of the data is
-such that two main problems arise: \textbf{(1)} some analyses are simply not
-currently feasible with existing data structures and algorithms---for example,
+Specifically, the scale of today's data is
+such that two main problems arise: \textbf{(1)} some analyses are simply
+no longer feasible with existing data structures and algorithms---for example,
 despite the long-standing desire to build a sequence-level index for the entire
 sequence read archive (SRA)~\cite{SRA},\footnote{SRA is a public repository for DNA sequencing data.} existing efforts have not reached this
 scale~\cite{Karasikov2020, HarrisM20, SolomonK17, almodaresi2022incrementally,
-AlmodaresiPFJP20,PandeyAlBe18} and \textbf{(2)} other common analyses are
-feasible, but computationally burdensome, requiring powerful local compute
-abilities, or leading to increased costs for analyses using cloud compute.  Consequently, the scale of data is such that the analysis and discovery cycle and has led to a scenario in
+AlmodaresiPFJP20,PandeyAlBe18} and \textbf{(2)} other common analyses are so computationally burdensome in time and/or space that they are infeasible without an extravagant outlay of hardware/cloud-compute resources.
+Consequently, the scale of data is such that the analysis and discovery cycle is infeasible slow.  We are thus in a situation in
 which, in many cases, compute has overtaken data generation as the predominant
 experiment-related cost~\cite{Muir_2016} (apart from humans).
-\mab{This last sentence seems a little weak. Not sure if it's worth fixing.}
 
-\mab{Here is a place to put one or two sentences about what we do, emphasizing the coolness. 
-E.g., (1) vertically oriented/end-to-end solution where we show how a small set of new and improved data structures can take advantage of faster hardware (GPUs) to make a range of  applications faster. Our targets are three (how many?) related applications in comp.\ bio. Can we say why these are universal---tons of data, space and CPU intensive, etc.}
+This proposal takes  a vertical-stack approach to addressing these performance issues, in that we: 
+(1) identify a core set of four data structures, enumerated above;
+(2) demonstrate that they lie at the heart of a variety of data-analysis workloads; (3) implement  
+new parallel and distributed versions of these data structures to exploit the
+massive compute on GPUs; (4) provide an API for developers to integrate these high-performance
+and scalable data structures in applications; and (5) validate the performance and utility of our system though testing in real-world applications, specifically two core computational analytic kernels (k-mer analysis and sequence alignment), at the heart of three key computational biology applications (taxonomic classification, raw sequence search, and pangenomics); see Figure~\ref{fig1} in \S\ref{sec:compbio} for a representation of the relationship among the data structures, the analytic kernels, and the applications.  Thus, our approach spans a range of interrelated areas: 
+\emph{design of data structures} (highly concurrent, dynamic, and distributed
+data structures); \emph{systems} (scaling up using GPU acceleration);
+\emph{performance engineering} (scaling out using distributed data
+structures); and \emph{applications} (validation through computational biology applications). 
 
-\paragraph{CPU speed and RAM capacity cannot keep up with data growth} CPU
-performance increases and RAM sizes are not keeping up with the ``explosive'' data growth in
+%
+The PIs together form an interdisciplinary team of researchers across four
+focus areas: systems, performance engineering, applications (computational biology), and the design and analysis of data structures. The team is taking a vertically integrated
+systems/performance engineering/theory/applications co-design approach to explore four tightly
+interconnected research modules. These research modules are structured from
+bottom-up across the computing stack.
+
+
+\paragraph{CPU speed and RAM capacity cannot keep up with data growth.} CPU
+performance increases and RAM sizes are not keeping up with the explosive data growth in
 modern applications across databases, machine learning, scientific computing, and (in the context of this proposal) computational biology~\cite{Chen:2021:TGS}. Although CPU performance is increasing at
 2--25\%/year and single-node RAM sizes are increasing at 2--11\%/year, genomics
 data, for example, is likely to double in size every 1.5 years~\cite{kodama2012sequence}. 
-\emph{Thus, today's software tools will not scale with tomorrow's data.} An example from computational biology illustrates the point: performing \kmer analysis or sequence alignment (common tasks in
-computational biology pipelines) on petabyte-scale raw sequencing data is not
-possible on single-node shared-memory systems. In the post-Moore’s-Law period,
+\emph{Thus, today's software tools will not scale with tomorrow's data.} 
+Two common tasks in
+computational biology pipelines illustrate the point: 
+performing \kmer analysis and sequence alignment  on petabyte-scale raw sequencing data are not
+possible on single-node shared-memory systems. 
+In the post-Moore's-Law period,
 performance gains will come from software, algorithms, and novel architectures rather than
-traditional semiconductor scaling~\cite{leiserson2020there}. We can achieve massive scalability by,
-first, designing data structures and algorithms to scale up using modern
-accelerators such as GPUs and, second, scaling out by using distributed memory
-in a high-performance computing (HPC) environment.
+traditional semiconductor scaling~\cite{leiserson2020there}. We can achieve massive scalability by
+first designing data structures and algorithms to scale up using modern
+accelerators such as GPUs and second scaling out by using distributed memory
+in a high-performance environment.
 
-\mab{We don't really say why these core data structures are so fundamental. I think that there's a nondefensive way to do, as we link with comp bio. }
 
 \paragraph{GPUs for data pipelines.} With power constraints (continuing to be) the main bottleneck in increased
 computing performance, the superior performance, performance growth, and
 power-performance of GPUs~\cite{Dally:2010:GCT,Dally:2021:EOT} already makes
 them increasingly attractive at all scales, from mobile devices to laptop and
 desktop computation to the largest supercomputers. The recent and extremely
-rapid rise of training deep neural networks for deep-learning
+rapid rise of deep-neural-network training  for deep-learning
 applications~\cite{Amodei:2015:DS2,Chetlur:2014:CEP,Coates:2013:DLW,Hannun:2014:DSU}---a
 field led by NVIDIA GPUs and CUDA---has resulted in NVIDIA-GPU-equipped data
 centers in nearly every large Internet company and NVIDIA GPUs in each of the
-three major cloud computing providers. As well, GPUs have made enormous inroads
+three major cloud-computing providers. As well, GPUs have made enormous inroads
 into the largest-scale computations. GPU-centered machines dominate the top of
 the biannual TOP500 list~\cite{top500:jun2024}, including 9 of the top 10 (\#1
 has AMD GPUs; 155 total of the 186 GPU-centered machines have NVIDIA GPUs). In
 systems that have high compute requirements, GPU hardware is now ubiquitous.
-%
-%\mfc{This is the business end of this intro.  It belongs at the front with an
-%explanation of what we mean.  Let's sell it} \mab{Text to be updated and moved
-%somewhere: \\
-%
 
 These advantages of GPU hardware are so significant that GPU systems are
 ubiquitous even though the GPU software ecosystem is much more
@@ -117,24 +128,17 @@ discuss in this proposal, and that solving the research problems involved in
 designing and building high-performance dynamic GPU data structures at scale
 are a critical component of this direction.
 
-%a gap that can be directly addressed with ambitious research proposals such as ours.
-%Successful research outcomes will further incentivize primarily targeting GPUs with new application development and moving existing applications onto GPUs.
-%}
 
-\paragraph{The Technical Challenge} Today's most successful GPU applications focus on
+\paragraph{The Technical Challenge.} Today's most successful GPU applications focus on
 highly parallel, regular workloads. 
-\mab{One of the grand challenges in GPU computing is...}
-What has been more challenging, and the
-focus of significant research effort \mab{(including by three of the PIs~\cite{xxx,xxx,xxx})} over the past decade, has been
+A grand challenge in GPU computing---and the focus of significant research effort over the past decade including by three of the PIs---has been
 \emph{irregular} and/or \emph{sparse} workloads that are harder to parallelize
-effectively, exacerbated by the challenges in addressing these workloads at
-large scale (with distributed computing). These workloads include the powerful
-data structures that are the focus of this proposal. We see ample existing work
-that addresses subsets of the overall challenge: both regular GPU workloads at
-scale (e.g., training deep neural networks~\cite{Dubey:2024:TL3}) and complex dynamic GPU data
+effectively, exacerbated by the challenges in addressing these workloads at large scale.
+Data structures to address these workloads at scale are the focus of this proposal. We see ample existing work
+that addresses subsets of the overall challenge: regular GPU workloads at
+scale, where industry has made significant progress (e.g., training deep neural networks~\cite{Dubey:2024:TL3}); irregular problems at modest scale (including the contributions of \john{Prashant: can you add two significant cites here?} PI Pandey~\cite{} and PI Owens~\cite{Pan:2017:MGA,Chen:2022:SIP}), and complex dynamic GPU data
 structures not at scale (including many contributions by the PIs of this
 proposal)~\cite{Ashkiani:2018:ADH,Awad:2019:EAH,Junger:2020:WAL,Li:2021:DDH,mccoy2022high,Zhou:2021:DAD}.
-\mab{By mentioning the contributions of the PIs only for the second piece and not the first piece, it makes me think ``oh, the PIs only have expertise in one of the two thrusts.''}
  The success of both of these thrusts of work gives us confidence
 that we can build on them to address the grand challenge of dynamic and
 distributed GPU data structures.
@@ -278,7 +282,7 @@ these data structures in the applications from this proposal (and many others).
 {Our approach is four-pronged.}  We will develop new {algorithmic
 theory} to design scalable data structures; we will develop new {systems} that
 implement our solutions in a scale-up manner,  both on CPU and GPU\@; we will a
-develop new framework to distribute our solutions in an {HPC} environment, so
+develop new framework to distribute our solutions in an high-performance environment, so
 they scale out to clusters of GPUs; and finally we will validate our solutions
 on {computational biology} workloads.
 %
@@ -319,24 +323,7 @@ rapid growth of single-cell sequencing data~\cite{scgrowth2022}.
 % If successful we will be able to perform complex data analyses to answer biological questions on available terabyte- and petabyte-scale datasets, for example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. \john{These cites / this argument is also made a page earlier; consider deleting this.} Existing data structures and software tools fail to scale to these data sizes, making these publicly available and highly valuable data resources largely inert.
 
 
-\mfc{this feels apologetic.  Is there a better title that project's novelties?}
-\rob{it also feels redundant --- we've said almost exactly the same earlier.}
-\textbf{The project’s novelties are: a vertical-stack approach} spanning
-\textbf{theory and algorithms} (highly concurrent, dynamic, and distributed
-data structures); \textbf{systems} (scaling up using GPU acceleration);
-\textbf{high-performance computing} (scaling out using distributed data
-structures); and \textbf{applications} (computational biology applications);
-new parallel and distributed data structures and algorithms to exploit the
-massive compute on GPUs that can be applicable to other application domains;
-and an API for developers to quickly and seamlessly integrate high-performance
-and scalable data structures in applications.
-%
-Our team includes a highly interdisciplinary team of researchers across four
-focus areas: applications (computational biology), theory and algorithms,
-systems, and high-performance computing. The team is taking a holistic
-theory/systems/HPC/applications co-design approach to explore four tightly
-interconnected research modules. These research modules are structured from
-bottom-up across the computing stack.
+
 
 % \prashant{Add a brief application about Single cell as another application of the library.}
 
