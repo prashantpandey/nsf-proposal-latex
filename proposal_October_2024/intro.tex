@@ -55,7 +55,7 @@ As we argue in this proposal, a large number of diverse applications are bottlen
 hash tables~\cite{solomon2016fast,almodaresi2022incrementally}, locality
 sensitive hashing~\cite{Marais2019}, and compressed string
 indexes~\cite{Almodaresi2018Pufferfish}. 
-In \S\ref{sec:compbio}, we analyze several data analytic tasks and find that these data structures come up over and over again, which is not surprising: hash tables are key to much of computation, and filters are lossily compressed hash tables; locality sensitive hashing 
+In \S\ref{sec:compbio}, we analyze several data analytic tasks and find that these data structures come up over and over again, which is not surprising: hash tables are key to much of computation, and filters are lossily compressed hash tables; locality sensitive hashing has extensive use wherever nearest neighbor computations are needed; and compressed string indexes are key to any application that  processes strings, be they biological or linguistic.
 Any improvements to the throughput of these data structures will have a disproportionately large impact on many applications. 
 Specifically, the scale of today's data is
 such that two main problems arise: \textbf{(1)} some analyses are simply
@@ -188,57 +188,18 @@ Our recent successes in single-node and distributed GPU data structures and
 algorithmic advances give us the
 collective background to address the broad challenge of this proposal, and out expertise in computational biology give us a rich test bed to validate our advances.
 
-
-\paragraph{Our proposed work: The details.}
 We will build a standalone library of data structures optimized for single GPUs and for distributed clusters of GPUs.
-We will test this library by evaluating them exhaustively on concrete applications drawn from computational biology. 
-%that can be directly used by computational biology applications.
-%Because these data structures are used across multiple applications and domains we propose to build a \emph{standalone library} comprising these data structures.
-\mab{I know what a standalone library is. At the same time... what do we mean by standalone library. Is there a followup sentence so that sounds less BS-y? 
-E.g., a previous standalone library we build for filters appeared in XXXXX.... }
- A standalone library will enable easy integration and adoption of
+We will test this library by evaluating them exhaustively on two concrete applications drawn from computational biology. 
+A standalone library will enable easy integration and adoption of
 these data structures in the applications from this proposal (and many others).
 
-{Our approach is four-pronged.}  We will develop new {algorithmic
-theory} to design scalable data structures; we will develop new {systems} that
-implement our solutions in a scale-up manner,  both on CPU and GPU\@; we will a
-develop new framework to distribute our solutions in an high-performance environment, so
-they scale out to clusters of GPUs; and finally we will validate our solutions
-on {computational biology} workloads.
-%
-Specifically, our data structures are: \textbf{filters}, \textbf{hash tables},
-\textbf{string indexes}, \textbf{sketches}, and related auxiliary data
-structures (including the relevant succinct data structure building blocks).   We propose three specific common computational biology analyses on
-which we will validate our solutions: {large-scale raw sequence
-search},{taxonomic classification for metagenomic data},{pangenomic indexing
-and analysis}.   See Section~\ref{sec:compbio} for a description of these
-analytical pipelines.
+{Our approach is four-pronged.}  We will design scalable data structures; we will 
+implement our solutions in a scale-up manner,  both on CPU and GPU\@; we will design distributed versions of our data structures and implement them on clusters of GPUS; and finally we will validate our solutions
+on three {computational biology} workloads.  
 
-\mfc{I don't understand this paragraph.}
-\rob{Maybe it's unnecessary, but I think it's arguing that even though we will focus on three specific 
-research challenges in comp. bio, our stack opens the door to immediately apply our library to other 
-high-impact problems.}
-However, while we will focus and validate on these applications, it is critical
-to point out that the data structures, algorithms, and libraries that we build
-will find immediate application a much larger array of analyses. For example, with the ability to perform
-rapid seeding on the GPU (using the indices described herein), and taking
-advantage of our own expertise in building computationally efficient tools for
-the pre-processing of single-cell sequencing data~\cite{he2022alevin}, we
-believe that single-cell RNA-seq preprocessing will be an immediate
-``low-hanging'' fruit that can be accelerated with our stack. It has already
-been demonstrated by NVIDIA that their RAPIDS single-cell~\cite{rapids} library
-can speed up steps of the downstream analysis of single-cell count matrices
-from 4.7--850$\times$. Yet, the preprocessing of raw data to obtain the count
-matrices to be analyzed, a computationally intensive process, does not yet have
-a GPU implementation. However, the required computation is embarrassingly
-parallel, with the processing of each sample requiring the alignment of
-hundreds of millions to billions of sequencing reads (highly parallelizable),
-followed by barcode correction (requires some synchronization) and UMI
-resolution (highly parallelizable as each cell can be evaluated independently).
-Thus, we anticipate implementing this preprocessing using our GPU-enhanced
-stack will see a one to two order-of-magnitude performance improvement over
-existing state-of-the-art solutions; a critical necessity given the incredibly
-rapid growth of single-cell sequencing data~\cite{scgrowth2022}.
+We stress, however, that the data structures we have selected are general enough that they will find use both in other computational biology applications and in non-biological data analytic applications on large data.  
+
+For example, with the ability to perform rapid seeding on the GPU (using the indices described herein), and taking advantage of our own expertise in building computationally efficient tools for the pre-processing of single-cell sequencing data~\cite{he2022alevin}, we believe that single-cell RNA-seq preprocessing will be an immediate ``low-hanging'' fruit that can be accelerated with our stack. It has already been demonstrated by NVIDIA that their RAPIDS single-cell~\cite{rapids} library can speed up steps of the downstream analysis of single-cell count matrices from 4.7--850$\times$. Yet, the preprocessing of raw data to obtain the count matrices to be analyzed, a computationally intensive process, does not yet have a GPU implementation. However, the required computation is embarrassingly parallel, with the processing of each sample requiring the alignment of hundreds of millions to billions of sequencing reads (highly parallelizable), followed by barcode correction (requires some synchronization) and UMI resolution (highly parallelizable as each cell can be evaluated independently). Thus, we anticipate implementing this preprocessing using our GPU-enhanced stack will see a one to two order-of-magnitude performance improvement over existing state-of-the-art solutions; a critical necessity given the incredibly rapid growth of single-cell sequencing data~\cite{scgrowth2022}.
 
 % If successful we will be able to perform complex data analyses to answer biological questions on available terabyte- and petabyte-scale datasets, for example, raw sequencing data from SRA~\cite{kodama2012sequence}, metagenomic data from WA and Rhizo~\cite{hofmeyr2020terabase}, and pangenomic data from 100,000 genome project~\cite{1002021100}. \john{These cites / this argument is also made a page earlier; consider deleting this.} Existing data structures and software tools fail to scale to these data sizes, making these publicly available and highly valuable data resources largely inert.
 

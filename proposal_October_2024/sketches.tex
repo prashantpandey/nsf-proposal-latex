@@ -2,7 +2,7 @@
 
 \section{Sketches}
 
-\mfc{this tool is so general, and this application is so specific by comparison}
+%\mfc{this tool is so general, and this application is so specific by comparison}
 
 Measuring sequence similarity is at the core of many algorithms in  computational biology~\cite{Myers2000, Langmead2012,Li2010}. Computing sequence similarity via optimal alignment is computationally intensive and requires an $O(n^2)$-time solution for two sequences of length $n$, in the worst case~\cite{backurs2015edit}.  For highly similar sequences (or where the maximum allowable edit distance is bounded), faster algorithms~\cite{MarcoSola2023} are known, and some have been implemented on the GPU~\cite{AguadoPuig2023}. However, due to the sheer size of datasets available today in terms of both complete and draft assemblies (e.g., metagenomic assemblies in RefSeq~\cite{RefSeq}) and raw sequences in SRA~\cite{SRA}, computing sequence similarities using traditional algorithms --- even the most efficient variants --- is not feasible.
 
@@ -20,7 +20,7 @@ Our approach is to develop algorithmic techniques where we can compute sketches 
 Develop data structures for indexing and searching low-dimensional embeddings (based on minhash).  Test them on genomic and metagenomic data.
 \end{rproblem}
 
-\mfc{every problem needs to be rewritten so that it's Build x.  Test is on comp bio.}
+%\mfc{every problem needs to be rewritten so that it's Build x.  Test is on comp bio.}
 
 The ability to perform an approximate nearest neighbor (ANN) search on the vector space (minhash sketch) enables researchers to quickly prune the search space of millions of samples to find the sample of interest. PIs  Bender, Pandey, and Patro have developed Mantis~\cite{PandeyAlBe18}, an inverted index on \kmers, to perform sequence-level searches. Our goal is to further reduce the index space by indexing sequences using sketches instead of \kmers and speed up the construction and query using GPUs on larger datasets.
 
