@@ -1,12 +1,12 @@
 %!TEX root =  proposal.tex
 
 \section{Hash Tables} \label{sec:hash-tables}
-There are work-efficient algorithms for building building static, space-efficient, single-GPU, fixed-key-size hash tables~\cite{Awad:2023:AAI}.  However, scaling and improving the functionality of GPU hash tables to support the application workloads in this proposal presents several significant research challenges. In particular, we must address three important and orthogonal problems:
+There are work-efficient algorithms for building building static, space-efficient, single-GPU, fixed-key-size hash tables~\cite{Awad:2023:AAI}.  However, scaling and improving the functionality of GPU hash tables to support the application workloads in this proposal means that  we must address three important and orthogonal problems:
 
 %\john{There is no theory in this section at all.} \rob{It's \emph{not} dynamic, but we have a body of work that relies on minimal perfect hashing. It might be nice to add a MPHF (construction and query) as a research objective to this section.}
 
 \begin{rproblem}
-  Supporting more functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values on GPUs.
+  Develop a functional \textbf{dynamic} hash tables that can incrementally add and delete keys and values on GPUs.
   \label{rprob:dynamic-gpu-hashtable}
 \end{rproblem}
 
@@ -25,7 +25,7 @@ Work by PIs Bender and Farach-Colton~\cite{BenderCoFa23b,partitionhashing} explo
 \Kmer analysis requires the storage of \kmers of variable length (32--200 bits). Existing hash tables only handle fixed-length, word-sized keys. Fortunately, the size of these keys is bounded, and this aids our proposed solution.
 
 \begin{rproblem}
-  Extending hash-table support for \textbf{variable-length keys}.
+  Develop a dynamic hash table with support for \textbf{variable-length keys}.
   \label{rprob:variable-hashtable}
 \end{rproblem}
 

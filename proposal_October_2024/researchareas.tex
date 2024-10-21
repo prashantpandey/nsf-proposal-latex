@@ -19,6 +19,44 @@ The team has a rare combination of skills needed for this proposal.  \defn{We ar
 
 \end{itemize}
 
+The PIs also have a strong track record of technology transfer from other projects, and this places the PIs in a strong position to maximize the practical impact of the results from this project. 
+%
+Bender and Farach-Colton co-founded Tokutek, a database company, to commercialize their
+NSF-supported research on streaming
+B-trees. The products TokuDB~\cite{TokuDB} and TokuMX~\cite{TokuMX} were used in
+production for cloud file system metadata, agile indexing in online
+advertising, log-file analysis, on-line gaming, real-time analytics,
+financial data, astronomy data, and genomic data.
+PI Farach-Colton  built SplinterDB \cite{splinterdb, splinterdb2}, a high-performance key-value store that is deployed in production at VMware.
+%PIs Bender and Farach-Colton founded and sold Tokutek~\cite{Tokutek14}, a database company that used write-optimized data structures to obtain order-of-magnitude improvements on database performance.
+
+PI Bender's work on HPC  won an R\&D 100 Award for processor scheduling and allocation algorithms, which were licensed
+by Cray and incorporated into SLURM.
+PIs Bender, Farach-Colton, and Pandey applied techniques from the theory of write-optimized data structures to develop B$\varepsilon$trFS, a high-performance file system with provably good performance guarantees~\cite{JannenYuZh15a,JannenYuZh15b,login2,YuanZhJa16,login1,DBLP:conf/fast/0001CJMGBFJJPY20,DBLP:conf/hotstorage/ConwayKJBJJPF19,DBLP:journals/tos/ZhanJPCKFBYJJ18,DBLP:conf/fast/ZhanCJKBFJJPY18,DBLP:journals/tos/YuanZJPACDKWBFJ17,DBLP:journals/usenix-login/ConwayBJ0BJJKPY17,DBLP:conf/fast/ConwayBJJZYBJKP17} (this work won \textbf{Best Paper} at FAST'16 \cite{YuanZhJa16}). 
+PIs Bender and Farach-Colton  applied their work on pointer compression to develop Mosaic Paging \cite{mosaicasplos, mosaicspaa}, a technique for increasing the coverage of hardware TLBs (won \textbf{Distinguished Paper} at ASPLOS'23 as well as \textbf{Top Pick} for IEEE MICRO 2023). This work will be deployed  in a not-yet-announced chip. 
+
+Some of this tech transfer, such as PI Farach-Colton's 
+Notung~\cite{ChenDuFa00}, and 
+PI  Bender, Farach-Colton, Pandey, and Patro's counting quotient filters~\cite{PandeyBeJo17}, are  in computational biology. 
+Counting quotient filters are incorporated into 
+\mab{Prashant and Rob, approximately how many}
+DNA sequencing tools.
+Notung is a standard tool for reconciling phylogenetic trees.
+%
+PI Patro's developments in algorithms and data structures for compacted de Bruijn graph construction~\cite{Khan2021,Khan2022}, and lightweight-mapping~\cite{Srivastava2016,Almodaresi2018Pufferfish,srivastava2020alignment,Almodaresi2021} power the widely-use Salmon~\cite{Patro2017Salmon} tool for transcript quantification from bulk RNA-seq data, and the alevin-fry~\cite{he2022alevin,He2023} tool for gene quantification from single-cell RNA-seq data.  These tools are widely used throughout standard pipelines (like the nf-core RNA-seq pipeline) and databases (like the EMBL EBI single-cell expression atlas) within the community~\cite{Ewels2020,George2023}.
+
+\mab{Prashant and Rob, put biology tech transfer. }
+\mab{John and Prashant, please add GPU tech transfer. }
+
+PI Owens led the first implementation of MPI on GPUs~\cite{Stuart:2009:MPO:withouturl,Stuart:2011:EMT}, the first multi-GPU MapReduce~\cite{Stuart:2011:MMO}, and more recent work on scalable graph analytics on HPC machines~\cite{Pan:2018:SBS,Pan:2017:MGA,Chen:2022:SIP}. PI Pandey has built the first GPU-based distributed-memory \kmer analysis pipeline for the MetaHipMer metagenome assembler~\cite{nisa2021distributed}.
+
+\mab{This is text from elsewhere, but not targetted yet towards tech transfer: 
+PIs Owens and Pandey have written numerous paper on GPU data structures and programming models. Owens' research program in GPU computing~\cite{Owens:2007:ASO,Owens:2008:GC} 
+%spans nearly 20 years and 
+includes representative research advances in fundamental algorithms~\cite{Sengupta:2007:SPF}, data structures~\cite{Lefohn:2006:GGE,Alcantara:2009:RPH}, 
+    performance engineering~\cite{Zhang:2011:AQP}, programming models~\cite{Gupta:2012:ASO, Tzeng:2010:TMF}, and applications~\cite{Wang:2017:GGG}. Pandey's research includes building massively parallel and feature-rich GPU filters~\cite{mccoy2022high}, distributed-memory GPU hash tables for efficiently processing genomic data~\cite{nisa2021distributed}, GPU-accelerated exascale metagenomic assembly pipelines~\cite{McCoyHYP23a}, and high-performance and general-purpose GPU memory managers~\cite{McCoyP24}.
+}
+
 %\mfc{once we will the two paragraphs right before this subsection, we could put some of the stuff from the collab plan here.  Cuz it doesn't hurt to repeat part of that.}
 
 %% We don't need the notions of scale anymore. It was specific to the PPOSS.
